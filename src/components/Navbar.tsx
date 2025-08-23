@@ -110,13 +110,9 @@ export default function Navbar() {
             <NavLinks />
           </div>
 
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle - Always visible */}
-            <ModeToggle />
-
-            {/* User Menu - Desktop only */}
+          <div className="flex items-center space-x-2 md:space-x-4">
             {isLoggedIn ? (
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -132,6 +128,12 @@ export default function Navbar() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuItem className="flex flex-col">
+                      <p className="font-medium">{name || "User"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {email || "user@example.com"}
+                      </p>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
@@ -148,16 +150,18 @@ export default function Navbar() {
                 </DropdownMenu>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 <Link to="/login">
-                  <Button variant="ghost">Login</Button>
+                  <Button variant="ghost" size={"sm"}>
+                    Login
+                  </Button>
                 </Link>
                 <Link to="/register">
-                  <Button>Sign Up</Button>
+                  <Button size={"sm"}>Sign Up</Button>
                 </Link>
               </div>
             )}
-
+            <ModeToggle />
             {/* Mobile Navigation */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -170,62 +174,6 @@ export default function Navbar() {
                 <div className="flex flex-col space-y-6 mt-4">
                   {/* Navigation Links */}
                   <NavLinks mobile />
-
-                  {/* User Section */}
-                  {isLoggedIn ? (
-                    <div className="pt-4 border-t">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src="/avatars/01.png" alt="User" />
-                          <AvatarFallback>
-                            {role ? role.charAt(0).toUpperCase() : "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{name || "User"}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {email || "user@example.com"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col space-y-2">
-                        <Button variant="ghost" className="justify-start">
-                          <User className="mr-2 h-4 w-4" />
-                          Profile
-                        </Button>
-                        <Button variant="ghost" className="justify-start">
-                          <Settings className="mr-2 h-4 w-4" />
-                          Settings
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="justify-start text-red-500 hover:text-red-700"
-                          onClick={handleLogout}
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Log out
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col space-y-2 pt-4 border-t">
-                      <Link to="/login" onClick={() => setIsOpen(false)}>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Login
-                        </Button>
-                      </Link>
-                      <Link to="/register" onClick={() => setIsOpen(false)}>
-                        <Button className="w-full justify-start">
-                          <User className="mr-2 h-4 w-4" />
-                          Sign Up
-                        </Button>
-                      </Link>
-                    </div>
-                  )}
                 </div>
               </SheetContent>
             </Sheet>
