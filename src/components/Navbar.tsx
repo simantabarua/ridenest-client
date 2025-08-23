@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -39,7 +38,6 @@ export default function Navbar() {
   const publicLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/features", label: "Features" },
     { href: "/contact", label: "Contact" },
     { href: "/faq", label: "FAQ" },
   ];
@@ -104,7 +102,7 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="text-xl font-bold">
-            RideShare
+            Ridenest
           </Link>
 
           {/* Desktop Navigation */}

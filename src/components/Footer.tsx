@@ -13,22 +13,17 @@ import { Link } from "react-router";
 export default function Footer() {
   const footerLinks = {
     company: [
-      { label: "About Us", href: "/public/about" },
-      { label: "Features", href: "/public/features" },
+      { label: "About Us", href: "about" },
+      { label: "Blog", href: "#" },
       { label: "Careers", href: "#" },
-      { label: "Press", href: "#" },
+      { label: "Partners", href: "#" },
     ],
     support: [
-      { label: "Help Center", href: "/public/faq" },
-      { label: "Contact Us", href: "/public/contact" },
-      { label: "Safety", href: "#" },
-      { label: "Terms of Service", href: "#" },
-    ],
-    cities: [
-      { label: "New York", href: "#" },
-      { label: "Los Angeles", href: "#" },
-      { label: "Chicago", href: "#" },
-      { label: "Houston", href: "#" },
+      { label: "Help Center", href: "faq" },
+      { label: "Contact Us", href: "contact" },
+      { label: "Guidelines", href: "guidelines" },
+      { label: "Terms of Service", href: "terms" },
+      { label: "Privacy Policy", href: "privacy" },
     ],
   };
 
@@ -47,7 +42,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Car className="w-8 h-8 text-primary" />
-              <span className="text-xl font-bold">RideShare</span>
+              <span className="text-xl font-bold">Ridenest</span>
             </div>
             <p className="text-sm text-muted-foreground">
               Your trusted ride-sharing platform, connecting riders and drivers
@@ -75,7 +70,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.href}
+                  <Link
+                    to={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
@@ -93,7 +89,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.href}
+                  <Link
+                    to={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
@@ -111,11 +108,11 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4" />
-                <span>support@rideshare.com</span>
+                <span>support@Ridenest.com</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4" />
-                <span>1-800-RIDESHARE</span>
+                <span>1-800-Ridenest</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4" />
@@ -129,20 +126,23 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © 2024 RideShare. All rights reserved.
+              © 2024 Ridenest. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-                <Link to="#"
+              <Link
+                to="#"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
               </Link>
-                <Link to="#"
+              <Link
+                to="#"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Terms of Service
               </Link>
-                <Link to="#"
+              <Link
+                to="#"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Cookie Policy

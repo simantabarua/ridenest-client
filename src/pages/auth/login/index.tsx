@@ -117,7 +117,7 @@ export default function Login() {
                   <Logo />
                 </div>
               </div>
-              <span className="text-2xl font-bold text-primary">Tournest</span>
+              <span className="text-2xl font-bold text-primary">Ridenest</span>
             </Link>
             <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -285,7 +285,7 @@ export default function Login() {
               Having trouble signing in?
             </p>
             <div className="flex justify-center space-x-4 text-sm">
-              <Link to="/help" className="text-primary hover:underline">
+              <Link to="/guidelines" className="text-primary hover:underline">
                 Help Center
               </Link>
               <Link to="/contact" className="text-primary hover:underline">

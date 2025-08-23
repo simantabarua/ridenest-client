@@ -223,7 +223,7 @@ export default function OTPVerifyPage() {
                   <Logo />
                 </div>
               </div>
-              <span className="text-2xl font-bold text-primary">Tournest</span>
+              <span className="text-2xl font-bold text-primary">Ridenest</span>
             </Link>
             <h2 className="text-3xl font-bold text-gray-300">
               {showOtpCard
