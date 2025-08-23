@@ -68,7 +68,8 @@ export default function Login() {
         if (from) {
           navigate(from, { replace: true });
         }
-        navigate(`/dashboard/${userRole}`, { state: { userRole } });
+        console.log(response);
+        navigate(`/${userRole}/dashboard`, { state: { userRole } });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

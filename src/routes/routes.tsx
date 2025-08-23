@@ -41,15 +41,15 @@ export const router = createBrowserRouter([
         Component: ProfileAdmin,
       },
       {
-        path: "dashboard/admin",
+        path: "admin/dashboard",
         Component: ProfileAdmin,
       },
       {
-        path: "dashboard/driver",
+        path: "driver/dashboard",
         Component: ProfileDriver,
       },
       {
-        path: "dashboard/rider",
+        path: "rider/dashboard",
         Component: ProfileRider,
       },
     ],
