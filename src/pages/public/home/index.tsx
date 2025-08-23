@@ -9,7 +9,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   Car,
-  MapPin,
   Shield,
   Star,
   Clock,
@@ -18,6 +17,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import RideBooking from "./components/DestinationCard";
 
 export default function Home() {
   const features = [
@@ -141,40 +141,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl"></div>
-              <div className="relative bg-background rounded-2xl shadow-2xl p-8">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Book Your Ride</h3>
-                    <Badge variant="outline">Instant</Badge>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Pickup Location
-                      </label>
-                      <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          Current Location
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Destination</label>
-                      <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Where to?</span>
-                      </div>
-                    </div>
-                    <Button className="w-full" size="lg">
-                      Find Ride
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <RideBooking />
           </div>
         </div>
       </section>
