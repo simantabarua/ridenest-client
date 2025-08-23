@@ -44,28 +44,28 @@ export default function Navbar() {
 
   const riderLinks = [
     { href: "/rider/dashboard", label: "Dashboard" },
-    { href: "/rider/dashboard/request-ride", label: "Request Ride" },
-    { href: "/rider/dashboard/ride-history", label: "Ride History" },
-    { href: "/rider/dashboard/profile", label: "Profile" },
-    { href: "/rider/dashboard/safety", label: "Safety" },
+    { href: "/rider/request-ride", label: "Request Ride" },
+    { href: "/rider/ride-history", label: "Ride History" },
+    { href: "/rider/profile", label: "Profile" },
+    { href: "/rider/safety", label: "Safety" },
   ];
 
   const driverLinks = [
     { href: "/driver/dashboard", label: "Dashboard" },
-    { href: "/driver/dashboard/incoming-requests", label: "Requests" },
-    { href: "/driver/dashboard/earnings", label: "Earnings" },
-    { href: "/driver/dashboard/ride-history", label: "History" },
-    { href: "/driver/dashboard/profile", label: "Profile" },
-    { href: "/driver/dashboard/safety", label: "Safety" },
+    { href: "/driver/incoming-requests", label: "Requests" },
+    { href: "/driver/earnings", label: "Earnings" },
+    { href: "/driver/ride-history", label: "History" },
+    { href: "/driver/profile", label: "Profile" },
+    { href: "/driver/safety", label: "Safety" },
   ];
 
   const adminLinks = [
     { href: "/admin/dashboard", label: "Dashboard" },
-    { href: "/admin/dashboard/user-management", label: "Users" },
-    { href: "/admin/dashboard/driver-management", label: "Drivers" },
-    { href: "/admin/dashboard/ride-management", label: "Rides" },
-    { href: "/admin/dashboard/analytics", label: "Analytics" },
-    { href: "/admin/dashboard/profile", label: "Profile" },
+    { href: "/admin/user-management", label: "Users" },
+    { href: "/admin/driver-management", label: "Drivers" },
+    { href: "/admin/ride-management", label: "Rides" },
+    { href: "/admin/analytics", label: "Analytics" },
+    { href: "/admin/profile", label: "Profile" },
   ];
 
   const currentLinks =

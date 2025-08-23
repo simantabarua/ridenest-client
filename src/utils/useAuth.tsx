@@ -11,6 +11,7 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
     if (isLoading) {
       return <Loading fullScreen={true} variant="bars" />;
     }
+
     if (!isLoading && !data?.data?.email) {
       return (
         <Navigate to="/login" replace state={{ from: location.pathname }} />
@@ -18,11 +19,7 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
     }
     console.log(data?.data?.role, data?.data?.email, requiredRole);
 
-    if (
-      !isLoading &&
-      requiredRole &&
-      requiredRole !== data?.data?.role.toLowerCase()
-    ) {
+    if (!isLoading && requiredRole && requiredRole !== data?.data?.role) {
       return (
         <Navigate
           to="/unauthorized"
