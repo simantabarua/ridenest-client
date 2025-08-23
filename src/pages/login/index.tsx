@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import Logo from "@/components/logo";
 import {
   Form,
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import Loading from "@/components/loading";
+import { getUserRole } from "@/utils/getRole";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -41,6 +42,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -50,7 +53,6 @@ export default function Login() {
     },
   });
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
-  console.log(error);
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setIsLoading(true);
     setError("");
@@ -61,9 +63,14 @@ export default function Login() {
 
     try {
       const response = await login(userInfo).unwrap();
+      const userRole = getUserRole(response);
       if (response.success) {
-        navigate("/");
+        if (from) {
+          navigate(from, { replace: true });
+        }
+        navigate(`/dashboard/${userRole}`, { state: { userRole } });
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const errorData = err?.data || err?.error || err;
       const errorCode = errorData?.code || "UNKNOWN_ERROR";
@@ -78,7 +85,7 @@ export default function Login() {
         case "AUTH_USER_NOT_FOUND":
           setError("User not found. Please register first.");
           break;
-        case "AUTH_OTP_REQUIRED":
+        case "AUTH_USER_NOT_VERIFIED":
           navigate("/otp-verify", { state: { email: userInfo.email } });
           break;
         default:

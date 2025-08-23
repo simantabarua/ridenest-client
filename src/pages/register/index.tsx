@@ -134,13 +134,13 @@ export default function RegisterPage() {
 
     try {
       const response = await register(userInfo).unwrap();
-      console.log(response);
-      if (response.success) {
-        navigate("/");
+      if (!response.data?.isVerified) {
+        navigate("/otp-verify", { state: { email: userInfo.email } });
       }
       if (typeof window !== "undefined") {
         localStorage.removeItem("registrationForm");
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const errorData = err.data || err.response?.data || {};
       const errorCode = errorData.code || "UNKNOWN_ERROR";
@@ -183,7 +183,7 @@ export default function RegisterPage() {
               </div>
               <span className="text-2xl font-bold text-primary">Tournest</span>
             </Link>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-foreground">
               Create your account
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -273,7 +273,7 @@ export default function RegisterPage() {
                               className="pl-16"
                               {...field}
                               onChange={(e) => {
-                                let value = e.target.value.replace(
+                                const value = e.target.value.replace(
                                   /^\+88\s*/,
                                   ""
                                 );
