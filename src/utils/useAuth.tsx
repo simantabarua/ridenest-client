@@ -8,18 +8,21 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
   return function AuthWrapper() {
     const { data, isLoading } = useUserInfoQuery(undefined);
     const location = useLocation();
-
     if (isLoading) {
       return <Loading fullScreen={true} variant="bars" />;
     }
-
     if (!isLoading && !data?.data?.email) {
       return (
         <Navigate to="/login" replace state={{ from: location.pathname }} />
       );
     }
+    console.log(data?.data?.role, data?.data?.email, requiredRole);
 
-    if (!isLoading && requiredRole && requiredRole !== data?.data?.role) {
+    if (
+      !isLoading &&
+      requiredRole &&
+      requiredRole !== data?.data?.role.toLowerCase()
+    ) {
       return (
         <Navigate
           to="/unauthorized"
