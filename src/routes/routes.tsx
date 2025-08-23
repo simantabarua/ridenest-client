@@ -1,11 +1,9 @@
-import { createBrowserRouter, Navigate, Outlet } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { lazy } from "react";
 import MainLayout from "@/layout/MainLayout";
-import DashboardLayout from "@/layout/DashboardLayout";
 import { withAuth } from "@/utils/useAuth";
+import DashboardLayout from "@/layout/DashboardLayout";
 import type { TRole } from "@/types";
-import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import Loading from "@/components/loading";
 
 // Public pages
 const Home = lazy(() => import("@/pages/public/home"));
@@ -51,23 +49,6 @@ export const DriverManagement = () => <h1>Driver Management</h1>;
 export const RideManagement = () => <h1>Ride Management</h1>;
 export const Analytics = () => <h1>Analytics</h1>;
 
-const RoleRoute = () => {
-  return <Outlet />;
-};
-
-const DashboardRedirect = () => {
-  const { data: userData, isLoading } = useUserInfoQuery(undefined);
-
-  if (isLoading) return <Loading fullScreen={true} variant="bars" />;
-
-  const userRole = userData?.data?.role?.toLowerCase();
-  if (userRole === "admin") return <Navigate to="/admin/dashboard" replace />;
-  if (userRole === "driver") return <Navigate to="/driver/dashboard" replace />;
-  if (userRole === "rider") return <Navigate to="/rider/dashboard" replace />;
-
-  return <Navigate to="/unauthorized" replace />;
-};
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const router = createBrowserRouter([
   {
@@ -89,62 +70,44 @@ export const router = createBrowserRouter([
   { path: "/unauthorized", Component: UnauthorizedPage },
 
   {
-    Component: DashboardLayout,
+    path: "/admin",
+    Component: withAuth(DashboardLayout, "ADMIN" as TRole),
     children: [
-      {
-        index: true,
-        element: <Navigate to="/dashboard" replace />,
-      },
-
-      {
-        path: "dashboard",
-        Component: withAuth(DashboardRedirect, undefined),
-      },
-      // Admin routes
-      {
-        path: "admin",
-        Component: withAuth(RoleRoute, "ADMIN" as TRole),
-        children: [
-          { index: true, element: <Navigate to="dashboard" replace /> },
-          { path: "dashboard", Component: AdminDashboard },
-          { path: "user-management", Component: UserManagement },
-          { path: "driver-management", Component: DriverManagement },
-          { path: "ride-management", Component: RideManagement },
-          { path: "analytics", Component: Analytics },
-          { path: "profile", Component: ProfileAdmin },
-        ],
-      },
-
-      // Driver routes
-      {
-        path: "driver",
-        Component: withAuth(RoleRoute, "DRIVER" as TRole),
-        children: [
-          { index: true, element: <Navigate to="dashboard" replace /> },
-          { path: "dashboard", Component: DriverDashboard },
-          { path: "incoming-requests", Component: IncomingRequests },
-          { path: "active-ride", Component: ActiveRide },
-          { path: "earnings", Component: Earnings },
-          { path: "ride-history", Component: RideHistoryDriver },
-          { path: "profile", Component: ProfileDriver },
-          { path: "safety", Component: SafetyDriver },
-        ],
-      },
-
-      // Rider routes
-      {
-        path: "rider",
-        Component: withAuth(RoleRoute, "RIDER" as TRole),
-        children: [
-          { index: true, element: <Navigate to="dashboard" replace /> },
-          { path: "dashboard", Component: RiderDashboard },
-          { path: "request-ride", Component: RequestRide },
-          { path: "ride-history", Component: RideHistoryRider },
-          { path: "profile", Component: ProfileRider },
-          { path: "safety", Component: SafetyRider },
-        ],
-      },
+      { index: true, Component: AdminDashboard },
+      { path: "dashboard", Component: AdminDashboard },
+      { path: "user-management", Component: UserManagement },
+      { path: "driver-management", Component: DriverManagement },
+      { path: "ride-management", Component: RideManagement },
+      { path: "analytics", Component: Analytics },
+      { path: "profile", Component: ProfileAdmin },
     ],
   },
+  {
+    path: "/driver",
+    Component: withAuth(DashboardLayout, "DRIVER" as TRole),
+    children: [
+      { index: true, Component: DriverDashboard },
+      { path: "dashboard", Component: DriverDashboard },
+      { path: "incoming-requests", Component: IncomingRequests },
+      { path: "active-ride", Component: ActiveRide },
+      { path: "earnings", Component: Earnings },
+      { path: "ride-history", Component: RideHistoryDriver },
+      { path: "profile", Component: ProfileDriver },
+      { path: "safety", Component: SafetyDriver },
+    ],
+  },
+  {
+    path: "/rider",
+    Component: withAuth(DashboardLayout, "RIDER" as TRole),
+    children: [
+      { index: true, Component: RiderDashboard },
+      { path: "dashboard", Component: RiderDashboard },
+      { path: "request-ride", Component: RequestRide },
+      { path: "ride-history", Component: RideHistoryRider },
+      { path: "profile", Component: ProfileRider },
+      { path: "safety", Component: SafetyRider },
+    ],
+  },
+
   { path: "*", Component: NotFoundPage },
 ]);
