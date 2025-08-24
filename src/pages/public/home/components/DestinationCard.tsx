@@ -27,17 +27,15 @@ import { setTripDetails } from "@/redux/features/trip/trip.slice";
 
 const shortenAddress = (address: string | null, maxLength = 50): string => {
   if (!address) return "Not selected";
-
   const parts = address
     .split(",")
     .slice(0, 4)
-    .map((p) => p.trim());
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
   const shortAddress = parts.join(", ");
-
   if (shortAddress.length > maxLength) {
     return `${shortAddress.substring(0, maxLength)}...`;
   }
-
   return shortAddress;
 };
 
@@ -46,21 +44,25 @@ interface Location {
   lat: number;
   lon: number;
 }
+
 interface RouteResult {
   distance: string;
   time: string;
   geometry?: GeoJSON.GeoJsonObject | null;
   price?: number;
 }
+
 interface FormValues {
   from: string;
   to: string;
 }
+
 interface Suggestion {
   display_name: string;
   lat: string;
   lon: string;
 }
+
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })
   ._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -69,11 +71,13 @@ L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
+
 interface MapUpdaterProps {
   fromLocation: Location | null;
   toLocation: Location | null;
   geometry: GeoJSON.GeoJsonObject | null;
 }
+
 const MapUpdater = ({
   fromLocation,
   toLocation,
@@ -89,6 +93,7 @@ const MapUpdater = ({
       map.fitBounds(bounds.pad(0.4));
     }
   }, [fromLocation, toLocation, map]);
+
   useEffect(() => {
     if (geometry) {
       const routeLayer = L.geoJSON(geometry, {
@@ -102,9 +107,11 @@ const MapUpdater = ({
   }, [geometry, map]);
   return null;
 };
+
 interface DestinationCardProps {
   showMap?: boolean;
 }
+
 const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
   const {
     register,
@@ -115,6 +122,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
   } = useForm<FormValues>({
     defaultValues: { from: "", to: "" },
   });
+
   const [fromLocation, setFromLocation] = useState<Location | null>(null);
   const [toLocation, setToLocation] = useState<Location | null>(null);
   const [fromSuggestions, setFromSuggestions] = useState<Suggestion[]>([]);
@@ -128,6 +136,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
   const toInput = watch("to");
   const fromDropdownRef = useRef<HTMLDivElement>(null);
   const toDropdownRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (fromInput.trim()) {
@@ -142,6 +151,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     }, 350);
     return () => clearTimeout(timer);
   }, [fromInput]);
+
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (toInput.trim()) {
@@ -156,6 +166,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     }, 350);
     return () => clearTimeout(timer);
   }, [toInput]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -174,6 +185,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   const handleUseMyLocation = useCallback(async () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser");
@@ -192,6 +204,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
         setError(
           "Your location is outside Bangladesh. Please enter a location in Bangladesh."
         );
+        setLoading(false);
         return;
       }
       const data = await nominatimReverse(lat, lon);
@@ -205,6 +218,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
       setLoading(false);
     }
   }, [setValue]);
+
   const onSubmit = useCallback(async () => {
     if (!fromLocation || !toLocation) {
       setError("Please select valid locations for both pickup and destination");
@@ -215,15 +229,20 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     try {
       const result = await calculateRouteDistance(fromLocation, toLocation);
       setResults(result);
-      const price = Math.round(parseFloat(result.distance) * 50);
+
+      // Fix: Improved time parsing with error handling
+      const estimatedTime = result.time ? parseInt(result.time) : 0;
+      const distance = parseFloat(result.distance) || 0;
+      const price = Math.round(distance * 50);
+
       dispatch(
         setTripDetails({
           destinationLatitude: toLocation.lat,
           destinationLongitude: toLocation.lon,
-          destination: shortenAddress(toLocation.name),
-          pickup: shortenAddress(fromLocation.name),
-          distance: parseFloat(result.distance),
-          estimatedTime: parseInt(result.time),
+          destinationLocation: shortenAddress(toLocation.name),
+          pickupLocation: shortenAddress(fromLocation.name),
+          distance,
+          estimatedTime,
           price,
         })
       );
@@ -233,6 +252,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
       setLoading(false);
     }
   }, [fromLocation, toLocation, dispatch]);
+
   const handleSelectLocation = useCallback(
     (location: Suggestion, type: "from" | "to") => {
       const loc = {
@@ -252,17 +272,21 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     },
     [setValue]
   );
+
   const clearFromInput = () => {
     setValue("from", "");
     setFromLocation(null);
     setFromSuggestions([]);
   };
+
   const clearToInput = () => {
     setValue("to", "");
     setToLocation(null);
     setToSuggestions([]);
   };
+
   const clearError = () => setError(null);
+
   return (
     <div className="relative mx-auto w-full flex-1 ">
       <Card className="border-0 shadow-lg">
@@ -428,60 +452,65 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                 </div>
               )}
               {/* Results Display */}
-              {tripDetails.distance && (
-                <Card className="border border-border">
-                  <CardContent className="p-4">
-                    <h5 className="font-semibold text-foreground mb-3">
-                      Trip Summary
-                    </h5>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Pickup:</span>
-                        <span className="text-foreground">
-                          {shortenAddress(tripDetails.pickup)}
-                        </span>
+              {tripDetails.distance !== undefined &&
+                tripDetails.distance !== null && (
+                  <Card className="border border-border">
+                    <CardContent className="p-4">
+                      <h5 className="font-semibold text-foreground mb-3">
+                        Trip Summary
+                      </h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Pickup:</span>
+                          <span className="text-foreground">
+                            {shortenAddress(tripDetails.pickupLocation)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Destination:
+                          </span>
+                          <span className="text-foreground">
+                            {shortenAddress(tripDetails.destinationLocation)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Destination Coordinates:
+                          </span>
+                          <span className="text-foreground">
+                            {tripDetails.destinationLatitude?.toFixed(4)},{" "}
+                            {tripDetails.destinationLongitude?.toFixed(4)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Distance:
+                          </span>
+                          <span className="text-foreground">
+                            {tripDetails.distance} km
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Estimated Time:
+                          </span>
+                          <span className="text-foreground">
+                            {tripDetails.estimatedTime
+                              ? `${tripDetails.estimatedTime} min`
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Price:</span>
+                          <span className="text-foreground font-semibold">
+                            ৳{tripDetails.price || 0}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Destination:
-                        </span>
-                        <span className="text-foreground">
-                          {shortenAddress(tripDetails.destination)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Destination Coordinates:
-                        </span>
-                        <span className="text-foreground">
-                          {tripDetails.destinationLatitude?.toFixed(4)},{" "}
-                          {tripDetails.destinationLongitude?.toFixed(4)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Distance:</span>
-                        <span className="text-foreground">
-                          {tripDetails.distance} km
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Estimated Time:
-                        </span>
-                        <span className="text-foreground">
-                          {tripDetails.estimatedTime} min
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Price:</span>
-                        <span className="text-foreground font-semibold">
-                          ৳{tripDetails.price}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+                    </CardContent>
+                  </Card>
+                )}
             </div>
             {showMap && (
               <div className="space-y-4">
@@ -546,4 +575,5 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
     </div>
   );
 };
+
 export default DestinationCard;

@@ -1,220 +1,75 @@
-"use client";
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  DollarSign,
-  Car,
-  Users,
-  CreditCard,
-  ArrowRight,
-  Shield,
-  Timer,
-} from "lucide-react";
+
+import { ArrowRight } from "lucide-react";
 import DestinationCard from "@/pages/public/home/components/DestinationCard";
 import { useAppSelector } from "@/redux/hooks";
+import { useRequestRideMutation } from "@/redux/features/ride/ride.api";
+import { toast } from "sonner";
 
-// Helper function to shorten address
 const shortenAddress = (address: string | null, maxLength = 30): string => {
   if (!address) return "Not selected";
-  
-  // Split address by commas to get the main part
+
   const parts = address.split(",");
   const mainPart = parts[0].trim();
-  
-  // Truncate if too long
+
   if (mainPart.length > maxLength) {
     return `${mainPart.substring(0, maxLength)}...`;
   }
-  
+
   return mainPart;
 };
 
 export default function RequestRidePage() {
-  const [rideType, setRideType] = useState("standard");
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  
-  // Get trip data from Redux store
-  const pickupLocation = useAppSelector((state) => state.trip.pickup);
-  const destination = useAppSelector((state) => state.trip.destination);
+  const pickupLocation = useAppSelector((state) => state.trip.pickupLocation);
+  const destinationLocation = useAppSelector(
+    (state) => state.trip.destinationLocation
+  );
   const distance = useAppSelector((state) => state.trip.distance);
   const estimatedTime = useAppSelector((state) => state.trip.estimatedTime);
   const price = useAppSelector((state) => state.trip.price);
 
-  const rideOptions = [
-    {
-      id: "standard",
-      name: "Standard",
-      description: "Everyday rides",
-      price: "$12-15",
-      eta: "3 min",
-      capacity: "4",
-      icon: Car,
-      color: "bg-blue-500",
-    },
-    {
-      id: "comfort",
-      name: "Comfort",
-      description: "More space and comfort",
-      price: "$18-22",
-      eta: "5 min",
-      capacity: "4",
-      icon: Car,
-      color: "bg-green-500",
-    },
-    {
-      id: "premium",
-      name: "Premium",
-      description: "Luxury vehicles",
-      price: "$25-30",
-      eta: "7 min",
-      capacity: "4",
-      icon: Car,
-      color: "bg-purple-500",
-    },
-    {
-      id: "xl",
-      name: "XL",
-      description: "For larger groups",
-      price: "$20-25",
-      eta: "8 min",
-      capacity: "6",
-      icon: Users,
-      color: "bg-orange-500",
-    },
-  ];
+  const [requestRide] = useRequestRideMutation();
 
-  const paymentMethods = [
-    { id: "card", name: "Credit Card", icon: CreditCard, last4: "4242" },
-    { id: "paypal", name: "PayPal", icon: CreditCard, last4: "" },
-    { id: "cash", name: "Cash", icon: DollarSign, last4: "" },
-  ];
+  const handleRideRequest = async () => {
+    const rideInfo = {
+      pickupLocation: pickupLocation as string,
+      destinationLocation: destinationLocation as string,
+      fare: price as number,
+    };
 
+    try {
+      const response = await requestRide(rideInfo).unwrap();
+
+      if (response.success) {
+        toast.success("Ride Requested!", {
+          description: "Your ride has been successfully requested.",
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error requesting ride:", error.data.message);
+      toast.error("Failed to request ride", {
+        description: error.data.message || "Please try again later.",
+      });
+    }
+  };
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Request a Ride</h1>
             <p className="text-muted-foreground">Where would you like to go?</p>
           </div>
-          
+
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Booking Form */}
             <div className="lg:col-span-2 space-y-6">
               {/* Location Inputs */}
               <DestinationCard />
-              
-              {/* Ride Options */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Choose Your Ride</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Tabs
-                    value={rideType}
-                    onValueChange={setRideType}
-                    className="w-full"
-                  >
-                    <TabsList className="grid w-full grid-cols-4">
-                      {rideOptions.map((option) => (
-                        <TabsTrigger
-                          key={option.id}
-                          value={option.id}
-                          className="text-xs"
-                        >
-                          {option.name}
-                        </TabsTrigger>
-                      ))}
-                    </TabsList>
-                    {rideOptions.map((option) => (
-                      <TabsContent
-                        key={option.id}
-                        value={option.id}
-                        className="mt-4"
-                      >
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center space-x-4">
-                            <div
-                              className={`w-12 h-12 ${option.color} rounded-lg flex items-center justify-center`}
-                            >
-                              <option.icon className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                              <div className="font-semibold">{option.name}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {option.description}
-                              </div>
-                              <div className="flex items-center space-x-4 text-xs text-muted-foreground mt-1">
-                                <div className="flex items-center space-x-1">
-                                  <Timer className="w-3 h-3" />
-                                  <span>{option.eta}</span>
-                                </div>
-                                <div className="flex items-center space-x-1">
-                                  <Users className="w-3 h-3" />
-                                  <span>{option.capacity} seats</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-semibold text-lg">
-                              {option.price}
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              estimated
-                            </div>
-                          </div>
-                        </div>
-                      </TabsContent>
-                    ))}
-                  </Tabs>
-                </CardContent>
-              </Card>
-              
-              {/* Payment Method */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Payment Method</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Select
-                    value={paymentMethod}
-                    onValueChange={setPaymentMethod}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {paymentMethods.map((method) => (
-                        <SelectItem key={method.id} value={method.id}>
-                          <div className="flex items-center space-x-2">
-                            <method.icon className="w-4 h-4" />
-                            <span>{method.name}</span>
-                            {method.last4 && (
-                              <span className="text-muted-foreground">
-                                •••• {method.last4}
-                              </span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </CardContent>
-              </Card>
             </div>
-            
+
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Trip Summary */}
@@ -238,12 +93,12 @@ export default function RequestRidePage() {
                       <div className="flex-1">
                         <div className="text-sm font-medium">Destination</div>
                         <div className="text-xs text-muted-foreground">
-                          {shortenAddress(destination)}
+                          {shortenAddress(destinationLocation)}
                         </div>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t pt-4 space-y-3">
                     <div className="flex justify-between text-sm">
                       <span>Base fare</span>
@@ -251,11 +106,15 @@ export default function RequestRidePage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Distance</span>
-                      <span>{distance ? `${distance.toFixed(1)} mi` : "0.0 mi"}</span>
+                      <span>
+                        {distance ? `${distance.toFixed(1)} mi` : "0.0 mi"}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Time</span>
-                      <span>{estimatedTime ? `${estimatedTime} min` : "0 min"}</span>
+                      <span>
+                        {estimatedTime ? `${estimatedTime} min` : "0 min"}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Service fee</span>
@@ -266,57 +125,21 @@ export default function RequestRidePage() {
                       <span>{price ? `$${price.toFixed(2)}` : "$0.00"}</span>
                     </div>
                   </div>
-                  
-                  <Button className="w-full" size="lg" disabled={!destination}>
+
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    disabled={!destinationLocation}
+                    onClick={handleRideRequest}
+                  >
                     Request Ride
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
-                  {!destination && (
+                  {!destinationLocation && (
                     <p className="text-xs text-muted-foreground text-center">
                       Please enter a destination to continue
                     </p>
                   )}
-                </CardContent>
-              </Card>
-              
-              {/* Safety Features */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Shield className="w-5 h-5" />
-                    <span>Safety Features</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Share trip status</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Emergency contacts</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>24/7 support</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Driver verification</span>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Promo Code */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Promo Code</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex space-x-2">
-                    <Input placeholder="Enter code" className="flex-1" />
-                    <Button variant="outline">Apply</Button>
-                  </div>
                 </CardContent>
               </Card>
             </div>
