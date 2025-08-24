@@ -6,16 +6,16 @@ export type IRideStatus =
   | "REJECTED"
   | "CANCELLED";
 
-export interface ILocation {
-  address: string;
-  latitude?: number;
-  longitude?: number;
-}
-
 export interface IRide {
-  pickupLocation: Location;
-  destinationLocation: Location;
+  _id: string;
+  pickupLocation: string;
+  destinationLocation: string;
   distance?: number;
+  status: IRideStatus;
+  createdAt: string;
+  updatedAt: string;
+  fare: number
+  driver: string
 }
 
 export interface IRequestRideBody {

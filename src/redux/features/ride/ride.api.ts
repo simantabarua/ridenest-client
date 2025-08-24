@@ -11,25 +11,28 @@ export const rideApi = baseApi.injectEndpoints({
         data,
       }),
     }),
-    getMyRides: builder.query<IRide[], void>({
+    getMyRides: builder.query({
       query: () => ({
         url: "/rides/my",
         method: "GET",
       }),
     }),
-    getAllRides: builder.query<IRide[], void>({
+    getAllRides: builder.query({
       query: () => ({
         url: "/rides",
         method: "GET",
       }),
     }),
-    getRideById: builder.query<IRide, string>({
+    getRideById: builder.query({
       query: (rideId) => ({
         url: `/rides/${rideId}`,
         method: "GET",
       }),
     }),
-    updateRideStatus: builder.mutation<IRide, { rideId: string; status: IRideStatus }>({
+    updateRideStatus: builder.mutation<
+      IRide,
+      { rideId: string; status: IRideStatus }
+    >({
       query: ({ rideId, status }) => ({
         url: `/rides/${rideId}/${status.toLowerCase()}`,
         method: "PATCH",

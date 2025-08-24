@@ -22,8 +22,8 @@ export default function DashboardLayout() {
           <UserDropdown />
         </header>
 
-        <main className="flex flex-1 flex-col p-4 bg-muted/30">
-          <div className="flex-1 rounded-xl bg-background p-6 shadow-sm">
+        <main className="flex flex-1 flex-col  bg-muted/30">
+          <div className="flex-1 rounded-xl bg-background md:p-6 shadow-sm">
             <Outlet />
           </div>
         </main>
