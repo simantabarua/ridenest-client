@@ -1,33 +1,32 @@
-
 import { AppSidebar } from "@/components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { UserDropdown } from "@/components/user-drop-down";
 import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
-  
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
+        <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
+          <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            <h1 className="text-lg font-semibold tracking-tight hidden sm:block">
+              Dashboard
+            </h1>
           </div>
+          <UserDropdown />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+
+        <main className="flex flex-1 flex-col p-4 bg-muted/30">
+          <div className="flex-1 rounded-xl bg-background p-6 shadow-sm">
             <Outlet />
           </div>
-        </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

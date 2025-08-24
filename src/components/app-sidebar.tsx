@@ -36,6 +36,7 @@ const navigationConfig = {
     { href: "/rider/ride-history", label: "Ride History", icon: History },
     { href: "/rider/profile", label: "Profile", icon: User },
     { href: "/rider/safety", label: "Safety", icon: Shield },
+    { href: "/rider/tracking", label: "Tracking", icon: MapPin },
   ] as NavLink[],
   driver: [
     { href: "/driver/dashboard", label: "Dashboard", icon: Home },

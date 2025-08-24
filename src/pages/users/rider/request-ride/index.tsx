@@ -1,95 +1,85 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent,  CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  MapPin, 
-  Navigation, 
-  DollarSign, 
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  MapPin,
+  Navigation,
+  DollarSign,
   Car,
   Users,
   CreditCard,
-  Calendar,
   X,
   ArrowRight,
   Shield,
-  Timer
-} from 'lucide-react'
+  Timer,
+} from "lucide-react";
 
 export default function RequestRidePage() {
-  const [rideType, setRideType] = useState('standard')
-  const [paymentMethod, setPaymentMethod] = useState('card')
-  const [scheduleLater, setScheduleLater] = useState(false)
-  const [pickupLocation, setPickupLocation] = useState('Current Location')
-  const [destination, setDestination] = useState('')
+  const [rideType, setRideType] = useState("standard");
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [pickupLocation, setPickupLocation] = useState("Current Location");
+  const [destination, setDestination] = useState("");
 
   const rideOptions = [
     {
-      id: 'standard',
-      name: 'Standard',
-      description: 'Everyday rides',
-      price: '$12-15',
-      eta: '3 min',
-      capacity: '4',
+      id: "standard",
+      name: "Standard",
+      description: "Everyday rides",
+      price: "$12-15",
+      eta: "3 min",
+      capacity: "4",
       icon: Car,
-      color: 'bg-blue-500'
+      color: "bg-blue-500",
     },
     {
-      id: 'comfort',
-      name: 'Comfort',
-      description: 'More space and comfort',
-      price: '$18-22',
-      eta: '5 min',
-      capacity: '4',
+      id: "comfort",
+      name: "Comfort",
+      description: "More space and comfort",
+      price: "$18-22",
+      eta: "5 min",
+      capacity: "4",
       icon: Car,
-      color: 'bg-green-500'
+      color: "bg-green-500",
     },
     {
-      id: 'premium',
-      name: 'Premium',
-      description: 'Luxury vehicles',
-      price: '$25-30',
-      eta: '7 min',
-      capacity: '4',
+      id: "premium",
+      name: "Premium",
+      description: "Luxury vehicles",
+      price: "$25-30",
+      eta: "7 min",
+      capacity: "4",
       icon: Car,
-      color: 'bg-purple-500'
+      color: "bg-purple-500",
     },
     {
-      id: 'xl',
-      name: 'XL',
-      description: 'For larger groups',
-      price: '$20-25',
-      eta: '8 min',
-      capacity: '6',
+      id: "xl",
+      name: "XL",
+      description: "For larger groups",
+      price: "$20-25",
+      eta: "8 min",
+      capacity: "6",
       icon: Users,
-      color: 'bg-orange-500'
-    }
-  ]
+      color: "bg-orange-500",
+    },
+  ];
 
   const paymentMethods = [
-    { id: 'card', name: 'Credit Card', icon: CreditCard, last4: '4242' },
-    { id: 'paypal', name: 'PayPal', icon: CreditCard, last4: '' },
-    { id: 'cash', name: 'Cash', icon: DollarSign, last4: '' }
-  ]
-
-  const savedPlaces = [
-    { name: 'Home', address: '123 Main St, City, State', icon: '🏠' },
-    { name: 'Work', address: '456 Business Ave, City, State', icon: '🏢' },
-    { name: 'Gym', address: '789 Fitness St, City, State', icon: '💪' },
-    { name: 'Airport', address: 'Airport Terminal, City, State', icon: '✈️' }
-  ]
-
-  const recentDestinations = [
-    'Downtown Office',
-    'Shopping Mall',
-    'Central Park',
-    'Train Station'
-  ]
+    { id: "card", name: "Credit Card", icon: CreditCard, last4: "4242" },
+    { id: "paypal", name: "PayPal", icon: CreditCard, last4: "" },
+    { id: "cash", name: "Cash", icon: DollarSign, last4: "" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,84 +130,13 @@ export default function RequestRidePage() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                          onClick={() => setDestination('')}
+                          onClick={() => setDestination("")}
                         >
                           <X className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
                   </div>
-
-                  {/* Schedule Toggle */}
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="schedule"
-                      checked={scheduleLater}
-                      onChange={(e) => setScheduleLater(e.target.checked)}
-                      className="rounded"
-                    />
-                    <Label htmlFor="schedule" className="flex items-center space-x-2">
-                      <Calendar className="w-4 h-4" />
-                      <span>Schedule for later</span>
-                    </Label>
-                  </div>
-
-                  {scheduleLater && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Date</Label>
-                        <Input type="date" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Time</Label>
-                        <Input type="time" />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Saved Places */}
-                  <div className="space-y-2">
-                    <Label>Saved Places</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {savedPlaces.map((place, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          className="justify-start h-auto p-3"
-                          onClick={() => setDestination(place.address)}
-                        >
-                          <span className="mr-2">{place.icon}</span>
-                          <div className="text-left">
-                            <div className="font-medium text-sm">{place.name}</div>
-                            <div className="text-xs text-muted-foreground truncate">
-                              {place.address}
-                            </div>
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Recent Destinations */}
-                  {recentDestinations.length > 0 && (
-                    <div className="space-y-2">
-                      <Label>Recent Destinations</Label>
-                      <div className="flex flex-wrap gap-2">
-                        {recentDestinations.map((dest, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setDestination(dest)}
-                          >
-                            {dest}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
@@ -227,19 +146,33 @@ export default function RequestRidePage() {
                   <CardTitle>Choose Your Ride</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Tabs value={rideType} onValueChange={setRideType} className="w-full">
+                  <Tabs
+                    value={rideType}
+                    onValueChange={setRideType}
+                    className="w-full"
+                  >
                     <TabsList className="grid w-full grid-cols-4">
                       {rideOptions.map((option) => (
-                        <TabsTrigger key={option.id} value={option.id} className="text-xs">
+                        <TabsTrigger
+                          key={option.id}
+                          value={option.id}
+                          className="text-xs"
+                        >
                           {option.name}
                         </TabsTrigger>
                       ))}
                     </TabsList>
                     {rideOptions.map((option) => (
-                      <TabsContent key={option.id} value={option.id} className="mt-4">
+                      <TabsContent
+                        key={option.id}
+                        value={option.id}
+                        className="mt-4"
+                      >
                         <div className="flex items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center space-x-4">
-                            <div className={`w-12 h-12 ${option.color} rounded-lg flex items-center justify-center`}>
+                            <div
+                              className={`w-12 h-12 ${option.color} rounded-lg flex items-center justify-center`}
+                            >
                               <option.icon className="w-6 h-6 text-white" />
                             </div>
                             <div>
@@ -260,8 +193,12 @@ export default function RequestRidePage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-semibold text-lg">{option.price}</div>
-                            <div className="text-xs text-muted-foreground">estimated</div>
+                            <div className="font-semibold text-lg">
+                              {option.price}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              estimated
+                            </div>
                           </div>
                         </div>
                       </TabsContent>
@@ -276,7 +213,10 @@ export default function RequestRidePage() {
                   <CardTitle>Payment Method</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                  <Select
+                    value={paymentMethod}
+                    onValueChange={setPaymentMethod}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
                     </SelectTrigger>
@@ -287,7 +227,9 @@ export default function RequestRidePage() {
                             <method.icon className="w-4 h-4" />
                             <span>{method.name}</span>
                             {method.last4 && (
-                              <span className="text-muted-foreground">•••• {method.last4}</span>
+                              <span className="text-muted-foreground">
+                                •••• {method.last4}
+                              </span>
                             )}
                           </div>
                         </SelectItem>
@@ -321,7 +263,7 @@ export default function RequestRidePage() {
                       <div className="flex-1">
                         <div className="text-sm font-medium">Destination</div>
                         <div className="text-xs text-muted-foreground">
-                          {destination || 'Not selected'}
+                          {destination || "Not selected"}
                         </div>
                       </div>
                     </div>
@@ -350,12 +292,8 @@ export default function RequestRidePage() {
                     </div>
                   </div>
 
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    disabled={!destination}
-                  >
-                    {scheduleLater ? 'Schedule Ride' : 'Request Ride'}
+                  <Button className="w-full" size="lg" disabled={!destination}>
+                    Request Ride
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
 
@@ -412,5 +350,5 @@ export default function RequestRidePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

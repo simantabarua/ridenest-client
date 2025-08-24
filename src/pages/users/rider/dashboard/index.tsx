@@ -12,13 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import {
   Activity,
   ArrowRight,
-  Bell,
   Calendar,
   Car,
   Clock,
   CreditCard,
   DollarSign,
-  MapPin,
   Shield,
   Star,
   TrendingUp,
@@ -50,14 +48,6 @@ export default function RiderDashboard() {
       icon: Star,
       color: "text-yellow-600",
       bgColor: "bg-yellow-50",
-    },
-    {
-      title: "Saved Places",
-      value: "8",
-      change: "+2",
-      icon: MapPin,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
     },
   ];
 
@@ -125,30 +115,13 @@ export default function RiderDashboard() {
     },
   ];
 
-  const savedPlaces = [
-    { name: "Home", address: "123 Main St, City, State", icon: "🏠" },
-    { name: "Work", address: "456 Business Ave, City, State", icon: "🏢" },
-    { name: "Gym", address: "789 Fitness St, City, State", icon: "💪" },
-    { name: "Airport", address: "Airport Terminal, City, State", icon: "✈️" },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Welcome back, Alex!</h1>
-            <p className="text-muted-foreground">Here's your ride overview</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" size="icon">
-              <Bell className="w-4 h-4" />
-            </Button>
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold">A</span>
-            </div>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Welcome back, Alex!</h1>
+          <p className="text-muted-foreground">Here's your ride overview</p>
         </div>
 
         {/* Stats Grid */}
@@ -268,35 +241,6 @@ export default function RiderDashboard() {
 
           {/* Sidebar */}
           <div className="space-y-8">
-            {/* Saved Places */}
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <MapPin className="w-5 h-5" />
-                  <span>Saved Places</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {savedPlaces.map((place, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
-                  >
-                    <span className="text-xl">{place.icon}</span>
-                    <div className="flex-1">
-                      <div className="font-medium text-sm">{place.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {place.address}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <Button variant="outline" size="sm" className="w-full">
-                  Add New Place
-                </Button>
-              </CardContent>
-            </Card>
-
             {/* Safety Features */}
             <Card className="border-0 shadow-lg">
               <CardHeader>

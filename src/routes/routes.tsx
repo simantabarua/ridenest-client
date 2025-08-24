@@ -21,8 +21,6 @@ const Login = lazy(() => import("@/pages/auth/login"));
 const RegisterPage = lazy(() => import("@/pages/auth/register"));
 const OTPVerifyPage = lazy(() => import("@/pages/auth/otp"));
 
-
-
 // Dashboard pages
 const AdminDashboard = lazy(() => import("@/pages/users/admin/dashboard"));
 const DriverDashboard = lazy(() => import("@/pages/users/driver/dashboard"));
@@ -33,19 +31,30 @@ const RequestRide = lazy(() => import("@/pages/users/rider/request-ride"));
 const RideHistoryRider = lazy(() => import("@/pages/users/rider/ride-history"));
 const SafetyRider = lazy(() => import("@/pages/users/rider/safety"));
 const ProfileRider = lazy(() => import("@/pages/users/rider/profile"));
+const TrackingPage = lazy(() => import("@/pages/users/rider/tracking"));
 
 // Driver pages
-const IncomingRequests = lazy(() => import("@/pages/users/driver/incoming-requests"));
+const IncomingRequests = lazy(
+  () => import("@/pages/users/driver/incoming-requests")
+);
 const ActiveRide = lazy(() => import("@/pages/users/driver/active-ride"));
 const Earnings = lazy(() => import("@/pages/users/driver/earnings"));
-const RideHistoryDriver = lazy(() => import("@/pages/users/driver/ride-history"));
+const RideHistoryDriver = lazy(
+  () => import("@/pages/users/driver/ride-history")
+);
 const SafetyDriver = lazy(() => import("@/pages/users/driver/safety"));
 const ProfileDriver = lazy(() => import("@/pages/users/driver/profile"));
 
 // Admin pages
-const UserManagement = lazy(() => import("@/pages/users/admin/user-management"));
-const DriverManagement = lazy(() => import("@/pages/users/admin/driver-management"));
-const RideManagement = lazy(() => import("@/pages/users/admin/ride-management"));
+const UserManagement = lazy(
+  () => import("@/pages/users/admin/user-management")
+);
+const DriverManagement = lazy(
+  () => import("@/pages/users/admin/driver-management")
+);
+const RideManagement = lazy(
+  () => import("@/pages/users/admin/ride-management")
+);
 const Analytics = lazy(() => import("@/pages/users/admin/analytics"));
 const ProfileAdmin = lazy(() => import("@/pages/users/admin/profile"));
 
@@ -106,6 +115,7 @@ export const router = createBrowserRouter([
       { path: "ride-history", Component: RideHistoryRider },
       { path: "profile", Component: ProfileRider },
       { path: "safety", Component: SafetyRider },
+      { path: "tracking", Component: TrackingPage },
     ],
   },
 
