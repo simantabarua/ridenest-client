@@ -198,7 +198,7 @@ export default function FAQPage() {
       </section>
 
       {/* Search Section */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <div className="relative">
@@ -236,7 +236,7 @@ export default function FAQPage() {
 
       {/* Popular Questions */}
       {searchQuery === "" && activeCategory === "all" && (
-        <section className="py-12 bg-muted/30">
+        <section className="py-12 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-8">
               <Badge variant="secondary">Popular Questions</Badge>

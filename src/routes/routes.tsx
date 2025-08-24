@@ -21,33 +21,33 @@ const Login = lazy(() => import("@/pages/auth/login"));
 const RegisterPage = lazy(() => import("@/pages/auth/register"));
 const OTPVerifyPage = lazy(() => import("@/pages/auth/otp"));
 
-// Profile pages
-const ProfileAdmin = lazy(() => import("@/pages/users/admin"));
-const ProfileDriver = lazy(() => import("@/pages/users/driver"));
-const ProfileRider = lazy(() => import("@/pages/users/rider"));
+
 
 // Dashboard pages
-export const AdminDashboard = () => <h1>Admin Dashboard</h1>;
-export const DriverDashboard = () => <h1>Driver Dashboard</h1>;
-export const RiderDashboard = () => <h1>Rider Dashboard</h1>;
+const AdminDashboard = lazy(() => import("@/pages/users/admin/dashboard"));
+const DriverDashboard = lazy(() => import("@/pages/users/driver/dashboard"));
+const RiderDashboard = lazy(() => import("@/pages/users/rider/dashboard"));
 
 // Rider pages
-export const RequestRide = () => <h1>Request Ride</h1>;
-export const RideHistoryRider = () => <h1>Ride History (Rider)</h1>;
-export const SafetyRider = () => <h1>Safety (Rider)</h1>;
+const RequestRide = lazy(() => import("@/pages/users/rider/request-ride"));
+const RideHistoryRider = lazy(() => import("@/pages/users/rider/ride-history"));
+const SafetyRider = lazy(() => import("@/pages/users/rider/safety"));
+const ProfileRider = lazy(() => import("@/pages/users/rider/profile"));
 
 // Driver pages
-export const IncomingRequests = () => <h1>Incoming Requests</h1>;
-export const ActiveRide = () => <h1>Active Ride</h1>;
-export const Earnings = () => <h1>Earnings</h1>;
-export const RideHistoryDriver = () => <h1>Ride History (Driver)</h1>;
-export const SafetyDriver = () => <h1>Safety (Driver)</h1>;
+const IncomingRequests = lazy(() => import("@/pages/users/driver/incoming-requests"));
+const ActiveRide = lazy(() => import("@/pages/users/driver/active-ride"));
+const Earnings = lazy(() => import("@/pages/users/driver/earnings"));
+const RideHistoryDriver = lazy(() => import("@/pages/users/driver/ride-history"));
+const SafetyDriver = lazy(() => import("@/pages/users/driver/safety"));
+const ProfileDriver = lazy(() => import("@/pages/users/driver/profile"));
 
 // Admin pages
-export const UserManagement = () => <h1>User Management</h1>;
-export const DriverManagement = () => <h1>Driver Management</h1>;
-export const RideManagement = () => <h1>Ride Management</h1>;
-export const Analytics = () => <h1>Analytics</h1>;
+const UserManagement = lazy(() => import("@/pages/users/admin/user-management"));
+const DriverManagement = lazy(() => import("@/pages/users/admin/driver-management"));
+const RideManagement = lazy(() => import("@/pages/users/admin/ride-management"));
+const Analytics = lazy(() => import("@/pages/users/admin/analytics"));
+const ProfileAdmin = lazy(() => import("@/pages/users/admin/profile"));
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const router = createBrowserRouter([
