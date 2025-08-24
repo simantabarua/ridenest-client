@@ -1,10 +1,8 @@
 "use client";
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,23 +12,43 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  MapPin,
-  Navigation,
   DollarSign,
   Car,
   Users,
   CreditCard,
-  X,
   ArrowRight,
   Shield,
   Timer,
 } from "lucide-react";
+import DestinationCard from "@/pages/public/home/components/DestinationCard";
+import { useAppSelector } from "@/redux/hooks";
+
+// Helper function to shorten address
+const shortenAddress = (address: string | null, maxLength = 30): string => {
+  if (!address) return "Not selected";
+  
+  // Split address by commas to get the main part
+  const parts = address.split(",");
+  const mainPart = parts[0].trim();
+  
+  // Truncate if too long
+  if (mainPart.length > maxLength) {
+    return `${mainPart.substring(0, maxLength)}...`;
+  }
+  
+  return mainPart;
+};
 
 export default function RequestRidePage() {
   const [rideType, setRideType] = useState("standard");
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [pickupLocation, setPickupLocation] = useState("Current Location");
-  const [destination, setDestination] = useState("");
+  
+  // Get trip data from Redux store
+  const pickupLocation = useAppSelector((state) => state.trip.pickup);
+  const destination = useAppSelector((state) => state.trip.destination);
+  const distance = useAppSelector((state) => state.trip.distance);
+  const estimatedTime = useAppSelector((state) => state.trip.estimatedTime);
+  const price = useAppSelector((state) => state.trip.price);
 
   const rideOptions = [
     {
@@ -90,56 +108,13 @@ export default function RequestRidePage() {
             <h1 className="text-3xl font-bold mb-2">Request a Ride</h1>
             <p className="text-muted-foreground">Where would you like to go?</p>
           </div>
-
+          
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Booking Form */}
             <div className="lg:col-span-2 space-y-6">
               {/* Location Inputs */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Trip Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Pickup Location */}
-                  <div className="space-y-2">
-                    <Label>Pickup Location</Label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                      <Input
-                        value={pickupLocation}
-                        onChange={(e) => setPickupLocation(e.target.value)}
-                        className="pl-10"
-                        placeholder="Enter pickup location"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Destination */}
-                  <div className="space-y-2">
-                    <Label>Destination</Label>
-                    <div className="relative">
-                      <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                      <Input
-                        value={destination}
-                        onChange={(e) => setDestination(e.target.value)}
-                        className="pl-10"
-                        placeholder="Where to?"
-                      />
-                      {destination && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                          onClick={() => setDestination("")}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
+              <DestinationCard />
+              
               {/* Ride Options */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
@@ -206,7 +181,7 @@ export default function RequestRidePage() {
                   </Tabs>
                 </CardContent>
               </Card>
-
+              
               {/* Payment Method */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
@@ -239,7 +214,7 @@ export default function RequestRidePage() {
                 </CardContent>
               </Card>
             </div>
-
+            
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Trip Summary */}
@@ -254,7 +229,7 @@ export default function RequestRidePage() {
                       <div className="flex-1">
                         <div className="text-sm font-medium">Pickup</div>
                         <div className="text-xs text-muted-foreground">
-                          {pickupLocation}
+                          {shortenAddress(pickupLocation)}
                         </div>
                       </div>
                     </div>
@@ -263,24 +238,24 @@ export default function RequestRidePage() {
                       <div className="flex-1">
                         <div className="text-sm font-medium">Destination</div>
                         <div className="text-xs text-muted-foreground">
-                          {destination || "Not selected"}
+                          {shortenAddress(destination)}
                         </div>
                       </div>
                     </div>
                   </div>
-
+                  
                   <div className="border-t pt-4 space-y-3">
                     <div className="flex justify-between text-sm">
                       <span>Base fare</span>
                       <span>$8.00</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Distance (5.2 mi)</span>
-                      <span>$7.80</span>
+                      <span>Distance</span>
+                      <span>{distance ? `${distance.toFixed(1)} mi` : "0.0 mi"}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Time (12 min)</span>
-                      <span>$3.60</span>
+                      <span>Time</span>
+                      <span>{estimatedTime ? `${estimatedTime} min` : "0 min"}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Service fee</span>
@@ -288,15 +263,14 @@ export default function RequestRidePage() {
                     </div>
                     <div className="border-t pt-3 flex justify-between font-semibold">
                       <span>Total</span>
-                      <span>$20.90</span>
+                      <span>{price ? `$${price.toFixed(2)}` : "$0.00"}</span>
                     </div>
                   </div>
-
+                  
                   <Button className="w-full" size="lg" disabled={!destination}>
                     Request Ride
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
-
                   {!destination && (
                     <p className="text-xs text-muted-foreground text-center">
                       Please enter a destination to continue
@@ -304,7 +278,7 @@ export default function RequestRidePage() {
                   )}
                 </CardContent>
               </Card>
-
+              
               {/* Safety Features */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
@@ -332,7 +306,7 @@ export default function RequestRidePage() {
                   </div>
                 </CardContent>
               </Card>
-
+              
               {/* Promo Code */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
