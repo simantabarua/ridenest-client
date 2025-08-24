@@ -16,7 +16,6 @@ import {
   Home,
   Car,
   User,
-  Shield,
   MapPin,
   History,
   DollarSign,
@@ -36,7 +35,6 @@ const navigationConfig = {
     { href: "/rider/request-ride", label: "Request Ride", icon: Car },
     { href: "/rider/ride-history", label: "Ride History", icon: History },
     { href: "/rider/profile", label: "Profile", icon: User },
-    { href: "/rider/safety", label: "Safety", icon: Shield },
     { href: "/rider/tracking", label: "Tracking", icon: MapPin },
     { href: "/rider/ride/:rideId", label: "Ride Details", icon: Info },
   ] as NavLink[],
@@ -47,7 +45,6 @@ const navigationConfig = {
     { href: "/driver/earnings", label: "Earnings", icon: DollarSign },
     { href: "/driver/ride-history", label: "History", icon: History },
     { href: "/driver/profile", label: "Profile", icon: User },
-    { href: "/driver/safety", label: "Safety", icon: Shield },
   ] as NavLink[],
   admin: [
     { href: "/admin/dashboard", label: "Dashboard", icon: Home },

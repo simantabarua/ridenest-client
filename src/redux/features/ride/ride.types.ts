@@ -11,6 +11,7 @@ export interface IRide {
   pickupLocation: string;
   destinationLocation: string;
   distance?: number;
+  rider: string;
   status: IRideStatus;
   createdAt: string;
   updatedAt: string;
@@ -24,6 +25,7 @@ export interface IRide {
   rating?: number;
   fare: number;
   driver: string;
+  duration: number;
 }
 
 export interface IRequestRideBody {
