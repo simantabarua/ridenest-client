@@ -29,10 +29,9 @@ const RiderDashboard = lazy(() => import("@/pages/users/rider/dashboard"));
 // Rider pages
 const RequestRide = lazy(() => import("@/pages/users/rider/request-ride"));
 const RideHistoryRider = lazy(() => import("@/pages/users/rider/ride-history"));
-const SafetyRider = lazy(() => import("@/pages/users/rider/safety"));
 const ProfileRider = lazy(() => import("@/pages/users/rider/profile"));
 const TrackingPage = lazy(() => import("@/pages/users/rider/tracking"));
-
+const RideDetails = lazy(() => import("@/pages/users/rider/ride-details"));
 // Driver pages
 const IncomingRequests = lazy(
   () => import("@/pages/users/driver/incoming-requests")
@@ -42,7 +41,6 @@ const Earnings = lazy(() => import("@/pages/users/driver/earnings"));
 const RideHistoryDriver = lazy(
   () => import("@/pages/users/driver/ride-history")
 );
-const SafetyDriver = lazy(() => import("@/pages/users/driver/safety"));
 const ProfileDriver = lazy(() => import("@/pages/users/driver/profile"));
 
 // Admin pages
@@ -58,7 +56,6 @@ const RideManagement = lazy(
 const Analytics = lazy(() => import("@/pages/users/admin/analytics"));
 const ProfileAdmin = lazy(() => import("@/pages/users/admin/profile"));
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -102,7 +99,6 @@ export const router = createBrowserRouter([
       { path: "earnings", Component: Earnings },
       { path: "ride-history", Component: RideHistoryDriver },
       { path: "profile", Component: ProfileDriver },
-      { path: "safety", Component: SafetyDriver },
     ],
   },
   {
@@ -114,8 +110,8 @@ export const router = createBrowserRouter([
       { path: "request-ride", Component: RequestRide },
       { path: "ride-history", Component: RideHistoryRider },
       { path: "profile", Component: ProfileRider },
-      { path: "safety", Component: SafetyRider },
       { path: "tracking", Component: TrackingPage },
+      { path: "ride/:rideId", Component: RideDetails },
     ],
   },
 

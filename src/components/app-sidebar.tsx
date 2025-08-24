@@ -22,6 +22,7 @@ import {
   DollarSign,
   Users,
   BarChart3,
+  Info,
 } from "lucide-react";
 type NavLink = {
   href: string;
@@ -37,6 +38,7 @@ const navigationConfig = {
     { href: "/rider/profile", label: "Profile", icon: User },
     { href: "/rider/safety", label: "Safety", icon: Shield },
     { href: "/rider/tracking", label: "Tracking", icon: MapPin },
+    { href: "/rider/ride/:rideId", label: "Ride Details", icon: Info },
   ] as NavLink[],
   driver: [
     { href: "/driver/dashboard", label: "Dashboard", icon: Home },

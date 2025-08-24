@@ -15,6 +15,7 @@ import {
 import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
 import Loading from "@/components/loading";
 import type { IRide } from "@/redux/features/ride/ride.types";
+import { Link } from "react-router";
 
 export default function RideHistoryPage() {
   const { data: rides, isLoading } = useGetMyRidesQuery(undefined);
@@ -170,10 +171,12 @@ export default function RideHistoryPage() {
 
                     {/* Actions */}
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View
-                      </Button>
+                      <Link to={`/rider/ride/${ride._id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4 mr-2" />
+                          View
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>

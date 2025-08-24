@@ -14,8 +14,16 @@ export interface IRide {
   status: IRideStatus;
   createdAt: string;
   updatedAt: string;
-  fare: number
-  driver: string
+  acceptedAt?: string;
+  pickedUpAt?: string;
+  completedAt?: string;
+  cancelledAt?: string;
+  rejectedAt?: string;
+  inTransitAt?: string;
+  timestamps?: string[];
+  rating?: number;
+  fare: number;
+  driver: string;
 }
 
 export interface IRequestRideBody {
