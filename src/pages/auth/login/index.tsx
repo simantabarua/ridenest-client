@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -25,7 +25,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import {
+  useLoginMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
 import Loading from "@/components/loading";
 
 const loginSchema = z.object({
@@ -38,9 +41,16 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { data: user, isLoading: isUserLoading } = useUserInfoQuery(undefined);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -49,15 +59,15 @@ export default function Login() {
       rememberMe: false,
     },
   });
+
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    setIsLoading(true);
     setError("");
     const userInfo = {
       email: data.email,
       password: data.password,
     };
-
     try {
       const response = await login(userInfo).unwrap();
       if (response.success) {
@@ -68,9 +78,7 @@ export default function Login() {
       const errorData = err?.data || err?.error || err;
       const errorCode = errorData?.code || "UNKNOWN_ERROR";
       const message = errorData?.message || "Login failed. Please try again.";
-
       console.log("Error object:", err, "Parsed message:", message);
-
       switch (errorCode) {
         case "AUTH_INVALID_CREDENTIALS":
           setError("Email or password does not match");
@@ -85,12 +93,16 @@ export default function Login() {
           setError(message);
           break;
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isLoginLoading) {
+  // Show loading while checking user status or during login
+  if (isUserLoading || isLoginLoading) {
+    return <Loading fullScreen={true} variant="bars" />;
+  }
+
+  // Don't render the login form if user is logged in (will be redirected by useEffect)
+  if (user) {
     return <Loading fullScreen={true} variant="bars" />;
   }
 
@@ -136,7 +148,6 @@ export default function Login() {
                       {error}
                     </div>
                   )}
-
                   <FormField
                     control={form.control}
                     name="email"
@@ -161,7 +172,6 @@ export default function Login() {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="password"
@@ -205,7 +215,6 @@ export default function Login() {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="rememberMe"
@@ -226,13 +235,15 @@ export default function Login() {
                       </FormItem>
                     )}
                   />
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Signing in..." : "Sign in"}
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isLoginLoading}
+                  >
+                    {isLoginLoading ? "Signing in..." : "Sign in"}
                   </Button>
                 </form>
               </Form>
-
               <div className="mt-6">
                 <Separator className="my-4" />
                 <div className="text-center">

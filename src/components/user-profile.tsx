@@ -206,13 +206,6 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
               </div>
               <div className="text-xs text-muted-foreground">Rides</div>
             </div>
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <MapPin className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">
-                {formData.joinDate || "Jan 2023"}
-              </div>
-              <div className="text-xs text-muted-foreground">Member Since</div>
-            </div>
           </div>
         );
       case "admin":

@@ -1,64 +1,45 @@
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navigation, Users, CheckCircle, XCircle } from "lucide-react";
+import {
+  useGetRequestedRideQuery,
+  useUpdateRideStatusMutation,
+} from "@/redux/features/ride/ride.api";
+import type { IRide } from "@/redux/features/ride/ride.types";
+import { toast } from "sonner";
 
 export default function IncomingRequestsPage() {
-  const [requests, setRequests] = useState([
-    {
-      id: "RQ001",
-      passenger: {
-        name: "Sarah Johnson",
-        rating: 4.8,
-        trips: 23,
-      },
-      pickup: {
-        address: "123 Main St, Downtown",
-      },
-      destination: {
-        address: "456 Oak Ave, Residential Area",
-        distance: "5.2 mi",
-      },
-      trip: {
-        estimatedTime: "15 min",
-        estimatedDistance: "5.2 mi",
-        estimatedEarnings: "$18.50",
-      },
-      requestTime: "2 min ago",
-      status: "pending",
-      priority: "normal",
-    },
-    {
-      id: "RQ002",
-      passenger: {
-        name: "Mike Chen",
-        rating: 4.9,
-        trips: 45,
-      },
-      pickup: {
-        address: "Hotel Grand, City Center",
-      },
-      destination: {
-        address: "International Airport, Terminal 2",
-        distance: "12.5 mi",
-      },
-      trip: {
-        estimatedTime: "25 min",
-        estimatedDistance: "12.5 mi",
-        estimatedEarnings: "$35.00",
-      },
-      requestTime: "4 min ago",
-      status: "pending",
-      priority: "high",
-    },
-  ]);
+  const { data: rides } = useGetRequestedRideQuery(undefined);
+  const requests = rides?.data || [];
 
-  const handleAcceptRequest = (requestId: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId));
+  const [updateRideStatus, { isLoading }] = useUpdateRideStatusMutation();
+
+  const handleAcceptRequest = async (requestId: string) => {
+    try {
+      await updateRideStatus({
+        rideId: requestId,
+        status: "accept",
+      }).unwrap();
+
+      toast.success("Request Accepted");
+    } catch (error) {
+      toast.error("Failed to accept the request. Please try again.");
+      console.log(error);
+    }
   };
 
-  const handleDeclineRequest = (requestId: string) => {
-    setRequests(requests.filter((req) => req.id !== requestId));
+  const handleDeclineRequest = async (requestId: string) => {
+    try {
+      await updateRideStatus({
+        rideId: requestId,
+        status: "reject",
+      }).unwrap();
+
+      toast.success("Request Declined");
+    } catch (error) {
+      toast.error("Failed to decline the request. Please try again.");
+      console.log(error);
+    }
   };
 
   return (
@@ -74,15 +55,14 @@ export default function IncomingRequestsPage() {
           </div>
         </div>
 
-        {/* Requests List */}
         <div className="space-y-4">
           {requests.length > 0 ? (
-            requests.map((request) => (
-              <Card key={request.id}>
+            requests.map((request: IRide) => (
+              <Card key={request._id}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="text-xs text-muted-foreground">
-                      {request.requestTime}
+                      {request.timestamps.requestedAt}
                     </div>
                   </div>
 
@@ -94,7 +74,7 @@ export default function IncomingRequestsPage() {
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-sm">
-                          {request.passenger.name}
+                          {request.rider.name}
                         </h3>
                       </div>
                     </div>
@@ -107,7 +87,7 @@ export default function IncomingRequestsPage() {
                       <div className="flex-1">
                         <div className="text-xs font-medium">Pickup</div>
                         <div className="text-xs text-muted-foreground">
-                          {request.pickup.address}
+                          {request.pickupLocation}
                         </div>
                       </div>
                     </div>
@@ -116,11 +96,10 @@ export default function IncomingRequestsPage() {
                       <div className="flex-1">
                         <div className="text-xs font-medium">Destination</div>
                         <div className="text-xs text-muted-foreground">
-                          {request.destination.address}
+                          {request.destinationLocation}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {request.trip.estimatedTime} •{" "}
-                          {request.destination.distance}
+                          {request.distance}
                         </div>
                       </div>
                     </div>
@@ -130,26 +109,10 @@ export default function IncomingRequestsPage() {
                   <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t">
                     <div className="text-center">
                       <div className="text-sm font-bold text-primary">
-                        {request.trip.estimatedEarnings}
+                        {request.fare}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         Est. Earnings
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm font-bold text-primary">
-                        {request.trip.estimatedTime}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Duration
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm font-bold text-primary">
-                        {request.trip.estimatedDistance}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Distance
                       </div>
                     </div>
                   </div>
@@ -159,7 +122,8 @@ export default function IncomingRequestsPage() {
                     <Button
                       size="sm"
                       className="bg-green-600 hover:bg-green-700 h-8 text-xs"
-                      onClick={() => handleAcceptRequest(request.id)}
+                      onClick={() => handleAcceptRequest(request._id)}
+                      disabled={isLoading}
                     >
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Accept
@@ -168,7 +132,8 @@ export default function IncomingRequestsPage() {
                       variant="outline"
                       size="sm"
                       className="h-8 text-xs"
-                      onClick={() => handleDeclineRequest(request.id)}
+                      onClick={() => handleDeclineRequest(request._id)}
+                      disabled={isLoading}
                     >
                       <XCircle className="w-3 h-3 mr-1" />
                       Decline

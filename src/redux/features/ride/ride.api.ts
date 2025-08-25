@@ -1,5 +1,5 @@
 import { baseApi } from "@/redux/base.api";
-import type { IRequestRideBody, IRide, IRideStatus } from "./ride.types";
+import type { IRequestRideBody, IRide } from "./ride.types";
 import type { IResponse } from "@/types";
 
 export const rideApi = baseApi.injectEndpoints({
@@ -10,34 +10,59 @@ export const rideApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
+      invalidatesTags: ["Ride"],
     }),
     getMyRides: builder.query({
       query: () => ({
         url: "/rides/my",
         method: "GET",
       }),
+      providesTags: ["Ride"],
     }),
     getAllRides: builder.query({
       query: () => ({
         url: "/rides",
         method: "GET",
       }),
+      providesTags: ["Ride"],
+    }),
+    getActiveRides: builder.query({
+      query: () => ({
+        url: "rides/active",
+        method: "GET",
+      }),
+      providesTags: ["Ride"],
     }),
     getRideById: builder.query({
       query: (rideId) => ({
         url: `/rides/${rideId}`,
         method: "GET",
       }),
+      providesTags: (result, error, rideId) => [
+        { type: "Ride", id: rideId },
+        "Ride",
+      ],
+    }),
+    getRequestedRide: builder.query({
+      query: () => ({
+        url: "/rides/requested",
+        method: "GET",
+      }),
+      providesTags: ["Ride"],
     }),
     updateRideStatus: builder.mutation<
       IRide,
-      { rideId: string; status: IRideStatus }
+      { rideId: string; status: string }
     >({
       query: ({ rideId, status }) => ({
         url: `/rides/${rideId}/${status.toLowerCase()}`,
         method: "PATCH",
         data: { status },
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Ride", id: arg.rideId },
+        "Ride",
+      ],
     }),
     cancelRide: builder.mutation<IRide, { rideId: string; reason: string }>({
       query: ({ rideId, reason }) => ({
@@ -45,6 +70,10 @@ export const rideApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: { reason },
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Ride", id: arg.rideId },
+        "Ride",
+      ],
     }),
   }),
 });
@@ -54,6 +83,8 @@ export const {
   useGetMyRidesQuery,
   useGetAllRidesQuery,
   useGetRideByIdQuery,
+  useGetRequestedRideQuery,
   useUpdateRideStatusMutation,
   useCancelRideMutation,
+  useGetActiveRidesQuery,
 } = rideApi;

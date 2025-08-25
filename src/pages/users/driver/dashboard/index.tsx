@@ -15,10 +15,17 @@ import {
   Target,
   CheckCircle,
   Pause,
+  Calendar,
 } from "lucide-react";
+import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
+import getStatusColor from "@/utils/getStatus";
+import type { IRide } from "@/redux/features/ride/ride.types";
 
 export default function DriverDashboard() {
   const [isOnline, setIsOnline] = useState(false);
+
+  const { data: rides } = useGetMyRidesQuery(undefined);
+
   const stats = {
     todayEarnings: "$156.80",
     todayRides: 8,
@@ -29,28 +36,7 @@ export default function DriverDashboard() {
     rating: 4.9,
     totalRides: 1247,
   };
-  const recentRides = [
-    {
-      id: "DR001",
-      time: "2:30 PM",
-      from: "123 Main St",
-      to: "456 Oak Ave",
-      earnings: "$18.50",
-      duration: "15 min",
-      rating: 5,
-      passenger: "Alex Johnson",
-    },
-    {
-      id: "DR002",
-      time: "1:45 PM",
-      from: "Downtown Office",
-      to: "Airport",
-      earnings: "$32.00",
-      duration: "25 min",
-      rating: 5,
-      passenger: "Sarah Davis",
-    },
-  ];
+
   const upcomingRequests = [
     {
       id: "RQ001",
@@ -195,40 +181,75 @@ export default function DriverDashboard() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Recent Rides</h2>
-            <Button variant="outline" size="sm" className="text-xs h-7">
-              View All
-            </Button>
           </div>
-          <div className="space-y-3">
-            {recentRides.map((ride, index) => (
-              <Card key={index} className="border-0 shadow-sm">
-                <CardContent className="p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
-                        <Car className="w-4 h-4 text-primary" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium">
-                          {ride.from} → {ride.to}
-                        </div>
-                        <div className="flex items-center text-xs text-muted-foreground space-x-2">
-                          <span>{ride.time}</span>
-                          <span>•</span>
-                          <span>{ride.duration}</span>
-                          <span>•</span>
-                          <div className="flex items-center">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                            <span>{ride.rating}</span>
+          <div className="space-y-4">
+            {rides?.data?.map((ride: IRide) => (
+              <Card
+                key={ride._id}
+                className="border-0 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+                    {/* Left Content */}
+                    <div className="flex-1 space-y-4">
+                      {/* Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <Badge className={getStatusColor(ride.status)}>
+                            {ride.status.replace("_", " ").toUpperCase()}
+                          </Badge>
+                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                            <Calendar className="w-4 h-4" />
+                            <span>{ride.createdAt}</span>
+                            <span>•</span>
+                            <span>{ride.createdAt}</span>
                           </div>
                         </div>
                       </div>
+
+                      {/* Route */}
+                      <div className="space-y-2">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium">Pickup</div>
+                            <div className="text-sm text-muted-foreground">
+                              {ride.destinationLocation}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium">
+                              Destination
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {ride.pickupLocation}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-1">
+                          <MapPin className="w-4 h-4" />
+                          <span>{ride.distance}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="w-4 h-4" />
+                          <span>{ride.distance}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold">{ride.earnings}</div>
-                      <Badge variant="secondary" className="text-xs h-5">
-                        Completed
-                      </Badge>
+
+                    {/* Right Content */}
+                    <div className="flex items-center justify-between lg:justify-end lg:space-x-6 mt-4 lg:mt-0">
+                      {/* Price and Rating */}
+                      <div className="text-right space-y-2">
+                        <div className="text-xl font-bold">{ride.fare}tk</div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
