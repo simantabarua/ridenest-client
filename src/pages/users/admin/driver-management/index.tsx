@@ -1,25 +1,8 @@
-"use client";
-
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Search,
-  Filter,
   Download,
   Plus,
   Eye,
@@ -33,158 +16,16 @@ import {
   MapPin,
   Phone,
   Mail,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
+import {
+  useGetDriverStatsQuery,
+  useGetDriversQuery,
+} from "@/redux/features/admin/admin.api";
 
 export default function DriverManagementPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [verificationFilter, setVerificationFilter] = useState("all");
-
-  const drivers = [
-    {
-      id: 1,
-      name: "Mike Chen",
-      email: "mike.chen@email.com",
-      phone: "+1 (555) 987-6543",
-      status: "active",
-      verification: "verified",
-      joinDate: "2022-11-20",
-      lastActive: "2024-01-15",
-      vehicle: "Toyota Camry 2020",
-      licensePlate: "ABC 123",
-      totalRides: 1247,
-      totalEarnings: "$28,456.80",
-      rating: 4.9,
-      acceptanceRate: "85%",
-      location: "Los Angeles, CA",
-      onlineStatus: "online",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1 (555) 123-4567",
-      status: "active",
-      verification: "verified",
-      joinDate: "2023-02-15",
-      lastActive: "2024-01-14",
-      vehicle: "Honda Accord 2019",
-      licensePlate: "XYZ 789",
-      totalRides: 856,
-      totalEarnings: "$19,234.50",
-      rating: 4.8,
-      acceptanceRate: "92%",
-      location: "New York, NY",
-      onlineStatus: "offline",
-    },
-    {
-      id: 3,
-      name: "John Smith",
-      email: "john.smith@email.com",
-      phone: "+1 (555) 456-7890",
-      status: "pending",
-      verification: "pending",
-      joinDate: "2024-01-12",
-      lastActive: "2024-01-12",
-      vehicle: "Tesla Model 3 2023",
-      licensePlate: "TES 123",
-      totalRides: 0,
-      totalEarnings: "$0.00",
-      rating: null,
-      acceptanceRate: "0%",
-      location: "Houston, TX",
-      onlineStatus: "offline",
-    },
-    {
-      id: 4,
-      name: "Emily Davis",
-      email: "emily.davis@email.com",
-      phone: "+1 (555) 234-5678",
-      status: "suspended",
-      verification: "verified",
-      joinDate: "2023-05-10",
-      lastActive: "2024-01-10",
-      vehicle: "Nissan Altima 2021",
-      licensePlate: "DEF 456",
-      totalRides: 423,
-      totalEarnings: "$9,876.30",
-      rating: 4.6,
-      acceptanceRate: "78%",
-      location: "Chicago, IL",
-      onlineStatus: "offline",
-    },
-    {
-      id: 5,
-      name: "David Wilson",
-      email: "david.wilson@email.com",
-      phone: "+1 (555) 345-6789",
-      status: "active",
-      verification: "verified",
-      joinDate: "2023-08-20",
-      lastActive: "2024-01-15",
-      vehicle: "BMW 3 Series 2022",
-      licensePlate: "BMW 789",
-      totalRides: 634,
-      totalEarnings: "$15,432.10",
-      rating: 4.7,
-      acceptanceRate: "88%",
-      location: "Miami, FL",
-      onlineStatus: "online",
-    },
-  ];
-
-  const filteredDrivers = drivers.filter((driver) => {
-    const matchesSearch =
-      driver.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.phone.includes(searchTerm) ||
-      driver.vehicle.toLowerCase().includes(searchTerm);
-    const matchesStatus =
-      statusFilter === "all" || driver.status === statusFilter;
-    const matchesVerification =
-      verificationFilter === "all" ||
-      driver.verification === verificationFilter;
-    return matchesSearch && matchesStatus && matchesVerification;
-  });
-
-  const stats = {
-    totalDrivers: drivers.length,
-    activeDrivers: drivers.filter((d) => d.status === "active").length,
-    pendingDrivers: drivers.filter((d) => d.status === "pending").length,
-    suspendedDrivers: drivers.filter((d) => d.status === "suspended").length,
-    verifiedDrivers: drivers.filter((d) => d.verification === "verified")
-      .length,
-    onlineDrivers: drivers.filter((d) => d.onlineStatus === "online").length,
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "suspended":
-        return "bg-red-100 text-red-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getVerificationColor = (verification: string) => {
-    switch (verification) {
-      case "verified":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
+  const { data: stats } = useGetDriverStatsQuery(undefined);
+  const { data: driversData } = useGetDriversQuery(undefined);
+  const drivers = driversData?.data || [];
   const handleApproveDriver = (driverId: number) => {
     console.log("Approve driver:", driverId);
   };
@@ -234,7 +75,9 @@ export default function DriverManagementPage() {
               <Car className="w-4 h-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalDrivers}</div>
+              <div className="text-2xl font-bold">
+                {stats?.data?.totalDrivers || 0}
+              </div>
             </CardContent>
           </Card>
           <Card className="border-0 shadow-lg">
@@ -245,7 +88,9 @@ export default function DriverManagementPage() {
               <CheckCircle className="w-4 h-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.activeDrivers}</div>
+              <div className="text-2xl font-bold">
+                {stats?.data?.activeDrivers || 0}
+              </div>
             </CardContent>
           </Card>
           <Card className="border-0 shadow-lg">
@@ -256,7 +101,9 @@ export default function DriverManagementPage() {
               <AlertTriangle className="w-4 h-4 text-yellow-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.pendingDrivers}</div>
+              <div className="text-2xl font-bold">
+                {stats?.data?.pendingDrivers || 0}
+              </div>
             </CardContent>
           </Card>
           <Card className="border-0 shadow-lg">
@@ -267,74 +114,16 @@ export default function DriverManagementPage() {
               <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.onlineDrivers}</div>
+              <div className="text-2xl font-bold">
+                {stats?.data?.onlineDrivers || 0}
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card className="border-0 shadow-lg mb-6">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search by name, email, phone, or vehicle..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Status Filter */}
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="suspended">Suspended</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Verification Filter */}
-              <Select
-                value={verificationFilter}
-                onValueChange={setVerificationFilter}
-              >
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Filter by verification" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Verification</SelectItem>
-                  <SelectItem value="verified">Verified</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Clear Filters */}
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
-                  setVerificationFilter("all");
-                }}
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Clear
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Drivers List */}
         <div className="space-y-4">
-          {filteredDrivers.map((driver) => (
+          {drivers.map((driver) => (
             <Card
               key={driver.id}
               className="border-0 shadow-lg hover:shadow-xl transition-shadow"
@@ -346,10 +135,7 @@ export default function DriverManagementPage() {
                     <div className="relative">
                       <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-primary font-semibold">
-                          {driver.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                          {driver.name}
                         </span>
                       </div>
                       {driver.onlineStatus === "online" && (
@@ -359,14 +145,8 @@ export default function DriverManagementPage() {
                     <div>
                       <div className="flex items-center space-x-2 mb-1">
                         <h3 className="font-semibold">{driver.name}</h3>
-                        <Badge className={getStatusColor(driver.status)}>
-                          {driver.status}
-                        </Badge>
-                        <Badge
-                          className={getVerificationColor(driver.verification)}
-                        >
-                          {driver.verification}
-                        </Badge>
+                        <Badge>{driver.status}</Badge>
+                        <Badge>{driver.verification}</Badge>
                       </div>
                       <div className="text-sm text-muted-foreground space-y-1">
                         <div className="flex items-center space-x-1">
@@ -481,42 +261,11 @@ export default function DriverManagementPage() {
           ))}
         </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-8">
-          <div className="text-sm text-muted-foreground">
-            Showing {filteredDrivers.length} of {drivers.length} drivers
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" disabled>
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Empty State */}
-        {filteredDrivers.length === 0 && (
+        {drivers.length === 0 && (
           <Card className="border-0 shadow-lg text-center py-12">
             <CardContent>
               <Car className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No drivers found</h3>
-              <p className="text-muted-foreground mb-6">
-                Try adjusting your search or filters to find what you're looking
-                for.
-              </p>
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
-                  setVerificationFilter("all");
-                }}
-              >
-                Clear Filters
-              </Button>
             </CardContent>
           </Card>
         )}

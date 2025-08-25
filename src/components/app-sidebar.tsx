@@ -15,12 +15,10 @@ import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import {
   Home,
   Car,
-  User,
   MapPin,
   History,
   DollarSign,
   Users,
-  BarChart3,
   Info,
 } from "lucide-react";
 type NavLink = {
@@ -34,25 +32,23 @@ const navigationConfig = {
     { href: "/rider/dashboard", label: "Dashboard", icon: Home },
     { href: "/rider/request-ride", label: "Request Ride", icon: Car },
     { href: "/rider/ride-history", label: "Ride History", icon: History },
-    { href: "/rider/profile", label: "Profile", icon: User },
     { href: "/rider/tracking", label: "Tracking", icon: MapPin },
     { href: "/rider/ride/:rideId", label: "Ride Details", icon: Info },
   ] as NavLink[],
+
   driver: [
     { href: "/driver/dashboard", label: "Dashboard", icon: Home },
-    { href: "/driver/incoming-requests", label: "Requests", icon: Car },
+    { href: "/driver/incoming-requests", label: "Incoming Requests", icon: Car },
     { href: "/driver/active-ride", label: "Active Ride", icon: MapPin },
+    { href: "/driver/ride-history", label: "Ride History", icon: History },
     { href: "/driver/earnings", label: "Earnings", icon: DollarSign },
-    { href: "/driver/ride-history", label: "History", icon: History },
-    { href: "/driver/profile", label: "Profile", icon: User },
   ] as NavLink[],
+
   admin: [
     { href: "/admin/dashboard", label: "Dashboard", icon: Home },
     { href: "/admin/user-management", label: "User Management", icon: Users },
     { href: "/admin/driver-management", label: "Driver Management", icon: Car },
     { href: "/admin/ride-management", label: "Ride Management", icon: MapPin },
-    { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-    { href: "/admin/profile", label: "Profile", icon: User },
   ] as NavLink[],
 };
 

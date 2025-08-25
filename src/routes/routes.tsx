@@ -53,7 +53,6 @@ const DriverManagement = lazy(
 const RideManagement = lazy(
   () => import("@/pages/users/admin/ride-management")
 );
-const Analytics = lazy(() => import("@/pages/users/admin/analytics"));
 const ProfileAdmin = lazy(() => import("@/pages/users/admin/profile"));
 
 export const router = createBrowserRouter([
@@ -84,7 +83,6 @@ export const router = createBrowserRouter([
       { path: "user-management", Component: UserManagement },
       { path: "driver-management", Component: DriverManagement },
       { path: "ride-management", Component: RideManagement },
-      { path: "analytics", Component: Analytics },
       { path: "profile", Component: ProfileAdmin },
     ],
   },
