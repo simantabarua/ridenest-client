@@ -1,4 +1,3 @@
-"use client";
 
 import {
   Card,
@@ -8,14 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Star, User, Timer } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { Star, User, Timer,  } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function TrackingPage() {
-  const progress = 25;
-
-  const rideDetails = {
+  const rideDetails ={
     driver: {
       name: "John Smith",
       rating: 4.8,
@@ -43,69 +39,86 @@ export default function TrackingPage() {
         { id: 5, name: "Arrived at destination", completed: false, time: "" },
       ],
     },
+  }
+
+
+  const handleCancelRide = () => {
+    console.log("Cancelling ride");
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Trip Details */}
-      <div className="container mx-auto px-4 py-6">
-        <Card className="border-0 shadow-lg mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-xl">
-                  {rideDetails.status.current}
-                </CardTitle>
-                <CardDescription>
-                  Estimated arrival: {rideDetails.trip.eta}
-                </CardDescription>
-              </div>
-              <Badge variant="secondary" className="text-lg px-4 py-2">
-                {rideDetails.trip.estimatedTime}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={progress} className="mb-4" />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Pickup: {rideDetails.trip.pickup}</span>
-              <span>{rideDetails.trip.distance}</span>
-              <span>{rideDetails.trip.destination}</span>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
+          <div className="mb-4 md:mb-0">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
+              Track Your Ride
+            </h1>
+            <p className="text-muted-foreground text-sm md:text-base">
+              Monitor your driver's location and trip progress
+            </p>
+          </div>
+        </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Status Card */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="pb-3 md:pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-lg md:text-xl">
+                      {rideDetails.status.current}
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Estimated arrival: {rideDetails.trip.eta}
+                    </CardDescription>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="text-sm md:text-base px-3 py-1 self-start sm:self-auto"
+                  >
+                    {rideDetails.trip.estimatedTime}
+                  </Badge>
+                </div>
+              </CardHeader>
+            </Card>
+
             {/* Driver Info */}
             <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Your Driver</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg md:text-xl">
+                  Your Driver
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                    <User className="w-8 h-8 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <h3 className="text-lg font-semibold">
-                        {rideDetails.driver.name}
-                      </h3>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm">
-                          {rideDetails.driver.rating}
-                        </span>
-                      </div>
+              <CardContent className="pt-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-primary" />
                     </div>
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      <div>{rideDetails.driver.trips} trips</div>
-                      <div>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-semibold text-base md:text-lg">
+                          {rideDetails.driver.name}
+                        </h3>
+                        <div className="flex items-center space-x-1">
+                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xs md:text-sm">
+                            {rideDetails.driver.rating}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        {rideDetails.driver.trips} trips •{" "}
                         {rideDetails.driver.car} • {rideDetails.driver.color}
                       </div>
-                      <div>License: {rideDetails.driver.license}</div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        License: {rideDetails.driver.license}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -114,36 +127,38 @@ export default function TrackingPage() {
 
             {/* Trip Progress */}
             <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Trip Progress</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg md:text-xl">
+                  Trip Progress
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-0">
+                <div className="space-y-3 md:space-y-4">
                   {rideDetails.status.steps.map((step) => (
-                    <div key={step.id} className="flex items-center space-x-4">
+                    <div key={step.id} className="flex items-center">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        className={`w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 md:mr-4 ${
                           step.completed
                             ? "bg-green-500 text-white"
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {step.completed ? (
-                          <Timer className="w-4 h-4" />
+                          <Timer className="w-3 h-3 md:w-4 md:h-4" />
                         ) : (
-                          <span className="text-sm">{step.id}</span>
+                          <span className="text-xs md:text-sm">{step.id}</span>
                         )}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div
-                          className={`font-medium ${
+                          className={`text-sm md:text-base font-medium ${
                             step.completed ? "text-green-600" : ""
                           }`}
                         >
                           {step.name}
                         </div>
                         {step.time && (
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-xs md:text-sm text-muted-foreground">
                             {step.time}
                           </div>
                         )}
@@ -158,59 +173,83 @@ export default function TrackingPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Sidebar */}
+          <div className="space-y-6">
             {/* Trip Details */}
             <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Trip Details</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg md:text-xl">
+                  Trip Details
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-muted-foreground">
-                      Pickup
-                    </Label>
-                    <div className="flex items-start space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                      <span className="text-sm">{rideDetails.trip.pickup}</span>
+              <CardContent className="pt-0">
+                <div className="space-y-3 md:space-y-4">
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5 mr-2"></div>
+                    <div>
+                      <div className="text-xs md:text-sm font-medium text-muted-foreground">
+                        Pickup
+                      </div>
+                      <div className="text-sm md:text-base">
+                        {rideDetails.trip.pickup}
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-muted-foreground">
-                      Destination
-                    </Label>
-                    <div className="flex items-start space-x-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                      <span className="text-sm">
+                  <div className="flex items-start">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-1.5 mr-2"></div>
+                    <div>
+                      <div className="text-xs md:text-sm font-medium text-muted-foreground">
+                        Destination
+                      </div>
+                      <div className="text-sm md:text-base">
                         {rideDetails.trip.destination}
-                      </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 pt-3 border-t">
+                    <div className="text-center">
+                      <div className="text-lg md:text-xl font-bold text-primary">
+                        {rideDetails.trip.distance}
+                      </div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        Distance
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg md:text-xl font-bold text-primary">
+                        {rideDetails.trip.estimatedTime}
+                      </div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        Est. Time
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg md:text-xl font-bold text-primary">
+                        {rideDetails.trip.price}
+                      </div>
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        Total
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="border-t pt-4 grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {rideDetails.trip.distance}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Distance
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {rideDetails.trip.estimatedTime}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Est. Time
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {rideDetails.trip.price}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Total</div>
-                  </div>
-                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg md:text-xl">Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  onClick={handleCancelRide}
+                >
+                  Cancel Ride
+                </Button>
               </CardContent>
             </Card>
           </div>

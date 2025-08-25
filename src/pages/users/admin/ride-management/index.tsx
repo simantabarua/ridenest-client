@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import {
   Eye,
   MapPin,
@@ -33,99 +31,98 @@ import type { IRide } from "@/redux/features/ride/ride.types";
 
 export default function AdminRideManagement() {
   const { data: rides, isLoading } = useGetAllRidesQuery(undefined);
-
-  console.log(rides);
+  
+  // Hardcoded stats data
+  const stats = {
+    total: 1247,
+    completed: 982,
+    inProgress: 45,
+    cancelled: 120,
+    pending: 100
+  };
 
   if (isLoading) {
     return <Loading />;
   }
 
-  console.log(rides?.data[0].status);
-
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">Ride Management</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold">Ride Management</h1>
+          <p className="text-muted-foreground text-sm md:text-base">
             Monitor and manage all ride activities
           </p>
         </div>
 
-        {/* Stats Cards
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+          <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Rides</CardTitle>
-              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs md:text-sm font-medium">Total Rides</CardTitle>
+              <MapPin className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
+            <CardContent className="py-2">
+              <div className="text-xl md:text-2xl font-bold">{stats.total}</div>
               <p className="text-xs text-muted-foreground">All time rides</p>
             </CardContent>
           </Card>
-
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CardTitle className="text-xs md:text-sm font-medium">Completed</CardTitle>
+              <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+            <CardContent className="py-2">
+              <div className="text-xl md:text-2xl font-bold text-green-600">
                 {stats.completed}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Successfully completed
-              </p>
+              <p className="text-xs text-muted-foreground">Completed</p>
             </CardContent>
           </Card>
-
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-              <Clock className="h-4 w-4 text-blue-500" />
+              <CardTitle className="text-xs md:text-sm font-medium">In Progress</CardTitle>
+              <Clock className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
+            <CardContent className="py-2">
+              <div className="text-xl md:text-2xl font-bold text-blue-600">
                 {stats.inProgress}
               </div>
-              <p className="text-xs text-muted-foreground">Currently active</p>
+              <p className="text-xs text-muted-foreground">Active</p>
             </CardContent>
           </Card>
-
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
-              <XCircle className="h-4 w-4 text-red-500" />
+              <CardTitle className="text-xs md:text-sm font-medium">Cancelled</CardTitle>
+              <XCircle className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">
+            <CardContent className="py-2">
+              <div className="text-xl md:text-2xl font-bold text-red-600">
                 {stats.cancelled}
               </div>
-              <p className="text-xs text-muted-foreground">Cancelled rides</p>
+              <p className="text-xs text-muted-foreground">Cancelled</p>
             </CardContent>
           </Card>
-
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+              <CardTitle className="text-xs md:text-sm font-medium">Pending</CardTitle>
+              <AlertCircle className="h-3 w-3 md:h-4 md:w-4 text-yellow-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">
+            <CardContent className="py-2">
+              <div className="text-xl md:text-2xl font-bold text-yellow-600">
                 {stats.pending}
               </div>
-              <p className="text-xs text-muted-foreground">Awaiting drivers</p>
+              <p className="text-xs text-muted-foreground">Pending</p>
             </CardContent>
           </Card>
-        </div> */}
+        </div>
 
         {/* Rides Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>All Rides</CardTitle>
-            <CardDescription>
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg md:text-xl">All Rides</CardTitle>
+            <CardDescription className="text-sm">
               Complete list of all rides in the system
             </CardDescription>
           </CardHeader>
@@ -134,80 +131,74 @@ export default function AdminRideManagement() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Ride ID</TableHead>
-                    <TableHead>Rider</TableHead>
-                    <TableHead>Driver</TableHead>
-                    <TableHead>Pickup</TableHead>
-                    <TableHead>Destination</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Fare</TableHead>
-                    <TableHead>Distance</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-xs">Ride ID</TableHead>
+                    <TableHead className="text-xs">Rider</TableHead>
+                    <TableHead className="text-xs">Driver</TableHead>
+                    <TableHead className="text-xs">Pickup</TableHead>
+                    <TableHead className="text-xs">Destination</TableHead>
+                    <TableHead className="text-xs">Status</TableHead>
+                    <TableHead className="text-xs">Fare</TableHead>
+                    <TableHead className="text-xs">Distance</TableHead>
+                    <TableHead className="text-xs">Duration</TableHead>
+                    <TableHead className="text-xs">Rating</TableHead>
+                    <TableHead className="text-xs">Date</TableHead>
+                    <TableHead className="text-xs">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rides?.data?.map((ride: IRide) => (
                     <TableRow key={ride._id}>
-                      <TableCell className="font-medium">
-                        {ride._id ?? "-"}
+                      <TableCell className="font-medium text-xs">
+                        {ride._id?.slice(0, 8) ?? "-"}
                       </TableCell>
-
                       <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <User className="w-4 h-4 text-muted-foreground" />
-                          <span>{ride.rider?.name ?? "-"}</span>
+                        <div className="flex items-center space-x-1">
+                          <User className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs truncate max-w-[60px]">
+                            {ride.rider?.name ?? "-"}
+                          </span>
                         </div>
                       </TableCell>
-
                       <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Car className="w-4 h-4 text-muted-foreground" />
-                          <span>{ride.driver?.name ?? "-"}</span>
+                        <div className="flex items-center space-x-1">
+                          <Car className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs truncate max-w-[60px]">
+                            {ride.driver?.name ?? "-"}
+                          </span>
                         </div>
                       </TableCell>
-
-                      <TableCell className="max-w-[150px] truncate">
+                      <TableCell className="text-xs max-w-[80px] truncate">
                         {ride.pickupLocation ?? "-"}
                       </TableCell>
-                      <TableCell className="max-w-[150px] truncate">
+                      <TableCell className="text-xs max-w-[80px] truncate">
                         {ride.destinationLocation ?? "-"}
                       </TableCell>
-
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {ride.status}
-                        </div>
+                      <TableCell className="text-xs">
+                        {ride.status ?? "-"}
                       </TableCell>
-
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-xs">
                         {ride.fare ?? "-"}
                       </TableCell>
-                      <TableCell>{ride.distance ?? "-"}</TableCell>
-                      <TableCell>{ride.duration ?? "-"}</TableCell>
-
+                      <TableCell className="text-xs">{ride.distance ?? "-"}</TableCell>
+                      <TableCell className="text-xs">{ride.duration ?? "-"}</TableCell>
                       <TableCell>
                         {ride.rating?.value ? (
                           <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span>{ride.rating.value}</span>
+                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs">{ride.rating.value}</span>
                           </div>
                         ) : (
-                          <span className="text-muted-foreground">-</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </TableCell>
-
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground">
                         {ride.updatedAt
-                          ? new Date(ride.updatedAt).toLocaleString()
+                          ? new Date(ride.updatedAt).toLocaleDateString()
                           : "-"}
                       </TableCell>
-
                       <TableCell>
-                        <Button variant="ghost" size="sm">
-                          <Eye className="w-4 h-4" />
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <Eye className="w-3 h-3" />
                         </Button>
                       </TableCell>
                     </TableRow>

@@ -13,8 +13,6 @@ import {
   TrendingUp,
   Activity,
   BarChart3,
-  Settings,
-  Bell,
 } from "lucide-react";
 
 export default function AdminDashboard() {

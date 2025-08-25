@@ -125,7 +125,7 @@ export default function DriverManagementPage() {
         <div className="space-y-4">
           {drivers.map((driver) => (
             <Card
-              key={driver.id}
+              key={driver._id}
               className="border-0 shadow-lg hover:shadow-xl transition-shadow"
             >
               <CardContent className="p-6">

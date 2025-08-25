@@ -19,6 +19,7 @@ export default function RideDetailsPage() {
   const { rideId } = useParams<{ rideId: string }>();
   const { data: ride, isLoading } = useGetRideByIdQuery(rideId);
   const rideDetails: IRide = ride?.data;
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -31,11 +32,24 @@ export default function RideDetailsPage() {
         return "bg-gray-100 text-gray-800";
     }
   };
-  console.log(rideDetails);
 
   if (isLoading) {
     return <Loading />;
   }
+
+  if (!rideDetails) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">No Ride Found</h1>
+          <p className="text-muted-foreground">
+            We couldn't find a ride with that ID
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -49,7 +63,6 @@ export default function RideDetailsPage() {
               </p>
             </div>
           </div>
-
           <div className="grid grid-cols-1 gap-6">
             {/* Ride Status */}
             <Card className="border-0 shadow-lg">
@@ -60,12 +73,12 @@ export default function RideDetailsPage() {
                       Trip #{rideDetails?._id}
                     </CardTitle>
                     <CardDescription>
-                      {formatDate(rideDetails.createdAt)} at{" "}
-                      {formatTime(rideDetails.createdAt)}
+                      {formatDate(rideDetails?.createdAt)} at{" "}
+                      {formatTime(rideDetails?.createdAt)}
                     </CardDescription>
                   </div>
-                  <Badge className={getStatusColor(rideDetails.status)}>
-                    {rideDetails.status.toUpperCase()}
+                  <Badge className={getStatusColor(rideDetails?.status)}>
+                    {rideDetails?.status?.toUpperCase()}
                   </Badge>
                 </div>
               </CardHeader>
@@ -78,8 +91,8 @@ export default function RideDetailsPage() {
                       <div>
                         <div className="font-medium">Pickup</div>
                         <div className="text-sm text-muted-foreground">
-                          {formatDate(rideDetails.pickedUpAt as string)} at{" "}
-                          {formatTime(rideDetails.pickedUpAt as string)}
+                          {formatDate(rideDetails?.pickedUpAt as string)} at{" "}
+                          {formatTime(rideDetails?.pickedUpAt as string)}
                         </div>
                       </div>
                     </div>
@@ -88,17 +101,16 @@ export default function RideDetailsPage() {
                       <div>
                         <div className="font-medium">Destination</div>
                         <div className="text-sm text-muted-foreground">
-                          {rideDetails.destinationLocation}
+                          {rideDetails?.destinationLocation}
                         </div>
                       </div>
                     </div>
                   </div>
-
                   {/* Trip Info */}
                   <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">
-                        {rideDetails.distance}
+                        {rideDetails?.distance}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         Distance
@@ -114,7 +126,6 @@ export default function RideDetailsPage() {
                 </div>
               </CardContent>
             </Card>
-
             {/* Driver Information */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
@@ -128,11 +139,11 @@ export default function RideDetailsPage() {
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <h3 className="text-lg font-semibold">
-                        {rideDetails.driver}
+                        {rideDetails?.driver}
                       </h3>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm">{rideDetails.rating}</span>
+                        <span className="text-sm">{rideDetails?.rating}</span>
                       </div>
                     </div>
                   </div>
@@ -147,17 +158,15 @@ export default function RideDetailsPage() {
                 </div>
               </CardContent>
             </Card>
-
             {/* Timeline */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle>Trip Timeline</CardTitle>
               </CardHeader>
               <CardContent>
-                <TimeLine items={rideDetails.timestamps} />
+                <TimeLine items={rideDetails?.timestamps || []} />
               </CardContent>
             </Card>
-
             {/* Pricing Breakdown */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
@@ -167,21 +176,21 @@ export default function RideDetailsPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Base Fare</span>
-                    <span>{rideDetails.fare}</span>
+                    <span>{rideDetails?.fare}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      Distance ({rideDetails.distance})
+                      Distance ({rideDetails?.distance})
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      Time ({rideDetails.inTransitAt})
+                      Time ({rideDetails?.inTransitAt})
                     </span>
                   </div>
                   <div className="border-t pt-3 flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>{rideDetails.fare}</span>
+                    <span>{rideDetails?.fare}</span>
                   </div>
                 </div>
               </CardContent>
