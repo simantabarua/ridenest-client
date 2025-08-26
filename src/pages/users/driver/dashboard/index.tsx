@@ -1,78 +1,51 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
+import { Pause, Car, Star, Clock, DollarSign } from "lucide-react";
 import {
-  Car,
-  DollarSign,
-  Clock,
-  Star,
-  MapPin,
-  TrendingUp,
-  Target,
-  Pause,
-  Calendar,
-} from "lucide-react";
-import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
-import getStatusColor from "@/utils/getStatus";
+  useGetDriverStatsQuery,
+  useGetMyRidesQuery,
+} from "@/redux/features/ride/ride.api";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import {
-  useGetEarningsQuery,
+  useGetAvailabilityQuery,
   useSetAvailabilityMutation,
 } from "@/redux/features/driver/driver.api";
+import RideCard from "@/components/module/ride/RideCard";
+import DashboardHeader from "@/components/dashboard-header";
 
 export default function DriverDashboard() {
-  const [isOnline, setIsOnline] = useState(false);
-
-  const { data: rides } = useGetMyRidesQuery(undefined);
-
-  const { data: earnings } = useGetEarningsQuery(undefined);
+  const { data: availability } = useGetAvailabilityQuery(undefined);
+  const { data: recentRides } = useGetMyRidesQuery(undefined);
   const [setAvailability] = useSetAvailabilityMutation();
-  console.log(earnings);
-
-  const stats = {
-    todayEarnings: "$156.80",
-    todayRides: 8,
-    todayHours: "6.5",
-    weeklyEarnings: "$892.50",
-    weeklyTarget: "$1000",
-    weeklyProgress: 89,
-    rating: 4.9,
-    totalRides: 1247,
-  };
+  const { data: driverStats } = useGetDriverStatsQuery(undefined);
+  const stats = driverStats?.data;
+  const isOnline = availability?.data?.isAvailable;
 
   const toggleOnlineStatus = async () => {
-    const newStatus = !isOnline;
-    setIsOnline(newStatus);
     try {
-      const res = await setAvailability({ isAvailable: newStatus }).unwrap();
-      console.log(res);
+      await setAvailability({ isAvailable: !isOnline }).unwrap();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
+  const statIcons = [
+    <Car className="w-5 h-5" />,
+    <Star className="w-5 h-5" />,
+    <Clock className="w-5 h-5" />,
+    <DollarSign className="w-5 h-5" />,
+  ];
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6 ">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">Driver Dashboard</h1>
-            <p className="text-muted-foreground text-sm">Welcome back, John!</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium">Online</span>
-            <Switch checked={isOnline} onCheckedChange={toggleOnlineStatus} />
-          </div>
-        </div>
+        <DashboardHeader />
 
         {/* Online Status Card */}
         <Card
           className={`mb-6 ${
-            isOnline ? "border-green-200 bg-green-50" : "border-gray-200"
+            isOnline ? "border-green-200" : "border-gray-200"
           }`}
         >
           <CardContent className="p-4">
@@ -102,9 +75,7 @@ export default function DriverDashboard() {
               </div>
               <Button
                 onClick={toggleOnlineStatus}
-                size="sm"
-                variant={isOnline ? "outline" : "default"}
-                className={isOnline ? "border-red-300 text-red-700" : ""}
+                variant={isOnline ? "destructive" : "default"}
               >
                 {isOnline ? "Go Offline" : "Go Online"}
               </Button>
@@ -113,149 +84,50 @@ export default function DriverDashboard() {
         </Card>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="p-3 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center">
-                <DollarSign className="w-3 h-3 mr-1 text-green-600" />
-                Today's Earnings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="text-xl font-bold">{stats.todayEarnings}</div>
-              <div className="flex items-center text-xs text-muted-foreground">
-                <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
-                <span className="text-green-500">+12%</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="p-3 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center">
-                <Car className="w-3 h-3 mr-1 text-blue-600" />
-                Today's Rides
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="text-xl font-bold">{stats.todayRides}</div>
-              <div className="text-xs text-muted-foreground">
-                {stats.todayHours} hours
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="p-3 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center">
-                <Star className="w-3 h-3 mr-1 text-yellow-600" />
-                Rating
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="text-xl font-bold">{stats.rating}</div>
-              <div className="text-xs text-muted-foreground">
-                {stats.totalRides} rides
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="p-3 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground flex items-center">
-                <Target className="w-3 h-3 mr-1 text-purple-600" />
-                Weekly Target
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
-              <div className="text-xl font-bold">{stats.weeklyProgress}%</div>
-              <Progress value={stats.weeklyProgress} className="mt-1 h-1.5" />
-              <div className="text-xs text-muted-foreground mt-1">
-                {stats.weeklyEarnings} of {stats.weeklyTarget}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Recent Rides */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Recent Rides</h2>
-          </div>
-          <div className="space-y-4">
-            {rides?.data?.map((ride: IRide) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+          {stats?.map(
+            (stat: { title: string; value: string }, index: number) => (
               <Card
-                key={ride._id}
-                className="border-0 shadow-lg hover:shadow-xl transition-shadow"
+                key={index}
+                className="border border-border shadow-sm hover:shadow-md transition-shadow"
               >
-                <CardContent className="p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-                    {/* Left Content */}
-                    <div className="flex-1 space-y-4">
-                      {/* Header */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <Badge className={getStatusColor(ride.status)}>
-                            {ride.status.replace("_", " ").toUpperCase()}
-                          </Badge>
-                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                            <Calendar className="w-4 h-4" />
-                            <span>{ride.createdAt}</span>
-                            <span>•</span>
-                            <span>{ride.createdAt}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Route */}
-                      <div className="space-y-2">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium">Pickup</div>
-                            <div className="text-sm text-muted-foreground">
-                              {ride.destinationLocation}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium">
-                              Destination
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {ride.pickupLocation}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Details */}
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{ride.distance}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{ride.distance}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Content */}
-                    <div className="flex items-center justify-between lg:justify-end lg:space-x-6 mt-4 lg:mt-0">
-                      {/* Price and Rating */}
-                      <div className="text-right space-y-2">
-                        <div className="text-xl font-bold">{ride.fare}tk</div>
-                      </div>
-                    </div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {stat.title}
+                  </CardTitle>
+                  <div className="p-2 rounded-full bg-primary/10 text-primary">
+                    {statIcons[index]}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-foreground">
+                    {stat.value}
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )
+          )}
+        </div>
+
+        {/* Recent Rides */}
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Recent Rides</h2>
           </div>
+          {recentRides?.data?.length === 0 ? (
+            <Card className="border border-border p-8 text-center">
+              <p className="text-muted-foreground">
+                You don't have any recent rides
+              </p>
+              <Button className="mt-4">Go Online to Start</Button>
+            </Card>
+          ) : (
+            <div className="space-y-5">
+              {recentRides?.data?.map((ride: IRide) => (
+                <RideCard key={ride._id} ride={ride} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

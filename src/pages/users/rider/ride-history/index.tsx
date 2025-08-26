@@ -1,17 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  Calendar,
-  MapPin,
-  Star,
-  DollarSign,
-  Clock,
-  Car,
-  Download,
-  Eye,
-} from "lucide-react";
+import { Calendar, MapPin, Clock, Car, Eye } from "lucide-react";
 import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
 import Loading from "@/components/loading";
 import type { IRide } from "@/redux/features/ride/ride.types";
@@ -31,7 +22,6 @@ export default function RideHistoryPage() {
         return "bg-gray-100 text-gray-800";
     }
   };
-  console.log(rides);
 
   if (isLoading) {
     <Loading variant="bars" />;
@@ -41,67 +31,13 @@ export default function RideHistoryPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Ride History</h1>
-            <p className="text-muted-foreground">
-              View all your past rides and trips
-            </p>
-          </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Ride History</h1>
+          <p className="text-muted-foreground">
+            View all your past rides and trips
+          </p>
         </div>
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Rides
-              </CardTitle>
-              <Car className="w-4 h-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">50</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Completed
-              </CardTitle>
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">25</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Spent
-              </CardTitle>
-              <DollarSign className="w-4 h-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$2,500</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Avg Rating
-              </CardTitle>
-              <Star className="w-4 h-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">4.8</div>
-            </CardContent>
-          </Card>
-        </div>
+
         {/* Ride List */}
         <div className="space-y-4">
           {rides?.data?.map((ride: IRide) => (

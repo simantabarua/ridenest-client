@@ -38,7 +38,6 @@ const IncomingRequests = lazy(
   () => import("@/pages/users/driver/incoming-requests")
 );
 const ActiveRide = lazy(() => import("@/pages/users/driver/active-ride"));
-const Earnings = lazy(() => import("@/pages/users/driver/earnings"));
 const RideHistoryDriver = lazy(
   () => import("@/pages/users/driver/ride-history")
 );
@@ -95,7 +94,6 @@ export const router = createBrowserRouter([
       { path: "dashboard", Component: DriverDashboard },
       { path: "incoming-requests", Component: IncomingRequests },
       { path: "active-ride", Component: ActiveRide },
-      { path: "earnings", Component: Earnings },
       { path: "ride-history", Component: RideHistoryDriver },
       { path: "profile", Component: ProfileDriver },
       { path: "update-driver-profile", Component: ApplyDriver },

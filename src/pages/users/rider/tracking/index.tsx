@@ -349,7 +349,7 @@ export default function TrackingPage() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 pt-4 border-t">
-                    <div className="text-center p-2 bg-gray-50 rounded-lg">
+                    <div className="text-center p-2 bg-background rounded-lg">
                       <div className="text-lg md:text-xl font-bold text-primary">
                         {estimatedDistance} km
                       </div>
@@ -357,7 +357,7 @@ export default function TrackingPage() {
                         Distance
                       </div>
                     </div>
-                    <div className="text-center p-2 bg-gray-50 rounded-lg">
+                    <div className="text-center p-2 bg-background rounded-lg">
                       <div className="text-lg md:text-xl font-bold text-primary">
                         {estimatedTime} min
                       </div>
@@ -365,7 +365,7 @@ export default function TrackingPage() {
                         Est. Time
                       </div>
                     </div>
-                    <div className="text-center p-2 bg-gray-50 rounded-lg">
+                    <div className="text-center p-2 bg-background rounded-lg">
                       <div className="text-lg md:text-xl font-bold text-primary">
                         ৳{totalFare || 0}
                       </div>

@@ -12,15 +12,7 @@ import {
 import Logo from "./logo";
 import { Link } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import {
-  Home,
-  Car,
-  MapPin,
-  History,
-  DollarSign,
-  Users,
-  Info,
-} from "lucide-react";
+import { Home, Car, MapPin, History, Users } from "lucide-react";
 type NavLink = {
   href: string;
   label: string;
@@ -33,7 +25,6 @@ const navigationConfig = {
     { href: "/rider/request-ride", label: "Request Ride", icon: Car },
     { href: "/rider/ride-history", label: "Ride History", icon: History },
     { href: "/rider/tracking", label: "Tracking", icon: MapPin },
-    { href: "/rider/ride/:rideId", label: "Ride Details", icon: Info },
     { href: "/rider/apply-for-driver", label: "Apply for Driver", icon: Car },
   ] as NavLink[],
 
@@ -46,7 +37,6 @@ const navigationConfig = {
     },
     { href: "/driver/active-ride", label: "Active Ride", icon: MapPin },
     { href: "/driver/ride-history", label: "Ride History", icon: History },
-    { href: "/driver/earnings", label: "Earnings", icon: DollarSign },
     {
       href: "/driver/update-driver-profile",
       label: "Update Profile",

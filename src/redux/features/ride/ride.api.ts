@@ -26,6 +26,21 @@ export const rideApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Ride"],
     }),
+
+    getRiderStats: builder.query({
+      query: () => ({
+        url: "/rides/stats/rider",
+        method: "GET",
+      }),
+      providesTags: ["Ride"],
+    }),
+    getDriverStats: builder.query({
+      query: () => ({
+        url: "/rides/stats/driver",
+        method: "GET",
+      }),
+      providesTags: ["Ride"],
+    }),
     getActiveRideDriver: builder.query({
       query: () => ({
         url: "/rides/active/driver",
@@ -95,4 +110,6 @@ export const {
   useCancelRideMutation,
   useGetActiveRideRiderQuery,
   useGetActiveRideDriverQuery,
+  useGetRiderStatsQuery,
+  useGetDriverStatsQuery,
 } = rideApi;

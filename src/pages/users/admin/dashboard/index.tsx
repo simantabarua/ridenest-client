@@ -14,6 +14,7 @@ import {
   Activity,
   BarChart3,
 } from "lucide-react";
+import DashboardHeader from "@/components/dashboard-header";
 
 export default function AdminDashboard() {
   const stats = {
@@ -30,13 +31,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
-            Monitor and manage your ride-sharing platform
-          </p>
-        </div>
+        <DashboardHeader />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
