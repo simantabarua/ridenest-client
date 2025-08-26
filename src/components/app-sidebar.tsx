@@ -47,6 +47,11 @@ const navigationConfig = {
     { href: "/driver/active-ride", label: "Active Ride", icon: MapPin },
     { href: "/driver/ride-history", label: "Ride History", icon: History },
     { href: "/driver/earnings", label: "Earnings", icon: DollarSign },
+    {
+      href: "/driver/update-driver-profile",
+      label: "Update Profile",
+      icon: Car,
+    },
   ] as NavLink[],
 
   admin: [

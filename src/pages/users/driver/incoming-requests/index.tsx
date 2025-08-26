@@ -22,9 +22,12 @@ export default function IncomingRequestsPage() {
       }).unwrap();
 
       toast.success("Request Accepted");
-    } catch (error) {
-      toast.error("Failed to accept the request. Please try again.");
-      console.log(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message ||
+          "Failed to accept the request. Please try again."
+      );
     }
   };
 

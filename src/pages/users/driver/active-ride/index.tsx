@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Navigation, Star, Users } from "lucide-react";
+import { Navigation, Users } from "lucide-react";
 import {
-  useGetActiveRidesQuery,
+  useGetActiveRideDriverQuery,
   useUpdateRideStatusMutation,
 } from "@/redux/features/ride/ride.api";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { toast } from "sonner";
 
 export default function ActiveRidePage() {
-  const { data: rides } = useGetActiveRidesQuery(undefined);
+  const { data: rides } = useGetActiveRideDriverQuery(undefined);
   const activeRide: IRide = rides?.data?.[0] || null;
 
   const steps = [
@@ -160,10 +160,6 @@ export default function ActiveRidePage() {
                         <h3 className="font-semibold text-base md:text-lg">
                           {activeRide.rider.name}
                         </h3>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs md:text-sm">Rating</span>
-                        </div>
                       </div>
                       <div className="text-xs md:text-sm text-muted-foreground">
                         {activeRide.rider.email}

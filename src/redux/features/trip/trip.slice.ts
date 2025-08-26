@@ -3,21 +3,23 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 interface TripState {
   destinationLatitude: number | null;
   destinationLongitude: number | null;
- destinationLocation: string | null;
-  pickupLocation:  string | null;
-  distance: number | null;
+  destinationLocation: string | null;
+  pickupLocation: string | null;
+  estimatedDistance: number | null;
   estimatedTime: number | null;
-  price: number | null;
+  fare: number | null;
+  totalFare: number | null;
 }
 
 const initialState: TripState = {
   destinationLatitude: null,
   destinationLongitude: null,
- destinationLocation: null,
-  pickupLocation:  null,
-  distance: null,
+  destinationLocation: null,
+  pickupLocation: null,
+  estimatedDistance: null,
   estimatedTime: null,
-  price: null,
+  fare: null,
+  totalFare: null,
 };
 
 const tripSlice = createSlice({
@@ -29,11 +31,12 @@ const tripSlice = createSlice({
       action: PayloadAction<{
         destinationLatitude: number;
         destinationLongitude: number;
-       destinationLocation: string;
-        pickupLocation:  string;
-        distance: number;
+        destinationLocation: string;
+        pickupLocation: string;
+        estimatedDistance: number;
         estimatedTime: number;
-        price: number;
+        fare: number;
+        totalFare: number;
       }>
     ) => {
       Object.assign(state, action.payload);

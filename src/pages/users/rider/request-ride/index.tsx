@@ -8,31 +8,37 @@ import { toast } from "sonner";
 
 const shortenAddress = (address: string | null, maxLength = 25): string => {
   if (!address) return "Not selected";
-  const parts = address.split(",");
-  const mainPart = parts[0].trim();
-  if (mainPart.length > maxLength) {
-    return `${mainPart.substring(0, maxLength)}...`;
-  }
-  return mainPart;
+
+  const parts = address.split(",").slice(0, 4);
+  const mainPart = parts.join(", ").trim();
+
+  return mainPart.length > maxLength
+    ? `${mainPart.substring(0, maxLength)}...`
+    : mainPart;
 };
 
 export default function RequestRidePage() {
-  const pickupLocation = useAppSelector((state) => state.trip.pickupLocation);
-  const destinationLocation = useAppSelector(
-    (state) => state.trip.destinationLocation
-  );
-  const distance = useAppSelector((state) => state.trip.distance);
-  const estimatedTime = useAppSelector((state) => state.trip.estimatedTime);
-  const price = useAppSelector((state) => state.trip.price);
+  const tripDetails = useAppSelector((state) => state.trip);
+  const {
+    pickupLocation,
+    destinationLocation,
+    estimatedDistance,
+    estimatedTime,
+    fare,
+    totalFare,
+  } = tripDetails;
   const [requestRide] = useRequestRideMutation();
 
   const handleRideRequest = async () => {
     const rideInfo = {
       pickupLocation: pickupLocation as string,
       destinationLocation: destinationLocation as string,
-      fare: price as number,
+      estimatedDistance: estimatedDistance as number,
+      estimatedTime: estimatedTime as number,
+      fare: fare as number,
+      totalFare: totalFare as number,
     };
-
+    console.log(rideInfo);
     try {
       const response = await requestRide(rideInfo).unwrap();
       if (response.success) {
@@ -52,34 +58,28 @@ export default function RequestRidePage() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-4 py-6">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-2 sm:text-3xl">
             Request a Ride
           </h1>
           <p className="text-muted-foreground">Where would you like to go?</p>
         </div>
-
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main Booking Form */}
           <div className="flex-1">
             <DestinationCard />
           </div>
-
-          {/* Trip Summary */}
           <div className="w-full lg:w-80">
             <Card className="border-0 shadow-sm lg:sticky lg:top-6">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Trip Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Locations */}
                 <div className="space-y-3">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                     <div className="min-w-0">
                       <div className="text-sm font-medium">Pickup</div>
-                      <div className="text-xs text-muted-foreground truncate">
+                      <div className="text-xs text-muted-foreground ">
                         {shortenAddress(pickupLocation)}
                       </div>
                     </div>
@@ -88,42 +88,38 @@ export default function RequestRidePage() {
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
                     <div className="min-w-0">
                       <div className="text-sm font-medium">Destination</div>
-                      <div className="text-xs text-muted-foreground truncate">
+                      <div className="text-xs text-muted-foreground ">
                         {shortenAddress(destinationLocation)}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Fare Breakdown */}
                 <div className="border-t pt-4 space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span>Base fare</span>
-                    <span>$8.00</span>
-                  </div>
                   <div className="flex justify-between text-sm">
                     <span>Distance</span>
                     <span>
-                      {distance ? `${distance.toFixed(1)} mi` : "0.0 mi"}
+                      {estimatedDistance
+                        ? `${estimatedDistance.toFixed(1)} mi`
+                        : "0.0 mi"}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Time</span>
+                    <span>Fare rate</span>
+                    <span>৳{fare?.toFixed(2)}/km</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Estimated time</span>
                     <span>
                       {estimatedTime ? `${estimatedTime} min` : "0 min"}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Service fee</span>
-                    <span>$1.50</span>
-                  </div>
                   <div className="border-t pt-3 flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span>{price ? `$${price.toFixed(2)}` : "$0.00"}</span>
+                    <span>Total fare</span>
+                    <span>৳{totalFare?.toFixed(2)}</span>
                   </div>
                 </div>
 
-                {/* Request Button */}
                 <Button
                   className="w-full"
                   size="lg"
@@ -133,7 +129,6 @@ export default function RequestRidePage() {
                   Request Ride
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
-
                 {!destinationLocation && (
                   <p className="text-xs text-muted-foreground text-center">
                     Please enter a destination to continue

@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Phone, MessageCircle, User } from "lucide-react";
 import { useParams } from "react-router";
 import { useGetRideByIdQuery } from "@/redux/features/ride/ride.api";
-import type { IRide } from "@/redux/features/ride/ride.types";
 import { formatDate, formatTime } from "@/utils/dateTimeFormater";
 import Loading from "@/components/loading";
 import TimeLine from "@/components/timeline";
@@ -18,7 +17,7 @@ import TimeLine from "@/components/timeline";
 export default function RideDetailsPage() {
   const { rideId } = useParams<{ rideId: string }>();
   const { data: ride, isLoading } = useGetRideByIdQuery(rideId);
-  const rideDetails: IRide = ride?.data;
+  const rideDetails = ride?.data;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -26,16 +25,14 @@ export default function RideDetailsPage() {
         return "bg-green-100 text-green-800";
       case "cancelled":
         return "bg-red-100 text-red-800";
-      case "in_progress":
+      case "in_transit":
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   if (!rideDetails) {
     return (
@@ -50,6 +47,19 @@ export default function RideDetailsPage() {
     );
   }
 
+  const {
+    timestamps,
+    _id,
+    pickupLocation,
+    destinationLocation,
+    estimatedDistance,
+    fare,
+    driver,
+    totalFare,
+    status,
+  } = rideDetails;
+  console.log(rideDetails);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -63,22 +73,21 @@ export default function RideDetailsPage() {
               </p>
             </div>
           </div>
+
           <div className="grid grid-cols-1 gap-6">
             {/* Ride Status */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-xl">
-                      Trip #{rideDetails?._id}
-                    </CardTitle>
+                    <CardTitle className="text-xl">Trip #{_id}</CardTitle>
                     <CardDescription>
-                      {formatDate(rideDetails?.createdAt)} at{" "}
-                      {formatTime(rideDetails?.createdAt)}
+                      {formatDate(rideDetails.createdAt)} at{" "}
+                      {formatTime(rideDetails.createdAt)}
                     </CardDescription>
                   </div>
-                  <Badge className={getStatusColor(rideDetails?.status)}>
-                    {rideDetails?.status?.toUpperCase()}
+                  <Badge className={getStatusColor(status)}>
+                    {status.toUpperCase()}
                   </Badge>
                 </div>
               </CardHeader>
@@ -91,9 +100,14 @@ export default function RideDetailsPage() {
                       <div>
                         <div className="font-medium">Pickup</div>
                         <div className="text-sm text-muted-foreground">
-                          {formatDate(rideDetails?.pickedUpAt as string)} at{" "}
-                          {formatTime(rideDetails?.pickedUpAt as string)}
+                          {pickupLocation}
                         </div>
+                        {timestamps?.requestedAt && (
+                          <div className="text-xs text-muted-foreground">
+                            Requested at:{" "}
+                            {new Date(timestamps.requestedAt).toLocaleString()}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
@@ -101,31 +115,41 @@ export default function RideDetailsPage() {
                       <div>
                         <div className="font-medium">Destination</div>
                         <div className="text-sm text-muted-foreground">
-                          {rideDetails?.destinationLocation}
+                          {destinationLocation}
                         </div>
                       </div>
                     </div>
                   </div>
+
                   {/* Trip Info */}
                   <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">
-                        {rideDetails?.distance}
+                        {estimatedDistance} km
                       </div>
                       <div className="text-sm text-muted-foreground">
                         Distance
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">10</div>
-                      <div className="text-sm text-muted-foreground">
-                        Est. Time
+                      <div className="text-2xl font-bold text-primary">
+                        {status.toUpperCase().replace("_", " ")}
                       </div>
+                      <div className="text-sm text-muted-foreground">
+                        Status
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">
+                        {fare ?? "N/A"}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Fare</div>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
             {/* Driver Information */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
@@ -139,12 +163,18 @@ export default function RideDetailsPage() {
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <h3 className="text-lg font-semibold">
-                        {rideDetails?.driver}
+                        {driver?.name ?? "N/A"}
                       </h3>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm">{rideDetails?.rating}</span>
+                        <span className="text-sm">
+                          {driver?.rating ?? "N/A"}
+                        </span>
                       </div>
+                    </div>
+
+                    <div className="text-xs text-muted-foreground">
+                      License: {driver?.license ?? "-"}
                     </div>
                   </div>
                   <div className="flex space-x-2">
@@ -158,15 +188,17 @@ export default function RideDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+
             {/* Timeline */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle>Trip Timeline</CardTitle>
               </CardHeader>
               <CardContent>
-                <TimeLine items={rideDetails?.timestamps || []} />
+                <TimeLine items={timestamps || {}} />
               </CardContent>
             </Card>
+
             {/* Pricing Breakdown */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
@@ -176,21 +208,29 @@ export default function RideDetailsPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Base Fare</span>
-                    <span>{rideDetails?.fare}</span>
+                    <span>{fare}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Distance ({rideDetails?.distance})
-                    </span>
+                    <span className="text-muted-foreground">Distance</span>
+                    <span>{estimatedDistance} km</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Time ({rideDetails?.inTransitAt})
+                    <span className="text-muted-foreground">Time</span>
+                    <span>
+                      {timestamps?.inTransitAt
+                        ? new Date(timestamps.inTransitAt).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )
+                        : "-"}
                     </span>
                   </div>
                   <div className="border-t pt-3 flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>{rideDetails?.fare}</span>
+                    <span>{totalFare}</span>
                   </div>
                 </div>
               </CardContent>

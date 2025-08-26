@@ -186,9 +186,11 @@ export default function RiderDashboard() {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="font-semibold text-lg">{ride.fare}</div>
+                      <div className="font-semibold text-lg text-primary">
+                        {ride.fare} tk
+                      </div>
                       <Badge variant="secondary" className="text-xs">
-                        {ride.status}
+                        {ride.status.replace("_", " ")}
                       </Badge>
                     </div>
                   </div>

@@ -110,9 +110,13 @@ const MapUpdater = ({
 
 interface DestinationCardProps {
   showMap?: boolean;
+  showSummery?: boolean;
 }
 
-const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
+const DestinationCard = ({
+  showMap = false,
+  showSummery = false,
+}: DestinationCardProps) => {
   const {
     register,
     handleSubmit,
@@ -230,7 +234,6 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
       const result = await calculateRouteDistance(fromLocation, toLocation);
       setResults(result);
 
-      // Fix: Improved time parsing with error handling
       const estimatedTime = result.time ? parseInt(result.time) : 0;
       const distance = parseFloat(result.distance) || 0;
       const price = Math.round(distance * 50);
@@ -241,9 +244,10 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
           destinationLongitude: toLocation.lon,
           destinationLocation: shortenAddress(toLocation.name),
           pickupLocation: shortenAddress(fromLocation.name),
-          distance,
           estimatedTime,
-          price,
+          estimatedDistance: distance,
+          fare: price,
+          totalFare: price,
         })
       );
     } catch (err) {
@@ -317,6 +321,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                     onChange={(e) => setValue("from", e.target.value)}
                     className="pl-10 bg-background text-foreground border-input"
                     placeholder="Enter pickup location"
+                    autoComplete="off"
                   />
                   {fromInput && (
                     <Button
@@ -364,6 +369,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                     onChange={(e) => setValue("to", e.target.value)}
                     className="pl-10 bg-background text-foreground border-input"
                     placeholder="Where to?"
+                    autoComplete="off"
                   />
                   {toInput && (
                     <Button
@@ -451,9 +457,9 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                   </div>
                 </div>
               )}
-              {/* Results Display */}
-              {tripDetails.distance !== undefined &&
-                tripDetails.distance !== null && (
+              {showSummery &&
+                tripDetails.estimatedDistance !== undefined &&
+                tripDetails.estimatedDistance !== null && (
                   <Card className="border border-border">
                     <CardContent className="p-4">
                       <h5 className="font-semibold text-foreground mb-3">
@@ -488,7 +494,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                             Distance:
                           </span>
                           <span className="text-foreground">
-                            {tripDetails.distance} km
+                            {tripDetails.estimatedDistance} km
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
@@ -504,7 +510,7 @@ const DestinationCard = ({ showMap = false }: DestinationCardProps) => {
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Price:</span>
                           <span className="text-foreground font-semibold">
-                            ৳{tripDetails.price || 0}
+                            ৳{tripDetails.fare || 0}
                           </span>
                         </div>
                       </div>

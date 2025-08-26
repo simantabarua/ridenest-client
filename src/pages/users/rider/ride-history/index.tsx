@@ -31,6 +31,7 @@ export default function RideHistoryPage() {
         return "bg-gray-100 text-gray-800";
     }
   };
+  console.log(rides);
 
   if (isLoading) {
     <Loading variant="bars" />;
