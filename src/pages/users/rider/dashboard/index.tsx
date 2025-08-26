@@ -181,7 +181,7 @@ export default function RiderDashboard() {
                         <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-1">
                           <span>{ride.createdAt}</span>
                           <span>•</span>
-                          <span>{ride.driver}</span>
+                          {/* <span>{ride.driver}</span> */}
                         </div>
                       </div>
                     </div>

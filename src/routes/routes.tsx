@@ -32,6 +32,7 @@ const RideHistoryRider = lazy(() => import("@/pages/users/rider/ride-history"));
 const ProfileRider = lazy(() => import("@/pages/users/rider/profile"));
 const TrackingPage = lazy(() => import("@/pages/users/rider/tracking"));
 const RideDetails = lazy(() => import("@/pages/users/rider/ride-details"));
+const ApplyDriver = lazy(() => import("@/pages/users/apply-driver"));
 // Driver pages
 const IncomingRequests = lazy(
   () => import("@/pages/users/driver/incoming-requests")
@@ -110,6 +111,7 @@ export const router = createBrowserRouter([
       { path: "profile", Component: ProfileRider },
       { path: "tracking", Component: TrackingPage },
       { path: "ride/:rideId", Component: RideDetails },
+      { path: "apply-for-driver", Component: ApplyDriver },
     ],
   },
 

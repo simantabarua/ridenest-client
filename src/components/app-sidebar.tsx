@@ -34,11 +34,16 @@ const navigationConfig = {
     { href: "/rider/ride-history", label: "Ride History", icon: History },
     { href: "/rider/tracking", label: "Tracking", icon: MapPin },
     { href: "/rider/ride/:rideId", label: "Ride Details", icon: Info },
+    { href: "/rider/apply-for-driver", label: "Apply for Driver", icon: Car },
   ] as NavLink[],
 
   driver: [
     { href: "/driver/dashboard", label: "Dashboard", icon: Home },
-    { href: "/driver/incoming-requests", label: "Incoming Requests", icon: Car },
+    {
+      href: "/driver/incoming-requests",
+      label: "Incoming Requests",
+      icon: Car,
+    },
     { href: "/driver/active-ride", label: "Active Ride", icon: MapPin },
     { href: "/driver/ride-history", label: "Ride History", icon: History },
     { href: "/driver/earnings", label: "Earnings", icon: DollarSign },

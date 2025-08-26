@@ -96,12 +96,11 @@ export default function Login() {
     }
   };
 
-  // Show loading while checking user status or during login
+
   if (isUserLoading || isLoginLoading) {
     return <Loading fullScreen={true} variant="bars" />;
   }
 
-  // Don't render the login form if user is logged in (will be redirected by useEffect)
   if (user) {
     return <Loading fullScreen={true} variant="bars" />;
   }

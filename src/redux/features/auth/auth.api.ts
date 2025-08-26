@@ -36,6 +36,7 @@ export const authApi = baseApi.injectEndpoints({
         url: "/user/me",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
     logout: builder.mutation({
       query: () => ({

@@ -11,20 +11,26 @@ import {
   Star,
   MapPin,
   TrendingUp,
-  Navigation,
   Target,
-  CheckCircle,
   Pause,
   Calendar,
 } from "lucide-react";
 import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
 import getStatusColor from "@/utils/getStatus";
 import type { IRide } from "@/redux/features/ride/ride.types";
+import {
+  useGetEarningsQuery,
+  useSetAvailabilityMutation,
+} from "@/redux/features/driver/driver.api";
 
 export default function DriverDashboard() {
   const [isOnline, setIsOnline] = useState(false);
 
   const { data: rides } = useGetMyRidesQuery(undefined);
+
+  const { data: earnings } = useGetEarningsQuery(undefined);
+  const [setAvailability] = useSetAvailabilityMutation();
+  console.log(earnings);
 
   const stats = {
     todayEarnings: "$156.80",
@@ -37,21 +43,15 @@ export default function DriverDashboard() {
     totalRides: 1247,
   };
 
-  const upcomingRequests = [
-    {
-      id: "RQ001",
-      pickup: "789 Business Ave",
-      destination: "City Center",
-      distance: "2.1 mi",
-      estimatedEarnings: "$15.50",
-      estimatedTime: "8 min",
-      passengerRating: 4.8,
-      time: "2 min ago",
-    },
-  ];
-
-  const toggleOnlineStatus = () => {
-    setIsOnline(!isOnline);
+  const toggleOnlineStatus = async () => {
+    const newStatus = !isOnline;
+    setIsOnline(newStatus);
+    try {
+      const res = await setAvailability({ isAvailable: newStatus }).unwrap();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -257,74 +257,6 @@ export default function DriverDashboard() {
             ))}
           </div>
         </div>
-
-        {/* Upcoming Requests */}
-        {isOnline && upcomingRequests.length > 0 && (
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Incoming Request</h2>
-            <Card className="border-0 shadow-sm border-blue-200 bg-blue-50">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded flex items-center justify-center">
-                      <Navigation className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold text-sm">Ride Request</h3>
-                        <Badge
-                          variant="secondary"
-                          className="bg-blue-100 text-blue-800 text-xs h-5"
-                        >
-                          {upcomingRequests[0].time}
-                        </Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground mb-1">
-                        {upcomingRequests[0].pickup} →{" "}
-                        {upcomingRequests[0].destination}
-                      </div>
-                      <div className="flex items-center space-x-3 text-xs text-muted-foreground">
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="w-3 h-3" />
-                          <span>{upcomingRequests[0].distance}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{upcomingRequests[0].estimatedTime}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span>{upcomingRequests[0].passengerRating}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right space-y-2">
-                    <div className="text-lg font-bold text-blue-600">
-                      {upcomingRequests[0].estimatedEarnings}
-                    </div>
-                    <div className="flex space-x-1">
-                      <Button
-                        size="sm"
-                        className="bg-green-600 hover:bg-green-700 h-7 text-xs"
-                      >
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Accept
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 text-xs"
-                      >
-                        Decline
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -1,19 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  User,
-  Camera,
-  Edit,
-  Save,
-  Lock,
-  Car,
-  Star,
-  Shield,
-  MapPin,
-} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -25,75 +16,125 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import {
+  User,
+  Camera,
+  Edit,
+  Save,
+  Lock,
+  Shield,
+  Car,
+  Phone,
+  Mail,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  FormLabel,
+} from "@/components/ui/form";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useUpdateMutation } from "@/redux/features/user/user.api";
 
-type UserData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  licensePlate?: string;
-  vehicleType?: string;
-  adminLevel?: string;
-  department?: string;
-  rating?: number;
-  totalRides?: number;
-};
+const profileSchema = z.object({
+  name: z
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[A-Za-z\s]+$/),
+  phone: z.string().regex(/^(?:\+8801\d{9}|01\d{9})$/),
+  dateOfBirth: z.date().optional(),
+});
 
-type UserType = "rider" | "admin" | "driver";
+const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(1),
+    newPassword: z
+      .string()
+      .min(8)
+      .regex(/^(?=.*[A-Z])/, "1 uppercase")
+      .regex(/^(?=.*[!@#$%^&*])/, "1 special")
+      .regex(/^(?=.*\d)/, "1 number"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-interface ProfilePageProps {
-  userType: UserType;
-  initialData: UserData;
-}
+type ProfileFormData = z.infer<typeof profileSchema>;
+type PasswordFormData = z.infer<typeof passwordSchema>;
 
-export default function Profile({ userType, initialData }: ProfilePageProps) {
+export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<UserData>(initialData);
-
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const { data: user } = useUserInfoQuery(undefined);
+  const [update] = useUpdateMutation();
+  const userInfo = user?.data;
+  const userType = userInfo?.role?.toLowerCase();
 
-  const handleSave = () => {
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+  });
+
+  const passwordForm = useForm<PasswordFormData>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  useEffect(() => {
+    if (userInfo) {
+      form.reset({
+        name: userInfo.name || "",
+        phone: userInfo.phone?.replace(/^\+88/, "") || "",
+      });
+    }
+  }, [userInfo, form]);
+
+  const onSubmit: SubmitHandler<ProfileFormData> = async (data) => {
+    try {
+      const res = await update(data).unwrap();
+      if (res.success) toast.success("Profile updated successfully");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Failed to update profile");
+    }
     setIsEditing(false);
-    toast.success("Profile updated successfully");
   };
 
-  const handleChangePassword = () => {
-    setIsPasswordModalOpen(true);
-  };
-
-  const handlePasswordSubmit = () => {
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords don't match");
-      return;
+  const handlePasswordSubmit: SubmitHandler<PasswordFormData> = async (
+    data
+  ) => {
+    try {
+      setPasswordError(null);
+      const res = await update(data).unwrap();
+      if (res.success) {
+        toast.success("Password updated successfully");
+        setIsPasswordModalOpen(false);
+        passwordForm.reset();
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error?.data?.message) setPasswordError(error.data.message);
+      else if (error?.data?.error) setPasswordError(error.data.error);
+      else setPasswordError("Failed to update password");
+      toast.error("Failed to update password");
     }
-
-    if (newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters");
-      return;
-    }
-
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Password changed successfully");
-      setIsPasswordModalOpen(false);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    }, 1000);
   };
 
-  // Get user type badge details
   const getUserBadge = () => {
     switch (userType) {
       case "admin":
@@ -108,7 +149,7 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
           variant: "secondary" as const,
           icon: <Car className="w-3 h-3 mr-1" />,
         };
-      case "rider":
+      default:
         return {
           text: "Rider",
           variant: "outline" as const,
@@ -118,115 +159,6 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
   };
 
   const userBadge = getUserBadge();
-
-  const renderUserSpecificInfo = () => {
-    switch (userType) {
-      case "driver":
-        return (
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="licensePlate">License Plate</Label>
-              <Input
-                id="licensePlate"
-                name="licensePlate"
-                value={formData.licensePlate || ""}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="vehicleType">Vehicle Type</Label>
-              <Input
-                id="vehicleType"
-                name="vehicleType"
-                value={formData.vehicleType || ""}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </div>
-          </>
-        );
-      case "admin":
-        return (
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="adminLevel">Admin Level</Label>
-              <Input
-                id="adminLevel"
-                name="adminLevel"
-                value={formData.adminLevel || ""}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Input
-                id="department"
-                name="department"
-                value={formData.department || ""}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </div>
-          </>
-        );
-    }
-  };
-
-  // Render user-specific stats
-  const renderUserStats = () => {
-    switch (userType) {
-      case "driver":
-        return (
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <Star className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">
-                {formData.rating || "4.8"}
-              </div>
-              <div className="text-xs text-muted-foreground">Rating</div>
-            </div>
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <MapPin className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">
-                {formData.totalRides || "142"}
-              </div>
-              <div className="text-xs text-muted-foreground">Trips</div>
-            </div>
-          </div>
-        );
-      case "rider":
-        return (
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <Car className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">
-                {formData.totalRides || "47"}
-              </div>
-              <div className="text-xs text-muted-foreground">Rides</div>
-            </div>
-          </div>
-        );
-      case "admin":
-        return (
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <Shield className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">
-                {formData.adminLevel || "Level 2"}
-              </div>
-              <div className="text-xs text-muted-foreground">Access Level</div>
-            </div>
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <User className="w-6 h-6 text-primary mx-auto mb-1" />
-              <div className="text-lg font-bold">24</div>
-              <div className="text-xs text-muted-foreground">Users Managed</div>
-            </div>
-          </div>
-        );
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -239,84 +171,142 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
               <p className="text-muted-foreground">Manage your account</p>
             </div>
             <div className="flex gap-2">
+              {/* Password Modal */}
               <Dialog
                 open={isPasswordModalOpen}
-                onOpenChange={setIsPasswordModalOpen}
+                onOpenChange={(open) => {
+                  setIsPasswordModalOpen(open);
+                  if (!open) {
+                    passwordForm.reset();
+                    setPasswordError(null);
+                  }
+                }}
               >
                 <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    onClick={handleChangePassword}
-                    size="sm"
-                  >
-                    <Lock className="w-4 h-4 mr-2" />
-                    Password
+                  <Button variant="outline" size="sm">
+                    <Lock className="w-4 h-4 mr-2" /> Password
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle>Change Password</DialogTitle>
                     <DialogDescription>
-                      Enter your current password and a new password to update
-                      your account.
+                      Enter your current and new password.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="current">Current Password</Label>
-                      <Input
-                        id="current"
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="new">New Password</Label>
-                      <Input
-                        id="new"
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm">Confirm New Password</Label>
-                      <Input
-                        id="confirm"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsPasswordModalOpen(false)}
+                  <Form {...passwordForm}>
+                    <form
+                      onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}
+                      className="space-y-4 py-4"
                     >
-                      Cancel
-                    </Button>
-                    <Button onClick={handlePasswordSubmit}>
-                      Change Password
-                    </Button>
-                  </DialogFooter>
+                      {[
+                        "currentPassword",
+                        "newPassword",
+                        "confirmPassword",
+                      ].map((fieldName, idx) => (
+                        <FormField
+                          key={idx}
+                          control={passwordForm.control}
+                          name={fieldName as keyof PasswordFormData}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                {fieldName === "currentPassword"
+                                  ? "Current Password"
+                                  : fieldName === "newPassword"
+                                  ? "New Password"
+                                  : "Confirm Password"}
+                              </FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    type={
+                                      (fieldName === "currentPassword" &&
+                                        showCurrentPassword) ||
+                                      (fieldName === "newPassword" &&
+                                        showNewPassword) ||
+                                      (fieldName === "confirmPassword" &&
+                                        showConfirmPassword)
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    {...field}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-0 top-0 h-full px-3 py-2"
+                                    onClick={() => {
+                                      if (fieldName === "currentPassword")
+                                        setShowCurrentPassword(
+                                          !showCurrentPassword
+                                        );
+                                      if (fieldName === "newPassword")
+                                        setShowNewPassword(!showNewPassword);
+                                      if (fieldName === "confirmPassword")
+                                        setShowConfirmPassword(
+                                          !showConfirmPassword
+                                        );
+                                    }}
+                                  >
+                                    {(fieldName === "currentPassword" &&
+                                      showCurrentPassword) ||
+                                    (fieldName === "newPassword" &&
+                                      showNewPassword) ||
+                                    (fieldName === "confirmPassword" &&
+                                      showConfirmPassword) ? (
+                                      <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                      <Eye className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+
+                      {passwordError && (
+                        <div className="text-sm text-red-500 mt-2 bg-red-50 p-3 rounded-md">
+                          {passwordError}
+                        </div>
+                      )}
+
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setIsPasswordModalOpen(false);
+                            setPasswordError(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button type="submit">Change</Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
+
               <Button
                 variant={isEditing ? "default" : "outline"}
-                onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                onClick={() =>
+                  isEditing ? form.handleSubmit(onSubmit)() : setIsEditing(true)
+                }
                 size="sm"
               >
                 {isEditing ? (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
+                    <Save className="w-4 h-4 mr-2" /> Save
                   </>
                 ) : (
                   <>
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
+                    <Edit className="w-4 h-4 mr-2" /> Edit
                   </>
                 )}
               </Button>
@@ -326,7 +316,7 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
           {/* Profile Card */}
           <Card className="mb-6">
             <CardContent className="pt-6">
-              <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
+              <div className="flex flex-col sm:flex-row gap-6 items-center">
                 <div className="relative">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                     <User className="w-8 h-8 text-primary" />
@@ -341,12 +331,13 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
                   </Button>
                 </div>
                 <div className="text-center sm:text-left flex-1">
-                  <h2 className="font-semibold text-lg">
-                    {formData.firstName} {formData.lastName}
+                  <h2 className="text-xl font-semibold">
+                    {form.watch("name")}
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {formData.email}
-                  </p>
+                  <div className="flex items-center justify-center sm:justify-start text-muted-foreground gap-1">
+                    <Mail className="w-4 h-4" />
+                    <span>{userInfo?.email}</span>
+                  </div>
                   <div className="mt-2">
                     <Badge variant={userBadge.variant}>
                       {userBadge.icon}
@@ -358,86 +349,73 @@ export default function Profile({ userType, initialData }: ProfilePageProps) {
             </CardContent>
           </Card>
 
-          {/* Personal Information */}
-          <Card className="mb-6">
+          {/* Personal Info Form */}
+          <Card>
             <CardHeader>
               <CardTitle className="text-lg">Personal Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="grid gap-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Enter full name"
+                              className="pl-10"
+                              disabled={!isEditing}
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    disabled
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Email cannot be changed
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
+                  <FormField
+                    control={form.control}
                     name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <span className="absolute left-8 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                              +88
+                            </span>
+                            <Input
+                              type="tel"
+                              placeholder="Enter phone number"
+                              className="pl-16"
+                              disabled={!isEditing}
+                              {...field}
+                              value={field.value || ""}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value.replace(/^\+88\s*/, "")
+                                )
+                              }
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                  <Input
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                  />
-                </div>
-                {/* User-specific fields */}
-                {renderUserSpecificInfo()}
-              </div>
+                </form>
+              </Form>
             </CardContent>
-          </Card>
-
-          {/* User-specific Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {userType === "admin"
-                  ? "Admin Information"
-                  : userType === "driver"
-                  ? "Driver Statistics"
-                  : "Rider Information"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>{renderUserStats()}</CardContent>
           </Card>
         </div>
       </div>
