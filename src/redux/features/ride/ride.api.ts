@@ -60,7 +60,7 @@ export const rideApi = baseApi.injectEndpoints({
         url: `/rides/${rideId}`,
         method: "GET",
       }),
-      providesTags: (result, error, rideId) => [
+      providesTags: (_result, _error, rideId) => [
         { type: "Ride", id: rideId },
         "Ride",
       ],
@@ -81,7 +81,7 @@ export const rideApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: { status },
       }),
-      invalidatesTags: (result, error, arg) => [
+      invalidatesTags: (_result, _error ,arg) => [
         { type: "Ride", id: arg.rideId },
         "Ride",
       ],
@@ -92,7 +92,7 @@ export const rideApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: { reason },
       }),
-      invalidatesTags: (result, error, arg) => [
+      invalidatesTags: (_result, _error, arg) => [
         { type: "Ride", id: arg.rideId },
         "Ride",
       ],

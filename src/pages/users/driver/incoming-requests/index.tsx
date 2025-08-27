@@ -39,6 +39,7 @@ export default function IncomingRequestsPage() {
       }).unwrap();
 
       toast.success("Request Declined");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to decline the request. Please try again.");
     }
@@ -101,7 +102,7 @@ export default function IncomingRequestsPage() {
                           {request.destinationLocation}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {request.distance}
+                          {request.estimatedDistance}
                         </div>
                       </div>
                     </div>
