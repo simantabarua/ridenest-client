@@ -145,7 +145,6 @@ export default function RegisterPage() {
       const errorData = err.data || err.response?.data || {};
       const errorCode = errorData.code || "UNKNOWN_ERROR";
       const message = "Registration failed. Please try again.";
-      console.log(errorCode);
       switch (errorCode) {
         case "USER_ALREADY_EXISTS":
           setError(

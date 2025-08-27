@@ -17,7 +17,6 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
         <Navigate to="/login" replace state={{ from: location.pathname }} />
       );
     }
-    console.log(data?.data?.role, data?.data?.email, requiredRole);
 
     if (
       !isLoading &&

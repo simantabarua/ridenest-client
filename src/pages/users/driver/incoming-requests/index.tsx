@@ -41,7 +41,6 @@ export default function IncomingRequestsPage() {
       toast.success("Request Declined");
     } catch (error) {
       toast.error("Failed to decline the request. Please try again.");
-      console.log(error);
     }
   };
 

@@ -26,7 +26,6 @@ export const calculateRouteDistance = async (
   const route = json.routes[0];
   const km = (route.distance / 1000).toFixed(2);
   const mins = Math.round(route.duration / 60);
-  console.log({ from: from.name, to: to.name, distance: `${km} km` });
   return {
     distance: `${km} km`,
     time: `${mins} min`,

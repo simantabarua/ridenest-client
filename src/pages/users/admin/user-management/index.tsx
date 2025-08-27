@@ -138,7 +138,6 @@ export default function UserManagementPage() {
       if (res.success) toast.success("User suspended successfully");
     } catch (error) {
       toast.error("Failed to suspend user");
-      console.log(error);
     }
   };
 
@@ -148,11 +147,9 @@ export default function UserManagementPage() {
         userId,
         data: { isActive: "ACTIVE" },
       }).unwrap();
-      console.log(res)
       if (res.success) toast.success("User activated successfully");
     } catch (error) {
       toast.error("Failed to activate user");
-      console.log(error);
     }
   };
 

@@ -38,7 +38,6 @@ export default function RequestRidePage() {
       fare: fare as number,
       totalFare: totalFare as number,
     };
-    console.log(rideInfo);
     try {
       const response = await requestRide(rideInfo).unwrap();
       if (response.success) {

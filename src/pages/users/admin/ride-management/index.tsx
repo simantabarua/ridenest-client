@@ -25,7 +25,6 @@ import { Link } from "react-router";
 export default function AdminRideManagement() {
   const { data: rides, isLoading } = useGetAllRidesQuery(undefined);
   const { data: ridesStats } = useGetRidesStatsQuery(undefined);
-  console.log(rides?.data);
   const stats = ridesStats?.data || [];
   if (isLoading) {
     return (

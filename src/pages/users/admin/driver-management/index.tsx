@@ -19,12 +19,10 @@ export default function DriverManagementPage() {
     useGetDriversQuery(undefined);
   const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
-  console.log(driversData);
   const stats = driverStats?.data || [];
   const drivers = driversData?.data || [];
 
   const handleApproveDriver = async (userId: string) => {
-    console.log({ userId });
     try {
       const res = await updateUser({
         userId,
@@ -34,7 +32,6 @@ export default function DriverManagementPage() {
       if (res.success) toast.success("User suspended successfully");
     } catch (error) {
       toast.error("Failed to suspend user");
-      console.log(error);
     }
   };
   const handleSuspendDriver = async (userId: string) => {
@@ -47,12 +44,10 @@ export default function DriverManagementPage() {
       if (res.success) toast.success("User suspended successfully");
     } catch (error) {
       toast.error("Failed to suspend user");
-      console.log(error);
     }
   };
 
   const handleRejectDriver = async (userId: string) => {
-    console.log({ userId });
 
     try {
       const res = await updateUser({
@@ -63,12 +58,10 @@ export default function DriverManagementPage() {
       if (res.success) toast.success("User activated successfully");
     } catch (error) {
       toast.error("Failed to activate user");
-      console.log(error);
     }
   };
 
   const handleDeleteDriver = async (userId: string) => {
-    console.log(userId);
     try {
       await deleteUser(userId).unwrap();
       toast.success("User deleted successfully");

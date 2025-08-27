@@ -91,7 +91,6 @@ export default function OTPVerifyPage() {
       setShowOtpCard(true);
     } catch (err) {
       setError("Failed to send verification code. Please try again.");
-      console.log(err);
     } finally {
       setEmailLoading(false);
     }
@@ -166,7 +165,6 @@ export default function OTPVerifyPage() {
       if (firstInput) (firstInput as HTMLInputElement).focus();
     } catch (err) {
       setError("Failed to resend code. Please try again.");
-      console.log(err);
     } finally {
       setResendLoading(false);
     }

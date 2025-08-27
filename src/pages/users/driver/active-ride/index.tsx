@@ -53,7 +53,6 @@ export default function ActiveRidePage() {
       toast.success("Request Accepted");
     } catch (error) {
       toast.error("Failed to accept the request. Please try again.");
-      console.log(error);
     }
   };
   if (!activeRide)

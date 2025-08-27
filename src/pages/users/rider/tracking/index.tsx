@@ -57,7 +57,6 @@ export default function TrackingPage() {
   } = useGetActiveRideRiderQuery(undefined);
   const [cancelRide, { isLoading: isCancelling }] = useCancelRideMutation();
   const rideDetails = rides?.data[0];
-  console.log(rideDetails);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

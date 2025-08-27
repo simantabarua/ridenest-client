@@ -58,7 +58,6 @@ export default function RideDetailsPage() {
     totalFare,
     status,
   } = rideDetails;
-  console.log(rideDetails);
 
   return (
     <div className="min-h-screen bg-background">

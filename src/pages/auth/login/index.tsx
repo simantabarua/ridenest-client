@@ -78,7 +78,6 @@ export default function Login() {
       const errorData = err?.data || err?.error || err;
       const errorCode = errorData?.code || "UNKNOWN_ERROR";
       const message = errorData?.message || "Login failed. Please try again.";
-      console.log("Error object:", err, "Parsed message:", message);
       switch (errorCode) {
         case "AUTH_INVALID_CREDENTIALS":
           setError("Email or password does not match");
