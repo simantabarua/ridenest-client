@@ -46,7 +46,12 @@ const profileSchema = z.object({
     .min(3)
     .max(50)
     .regex(/^[A-Za-z\s]+$/),
-  phone: z.string().regex(/^(?:\+8801\d{9}|01\d{9})$/),
+  phone: z
+    .string({ error: "Phone Number must be string" })
+    .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
+      message:
+        "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX ",
+    }),
   dateOfBirth: z.date().optional(),
 });
 
@@ -66,12 +71,27 @@ const passwordSchema = z
     path: ["confirmPassword"],
   });
 
+const emergencyContactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  phone: z
+    .string({ error: "Phone Number must be string" })
+    .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
+      message:
+        "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX ",
+    }),
+  email: z.string().email().optional().or(z.literal("")),
+  relation: z.string().min(1, "Please select a relationship"),
+  isPrimary: z.boolean(),
+});
+
 type ProfileFormData = z.infer<typeof profileSchema>;
 type PasswordFormData = z.infer<typeof passwordSchema>;
+type EmergencyContactFormData = z.infer<typeof emergencyContactSchema>;
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -82,7 +102,7 @@ export default function Profile() {
   const userInfo = user?.data;
   const userType = userInfo?.role?.toLowerCase();
 
-  const form = useForm<ProfileFormData>({
+  const profileForm = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
   });
 
@@ -95,21 +115,40 @@ export default function Profile() {
     },
   });
 
-  useEffect(() => {
-    if (userInfo) {
-      form.reset({
-        name: userInfo.name || "",
-        phone: userInfo.phone?.replace(/^\+88/, "") || "",
-      });
-    }
-  }, [userInfo, form]);
+  const emergencyForm = useForm<EmergencyContactFormData>({
+    resolver: zodResolver(emergencyContactSchema),
+    defaultValues: {
+      name: "",
+      phone: "",
+      email: "",
+      relation: "",
+      isPrimary: false,
+    },
+  });
 
-  const onSubmit: SubmitHandler<ProfileFormData> = async (data) => {
+useEffect(() => {
+  if (userInfo) {
+    profileForm.reset({
+      name: userInfo.name || "",
+      phone: userInfo.phone?.replace(/^\+88/, "") || "",
+    });
+
+    const firstContact = userInfo.emergencyContacts?.[0]; 
+    emergencyForm.reset({
+      name: firstContact?.name || "",
+      phone: firstContact?.phone?.replace(/^\+88/, "") || "",
+      email: firstContact?.email || "",
+      relation: firstContact?.relation || "",
+      isPrimary: firstContact?.isPrimary || false,
+    });
+  }
+}, [userInfo, profileForm, emergencyForm]);
+
+  const handleProfileSubmit: SubmitHandler<ProfileFormData> = async (data) => {
     try {
       const res = await update(data).unwrap();
       if (res.success) toast.success("Profile updated successfully");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch {
       toast.error("Failed to update profile");
     }
     setIsEditing(false);
@@ -126,12 +165,25 @@ export default function Profile() {
         setIsPasswordModalOpen(false);
         passwordForm.reset();
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error?.data?.message) setPasswordError(error.data.message);
-      else if (error?.data?.error) setPasswordError(error.data.error);
-      else setPasswordError("Failed to update password");
+      setPasswordError(error?.data?.message || "Failed to update password");
       toast.error("Failed to update password");
+    }
+  };
+
+  const handleEmergencySubmit: SubmitHandler<EmergencyContactFormData> = async (
+    data
+  ) => {
+    try {
+      const res = await update({ emergencyContacts: [data] }).unwrap();
+      if (res.success) {
+        toast.success("Emergency contact saved successfully");
+        setIsEmergencyModalOpen(false);
+        emergencyForm.reset();
+      }
+    } catch {
+      toast.error("Failed to save emergency contact");
     }
   };
 
@@ -157,30 +209,23 @@ export default function Profile() {
         };
     }
   };
-
   const userBadge = getUserBadge();
 
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl font-bold">My Profile</h1>
               <p className="text-muted-foreground">Manage your account</p>
             </div>
+
             <div className="flex gap-2">
               {/* Password Modal */}
               <Dialog
                 open={isPasswordModalOpen}
-                onOpenChange={(open) => {
-                  setIsPasswordModalOpen(open);
-                  if (!open) {
-                    passwordForm.reset();
-                    setPasswordError(null);
-                  }
-                }}
+                onOpenChange={(open) => setIsPasswordModalOpen(open)}
               >
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm">
@@ -268,21 +313,16 @@ export default function Profile() {
                           )}
                         />
                       ))}
-
                       {passwordError && (
                         <div className="text-sm text-red-500 mt-2 bg-red-50 p-3 rounded-md">
                           {passwordError}
                         </div>
                       )}
-
                       <DialogFooter>
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => {
-                            setIsPasswordModalOpen(false);
-                            setPasswordError(null);
-                          }}
+                          onClick={() => setIsPasswordModalOpen(false)}
                         >
                           Cancel
                         </Button>
@@ -293,10 +333,129 @@ export default function Profile() {
                 </DialogContent>
               </Dialog>
 
+              {/* Emergency Contact Modal */}
+              <Dialog
+                open={isEmergencyModalOpen}
+                onOpenChange={(open) => setIsEmergencyModalOpen(open)}
+              >
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <User className="w-4 h-4 mr-2" /> Emergency
+                    Contact
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Add / Edit Emergency Contact</DialogTitle>
+                    <DialogDescription>
+                      Enter the details of your emergency contact.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Form {...emergencyForm}>
+                    <form
+                      onSubmit={emergencyForm.handleSubmit(
+                        handleEmergencySubmit
+                      )}
+                      className="space-y-4 py-4"
+                    >
+                      <FormField
+                        control={emergencyForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Full Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="John Doe" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emergencyForm.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="1234567890" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emergencyForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email (Optional)</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="john@example.com"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emergencyForm.control}
+                        name="relation"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Relationship</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Spouse, Parent, Friend..."
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={emergencyForm.control}
+                        name="isPrimary"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-2">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={(e) =>
+                                  field.onChange(e.target.checked)
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel>Primary Contact</FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsEmergencyModalOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button type="submit">Save</Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+
+              {/* Edit / Save Profile Button */}
               <Button
                 variant={isEditing ? "default" : "outline"}
                 onClick={() =>
-                  isEditing ? form.handleSubmit(onSubmit)() : setIsEditing(true)
+                  isEditing
+                    ? profileForm.handleSubmit(handleProfileSubmit)()
+                    : setIsEditing(true)
                 }
                 size="sm"
               >
@@ -332,7 +491,7 @@ export default function Profile() {
                 </div>
                 <div className="text-center sm:text-left flex-1">
                   <h2 className="text-xl font-semibold">
-                    {form.watch("name")}
+                    {profileForm.watch("name")}
                   </h2>
                   <div className="flex items-center justify-center sm:justify-start text-muted-foreground gap-1">
                     <Mail className="w-4 h-4" />
@@ -355,13 +514,13 @@ export default function Profile() {
               <CardTitle className="text-lg">Personal Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <Form {...form}>
+              <Form {...profileForm}>
                 <form
-                  onSubmit={form.handleSubmit(onSubmit)}
+                  onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
                   className="grid gap-4"
                 >
                   <FormField
-                    control={form.control}
+                    control={profileForm.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
@@ -374,7 +533,6 @@ export default function Profile() {
                               className="pl-10"
                               disabled={!isEditing}
                               {...field}
-                              value={field.value || ""}
                             />
                           </div>
                         </FormControl>
@@ -383,7 +541,7 @@ export default function Profile() {
                     )}
                   />
                   <FormField
-                    control={form.control}
+                    control={profileForm.control}
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
@@ -392,7 +550,7 @@ export default function Profile() {
                           <div className="relative">
                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <span className="absolute left-8 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                              +88
+                              +880
                             </span>
                             <Input
                               type="tel"

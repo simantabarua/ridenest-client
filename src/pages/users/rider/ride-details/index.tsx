@@ -198,7 +198,6 @@ export default function RideDetailsPage() {
               </CardContent>
             </Card>
 
-            {/* Pricing Breakdown */}
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle>Pricing Breakdown</CardTitle>

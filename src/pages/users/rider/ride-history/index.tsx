@@ -90,18 +90,16 @@ export default function RideHistoryPage() {
                     <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-4 h-4" />
-                        <span>{ride.distance}</span>
+                        <span>{ride.estimatedDistance}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Clock className="w-4 h-4" />
-                        <span>{ride.distance}</span>
+                        <span>{ride.estimatedDistance}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Content */}
                   <div className="flex items-center justify-between lg:justify-end lg:space-x-6 mt-4 lg:mt-0">
-                    {/* Price and Rating */}
                     <div className="text-right space-y-2">
                       <div className="text-xl font-bold">{ride.fare}tk</div>
                     </div>

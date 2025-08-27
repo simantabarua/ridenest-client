@@ -51,6 +51,7 @@ export default function ActiveRidePage() {
       }).unwrap();
 
       toast.success("Request Accepted");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to accept the request. Please try again.");
     }
@@ -124,7 +125,7 @@ export default function ActiveRidePage() {
                         Distance
                       </div>
                       <div className="text-xs md:text-sm text-muted-foreground">
-                        {activeRide.distance}km
+                        {activeRide.estimatedDistance}km
                       </div>
                     </div>
 

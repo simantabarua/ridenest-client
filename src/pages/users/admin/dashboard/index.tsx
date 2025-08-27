@@ -1,4 +1,5 @@
 import DashboardHeader from "@/components/dashboard-header";
+import Loading from "@/components/loading";
 import StatCard from "@/components/module/admin/StatCard";
 import StatsBarChart from "@/components/module/admin/StatsBarChart";
 import UserDistributionChart from "@/components/module/admin/UserDistributionChart";
@@ -44,14 +45,7 @@ export default function AdminDashboard() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <Loading variant="bars" fullScreen />;
   }
 
   return (

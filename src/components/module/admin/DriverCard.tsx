@@ -80,7 +80,7 @@ const DriverCard = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 mt-4 lg:mt-0">
+        <div className="flex lg:flex-col gap-2 mt-4 lg:mt-0">
           <ActionButton
             label={driver.driver?.isApproved ? "Approved" : "Approve"}
             onClick={() => onApprove(driver.driver?._id ?? "")}

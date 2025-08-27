@@ -49,7 +49,7 @@ export default function RideCard({ ride }: RideCardProps) {
                   <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-2">
                     <div className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />
-                      <span>{ride.distance || "5.2 km"}</span>
+                      <span>{ride.estimatedDistance || "-"}</span>
                     </div>
                     <span>•</span>
                     <span>{ride.createdAt}</span>

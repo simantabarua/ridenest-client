@@ -5,9 +5,13 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { UserDropdown } from "@/components/user-drop-down";
+import EmergencySOS from "@/pages/users/emergency/EmergencySOS";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
+    const { data: userData } = useUserInfoQuery(undefined);
+    const userRole = userData?.data?.role?.toLowerCase() || "";
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -25,6 +29,7 @@ export default function DashboardLayout() {
         <main className="flex flex-1 flex-col  bg-muted/30">
           <div className="flex-1 rounded-xl bg-background md:p-6 shadow-sm">
             <Outlet />
+            {userRole === "rider" && <EmergencySOS />}
           </div>
         </main>
       </SidebarInset>
