@@ -16,9 +16,23 @@ export const adminApi = baseApi.injectEndpoints({
         data,
       }),
     }),
+    getAllUserStats: builder.query({
+      query: (data) => ({
+        url: "/admin/users-stats",
+        method: "GET",
+        data,
+      }),
+    }),
     getDriverStats: builder.query({
       query: (data) => ({
         url: "/admin/drivers-stats",
+        method: "GET",
+        data,
+      }),
+    }),
+    getRidesStats: builder.query({
+      query: (data) => ({
+        url: "/admin/rides-stats",
         method: "GET",
         data,
       }),
@@ -36,6 +50,8 @@ export const adminApi = baseApi.injectEndpoints({
 export const {
   useGetAllUserQuery,
   useGetAdminStatsQuery,
-  useGetDriverStatsQuery,
   useGetDriversQuery,
+  useGetDriverStatsQuery,
+  useGetRidesStatsQuery,
+  useGetAllUserStatsQuery,
 } = adminApi;

@@ -1,5 +1,3 @@
-
-
 export interface IRide {
   _id: string;
   rider: {
@@ -16,8 +14,8 @@ export interface IRide {
 
   pickupLocation: string;
   destinationLocation: string;
-  distance?: number;
-  duration?: number;
+  estimatedDistance?: number;
+  estimatedTime?: number;
 
   status:
     | "requested"
@@ -54,4 +52,3 @@ export interface IRequestRideBody {
 export interface ICancelRideBody {
   reason: string;
 }
-

@@ -16,6 +16,7 @@ import type { IRide } from "@/redux/features/ride/ride.types";
 import { Link } from "react-router";
 import RideCard from "@/components/module/ride/RideCard";
 import DashboardHeader from "@/components/dashboard-header";
+import EmergencySOS from "@/pages/test";
 
 export default function RiderDashboard() {
   const { data: recentRides, isLoading } = useGetMyRidesQuery(undefined);
@@ -144,6 +145,8 @@ export default function RiderDashboard() {
             </div>
           )}
         </div>
+
+        <EmergencySOS isActiveRide={true} />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -10,7 +10,7 @@ import {
   Trash2,
   CheckCircle,
   XCircle,
-  AlertTriangle,
+  Users,
   Car,
   Star,
   MapPin,
@@ -21,11 +21,14 @@ import {
   useGetDriverStatsQuery,
   useGetDriversQuery,
 } from "@/redux/features/admin/admin.api";
+import StatCard from "@/components/module/admin/StatCard";
 
 export default function DriverManagementPage() {
-  const { data: stats } = useGetDriverStatsQuery(undefined);
+  const { data: driverStats } = useGetDriverStatsQuery(undefined);
   const { data: driversData } = useGetDriversQuery(undefined);
+  const stats = driverStats?.data || [];
   const drivers = driversData?.data || [];
+
   const handleApproveDriver = (driverId: number) => {
     console.log("Approve driver:", driverId);
   };
@@ -45,7 +48,6 @@ export default function DriverManagementPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Driver Management</h1>
@@ -67,58 +69,14 @@ export default function DriverManagementPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Drivers
-              </CardTitle>
-              <Car className="w-4 h-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.totalDrivers || 0}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Drivers
-              </CardTitle>
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.activeDrivers || 0}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Pending Approval
-              </CardTitle>
-              <AlertTriangle className="w-4 h-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.pendingDrivers || 0}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Online Now
-              </CardTitle>
-              <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.onlineDrivers || 0}
-              </div>
-            </CardContent>
-          </Card>
+          {stats.map((stat: { title: string; value: string }) => (
+            <StatCard
+              key={stat.title}
+              title={stat.title}
+              value={stat.value}
+              icon={Users}
+            />
+          ))}
         </div>
 
         {/* Drivers List */}
@@ -166,34 +124,6 @@ export default function DriverManagementPage() {
                           <span>{driver.location}</span>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Middle Content */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:mb-0">
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Joined
-                      </div>
-                      <div className="font-medium">{driver.joinDate}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Last Active
-                      </div>
-                      <div className="font-medium">{driver.lastActive}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Total Rides
-                      </div>
-                      <div className="font-medium">{driver.totalRides}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Earnings
-                      </div>
-                      <div className="font-medium">{driver.totalEarnings}</div>
                     </div>
                   </div>
 

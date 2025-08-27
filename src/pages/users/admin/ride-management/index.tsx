@@ -14,114 +14,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Eye,
-  MapPin,
-  Clock,
-  Star,
-  User,
-  Car,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-} from "lucide-react";
+import { Eye, MapPin, User, Car, CheckCircle } from "lucide-react";
 import { useGetAllRidesQuery } from "@/redux/features/ride/ride.api";
 import Loading from "@/components/loading";
 import type { IRide } from "@/redux/features/ride/ride.types";
+import { useGetRidesStatsQuery } from "@/redux/features/admin/admin.api";
+import StatCard from "@/components/module/admin/StatCard";
 
 export default function AdminRideManagement() {
   const { data: rides, isLoading } = useGetAllRidesQuery(undefined);
-  
-  // Hardcoded stats data
-  const stats = {
-    total: 1247,
-    completed: 982,
-    inProgress: 45,
-    cancelled: 120,
-    pending: 100
-  };
-
+  const { data: ridesStats } = useGetRidesStatsQuery(undefined);
+  console.log(rides?.data);
+  const stats = ridesStats?.data || [];
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
+        <Loading variant="bars" />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 md:p-6">
+      <div className="container mx-auto space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Ride Management</h1>
-          <p className="text-muted-foreground text-sm md:text-base">
-            Monitor and manage all ride activities
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Ride Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Monitor and manage all ride activities
+            </p>
+          </div>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs md:text-sm font-medium">Total Rides</CardTitle>
-              <MapPin className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="py-2">
-              <div className="text-xl md:text-2xl font-bold">{stats.total}</div>
-              <p className="text-xs text-muted-foreground">All time rides</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs md:text-sm font-medium">Completed</CardTitle>
-              <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
-            </CardHeader>
-            <CardContent className="py-2">
-              <div className="text-xl md:text-2xl font-bold text-green-600">
-                {stats.completed}
-              </div>
-              <p className="text-xs text-muted-foreground">Completed</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs md:text-sm font-medium">In Progress</CardTitle>
-              <Clock className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
-            </CardHeader>
-            <CardContent className="py-2">
-              <div className="text-xl md:text-2xl font-bold text-blue-600">
-                {stats.inProgress}
-              </div>
-              <p className="text-xs text-muted-foreground">Active</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs md:text-sm font-medium">Cancelled</CardTitle>
-              <XCircle className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
-            </CardHeader>
-            <CardContent className="py-2">
-              <div className="text-xl md:text-2xl font-bold text-red-600">
-                {stats.cancelled}
-              </div>
-              <p className="text-xs text-muted-foreground">Cancelled</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs md:text-sm font-medium">Pending</CardTitle>
-              <AlertCircle className="h-3 w-3 md:h-4 md:w-4 text-yellow-500" />
-            </CardHeader>
-            <CardContent className="py-2">
-              <div className="text-xl md:text-2xl font-bold text-yellow-600">
-                {stats.pending}
-              </div>
-              <p className="text-xs text-muted-foreground">Pending</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {stats.map((stat: { title: string; value: string }) => (
+            <StatCard
+              key={stat.title}
+              title={stat.title}
+              value={stat.value}
+              icon={CheckCircle}
+            />
+          ))}
         </div>
-
         {/* Rides Table */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg md:text-xl">All Rides</CardTitle>
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl">All Rides</CardTitle>
             <CardDescription className="text-sm">
               Complete list of all rides in the system
             </CardDescription>
@@ -131,78 +71,126 @@ export default function AdminRideManagement() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs">Ride ID</TableHead>
-                    <TableHead className="text-xs">Rider</TableHead>
-                    <TableHead className="text-xs">Driver</TableHead>
-                    <TableHead className="text-xs">Pickup</TableHead>
-                    <TableHead className="text-xs">Destination</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                    <TableHead className="text-xs">Fare</TableHead>
-                    <TableHead className="text-xs">Distance</TableHead>
-                    <TableHead className="text-xs">Duration</TableHead>
-                    <TableHead className="text-xs">Rating</TableHead>
-                    <TableHead className="text-xs">Date</TableHead>
-                    <TableHead className="text-xs">Actions</TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Ride ID
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">Rider</TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Driver
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Pickup
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Destination
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">Fare</TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Distance
+                    </TableHead>
+                    <TableHead className="text-xs font-medium">
+                      Duration
+                    </TableHead>
+
+                    <TableHead className="text-xs font-medium">Date</TableHead>
+                    <TableHead className="text-xs font-medium text-right">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rides?.data?.map((ride: IRide) => (
-                    <TableRow key={ride._id}>
-                      <TableCell className="font-medium text-xs">
-                        {ride._id?.slice(0, 8) ?? "-"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-1">
-                          <User className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-xs truncate max-w-[60px]">
-                            {ride.rider?.name ?? "-"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-1">
-                          <Car className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-xs truncate max-w-[60px]">
-                            {ride.driver?.name ?? "-"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-xs max-w-[80px] truncate">
-                        {ride.pickupLocation ?? "-"}
-                      </TableCell>
-                      <TableCell className="text-xs max-w-[80px] truncate">
-                        {ride.destinationLocation ?? "-"}
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {ride.status ?? "-"}
-                      </TableCell>
-                      <TableCell className="font-medium text-xs">
-                        {ride.fare ?? "-"}
-                      </TableCell>
-                      <TableCell className="text-xs">{ride.distance ?? "-"}</TableCell>
-                      <TableCell className="text-xs">{ride.duration ?? "-"}</TableCell>
-                      <TableCell>
-                        {ride.rating?.value ? (
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                            <span className="text-xs">{ride.rating.value}</span>
+                  {rides?.data?.length ? (
+                    rides?.data?.map((ride: IRide) => (
+                      <TableRow key={ride._id} className="hover:bg-muted/50">
+                        <TableCell className="font-medium text-xs">
+                          {ride._id?.slice(0, 8) ?? "-"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
+                              <User className="w-3 h-3 text-primary" />
+                            </div>
+                            <span className="text-xs truncate max-w-[80px]">
+                              {ride.rider?.name ?? "-"}
+                            </span>
                           </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {ride.updatedAt
-                          ? new Date(ride.updatedAt).toLocaleDateString()
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                          <Eye className="w-3 h-3" />
-                        </Button>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
+                              <Car className="w-3 h-3 text-primary" />
+                            </div>
+                            <span className="text-xs truncate max-w-[80px]">
+                              {ride.driver?.name ?? "-"}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell
+                          className="text-xs max-w-[100px] truncate"
+                          title={ride.pickupLocation}
+                        >
+                          {ride.pickupLocation ?? "-"}
+                        </TableCell>
+                        <TableCell
+                          className="text-xs max-w-[100px] truncate"
+                          title={ride.destinationLocation}
+                        >
+                          {ride.destinationLocation ?? "-"}
+                        </TableCell>
+                        <TableCell className="text-xs">{ride.status}</TableCell>
+                        <TableCell className="font-medium text-xs">
+                          ${ride.fare ?? "-"}
+                        </TableCell>
+                        <TableCell className="text-xs">
+                          {ride.estimatedDistance ?? "-"} km
+                        </TableCell>
+                        <TableCell className="text-xs">
+                          {ride.estimatedTime != null
+                            ? ride.estimatedTime < 60
+                              ? `${ride.estimatedTime.toFixed(0)} min`
+                              : (() => {
+                                  const hours = Math.floor(
+                                    ride.estimatedTime / 60
+                                  );
+                                  const minutes = ride.estimatedTime % 60;
+                                  return `${hours} hr ${minutes} min`;
+                                })()
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {ride.updatedAt
+                            ? new Date(ride.updatedAt).toLocaleDateString()
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={12} className="text-center py-8">
+                        <div className="flex flex-col items-center justify-center">
+                          <MapPin className="w-12 h-12 text-muted-foreground mb-4" />
+                          <h3 className="text-lg font-semibold mb-2">
+                            No rides found
+                          </h3>
+                          <p className="text-muted-foreground max-w-md mx-auto">
+                            There are no rides in the system yet.
+                          </p>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </div>

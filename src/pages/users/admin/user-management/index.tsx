@@ -1,248 +1,214 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Trash2, UserPlus, UserMinus, Mail, Phone, Users } from "lucide-react";
 import {
-  Download,
-  Eye,
-  Edit,
-  Trash2,
-  UserPlus,
-  UserMinus,
-  Mail,
-  Phone,
-  MapPin,
-  Star,
-  CheckCircle,
-} from "lucide-react";
-import {
-  useGetAdminStatsQuery,
   useGetAllUserQuery,
+  useGetAllUserStatsQuery,
 } from "@/redux/features/admin/admin.api";
 import Loading from "@/components/loading";
+import type { IUser } from "@/types/user.type";
+import StatCard from "@/components/module/admin/StatCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+
+const UserCard = ({
+  user,
+  onSuspend,
+  onActivate,
+  onDelete,
+}: {
+  user: IUser;
+  onSuspend: (id: string) => void;
+  onActivate: (id: string) => void;
+  onDelete: (id: string) => void;
+}) => (
+  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <CardContent className="p-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        {/* User Info */}
+        <div className="flex items-start gap-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center shadow-inner">
+            <span className="text-primary font-bold text-lg">
+              {user.name.charAt(0)}
+            </span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-lg">{user.name}</h3>
+              <Badge
+                variant={user.role === "admin" ? "default" : "secondary"}
+                className="text-xs"
+              >
+                {user.role}
+              </Badge>
+            </div>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                <span>{user.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4" />
+                <span>{user.phone || "No phone"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-2 lg:self-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              onSuspend(user._id as string);
+              toast.success(`User ${user.name} suspended`);
+            }}
+            className="gap-1"
+          >
+            <UserMinus className="w-4 h-4" />
+            Suspend
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              onActivate(user._id as string);
+              toast.success(`User ${user.name} activated`);
+            }}
+            className="gap-1"
+          >
+            <UserPlus className="w-4 h-4" />
+            Activate
+          </Button>
+          
+          {/* Delete Confirmation Dialog */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" className="gap-1">
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the user
+                  <span className="font-semibold"> {user.name}</span> and remove their data
+                  from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    onDelete(user._id as string);
+                    toast.success(`User ${user.name} deleted`);
+                  }}
+                  className="bg-destructive hover:bg-destructive/90"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 export default function UserManagementPage() {
   const { data: users, isLoading } = useGetAllUserQuery(undefined);
-  const { data: stats } = useGetAdminStatsQuery(undefined);
-  console.log(users);
-  const handleSuspendUser = (userId: number) => {
+  const { data: userStats } = useGetAllUserStatsQuery(undefined);
+  const stats = userStats?.data || [];
+  const userList = users?.data?.data || [];
+
+  const handleSuspendUser = (userId: string) =>
     console.log("Suspend user:", userId);
-  };
-
-  const handleActivateUser = (userId: number) => {
+  const handleActivateUser = (userId: string) =>
     console.log("Activate user:", userId);
-  };
-
-  const handleDeleteUser = (userId: number) => {
+  const handleDeleteUser = (userId: string) =>
     console.log("Delete user:", userId);
-  };
 
   if (isLoading) {
-    return <Loading variant="bars" />;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loading variant="bars" />
+      </div>
+    );
   }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">User Management</h1>
-            <p className="text-muted-foreground">
-              Manage all users on the platform
-            </p>
-          </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Button>
-              <UserPlus className="w-4 h-4 mr-2" />
-              Add User
-            </Button>
-            <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+        <div className="mb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">
+                User Management
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Manage all users on the platform
+              </p>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-background rounded-lg border">
+              <Users className="text-muted-foreground" />
+              <span className="font-medium">{userList.length} users</span>
+            </div>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Users
-              </CardTitle>
-              <UserPlus className="w-4 h-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.totalUsers}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Rides
-              </CardTitle>
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.totalRides}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Riders
-              </CardTitle>
-              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.totalRiders}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Drivers
-              </CardTitle>
-              <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats?.data?.totalDrivers}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Users List */}
-        <div className="space-y-4">
-          {users?.data?.data?.map((user) => (
-            <Card
-              key={user.id}
-              className="border-0 shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-                  {/* Left Content */}
-                  <div className="flex items-center space-x-4 mb-4 lg:mb-0">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold">
-                        {user.name}
-                      </span>
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold">{user.name}</h3>
-                        <Badge>{user.status}</Badge>
-                        <Badge>{user.role}</Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        <div className="flex items-center space-x-1">
-                          <Mail className="w-3 h-3" />
-                          <span>{user.email}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Phone className="w-3 h-3" />
-                          <span>{user.phone}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="w-3 h-3" />
-                          <span>{user.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Middle Content */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4 lg:mb-0">
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Joined
-                      </div>
-                      <div className="font-medium">{user.joinDate}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Last Active
-                      </div>
-                      <div className="font-medium">{user.lastActive}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        {user.role === "rider" ? "Spent" : "Earned"}
-                      </div>
-                      <div className="font-medium">
-                        {user.role === "rider"
-                          ? user.totalSpent
-                          : user.totalEarnings}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        {user.role === "rider" ? "Rides" : "Trips"}
-                      </div>
-                      <div className="font-medium">{user.totalRides}</div>
-                    </div>
-                  </div>
-
-                  {/* Right Content */}
-                  <div className="flex items-center justify-between lg:justify-end space-x-2">
-                    {user.rating && (
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{user.rating}</span>
-                      </div>
-                    )}
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      {user.status === "active" ? (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleSuspendUser(user._id)}
-                        >
-                          <UserMinus className="w-4 h-4" />
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleActivateUser(user._id)}
-                        >
-                          <UserPlus className="w-4 h-4" />
-                        </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteUser(user._id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          {stats.map((stat: { title: string; value: string }) => (
+            <StatCard
+              key={stat.title}
+              title={stat.title}
+              value={stat.value}
+              icon={Users}
+            />
           ))}
         </div>
 
-        {users?.data?.data?.length === 0 && (
-          <Card className="border-0 shadow-lg text-center py-12">
+        {/* User List */}
+        {userList.length === 0 ? (
+          <Card className="border-0 shadow-lg text-center py-16">
             <CardContent>
-              <UserPlus className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No users found</h3>
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <UserPlus className="text-muted-foreground" size={40} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">No users found</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                There are no users registered on the platform yet.
+              </p>
             </CardContent>
           </Card>
+        ) : (
+          <div className="space-y-4">
+            {userList.map((user: IUser) => (
+              <UserCard
+                key={user._id}
+                user={user}
+                onSuspend={handleSuspendUser}
+                onActivate={handleActivateUser}
+                onDelete={handleDeleteUser}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
