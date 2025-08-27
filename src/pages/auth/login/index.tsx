@@ -95,7 +95,6 @@ export default function Login() {
     }
   };
 
-
   if (isUserLoading || isLoginLoading) {
     return <Loading fullScreen={true} variant="bars" />;
   }
@@ -267,11 +266,8 @@ export default function Login() {
                   className="w-full"
                   type="button"
                   onClick={() => {
-                    window.open(
-                      "http://localhost:5000/api/v1/auth/google",
-                      "_blank",
-                      "width=500,height=600"
-                    );
+                    window.location.href =
+                      "http://localhost:5000/api/v1/auth/google";
                   }}
                 >
                   <FcGoogle />

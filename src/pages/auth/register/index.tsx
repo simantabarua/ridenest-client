@@ -441,11 +441,8 @@ export default function RegisterPage() {
                     className="w-full mt-6"
                     type="button"
                     onClick={() => {
-                      window.open(
-                        "http://localhost:5000/api/v1/auth/google",
-                        "_blank",
-                        "width=500,height=600"
-                      );
+                      window.location.href =
+                        "http://localhost:5000/api/v1/auth/google";
                     }}
                   >
                     <FcGoogle />
