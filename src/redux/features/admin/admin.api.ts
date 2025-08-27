@@ -8,7 +8,25 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
+      providesTags: ["Users"],
     }),
+    updateUser: builder.mutation({
+      query: ({ userId, data }) => ({
+        url: `/admin/users/${userId}`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: ["User", "Driver"],
+    }),
+
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/admin/users/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users", "Driver"],
+    }),
+
     getAdminStats: builder.query({
       query: (data) => ({
         url: "/admin/dashboard",
@@ -22,6 +40,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
+      providesTags: ["User"],
     }),
     getDriverStats: builder.query({
       query: (data) => ({
@@ -29,6 +48,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
+      providesTags: ["Driver"],
     }),
     getRidesStats: builder.query({
       query: (data) => ({
@@ -36,6 +56,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
+      providesTags: ["Ride"],
     }),
     getDrivers: builder.query({
       query: (data) => ({
@@ -43,6 +64,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
+      providesTags: ["Driver"],
     }),
   }),
 });
@@ -54,4 +76,6 @@ export const {
   useGetDriverStatsQuery,
   useGetRidesStatsQuery,
   useGetAllUserStatsQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
 } = adminApi;

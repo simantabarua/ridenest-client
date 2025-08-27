@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, UserPlus, UserMinus, Mail, Phone, Users } from "lucide-react";
 import {
+  useDeleteUserMutation,
   useGetAllUserQuery,
   useGetAllUserStatsQuery,
+  useUpdateUserMutation,
 } from "@/redux/features/admin/admin.api";
 import Loading from "@/components/loading";
 import type { IUser } from "@/types/user.type";
@@ -31,148 +33,162 @@ const UserCard = ({
   user: IUser;
   onSuspend: (id: string) => void;
   onActivate: (id: string) => void;
-  onDelete: (id: string) => void;
-}) => (
-  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-    <CardContent className="p-6">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        {/* User Info */}
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center shadow-inner">
-            <span className="text-primary font-bold text-lg">
-              {user.name.charAt(0)}
-            </span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-lg">{user.name}</h3>
-              <Badge
-                variant={user.role === "admin" ? "default" : "secondary"}
-                className="text-xs"
-              >
-                {user.role}
-              </Badge>
+  onDelete: (id: string) => Promise<void>;
+}) => {
+  const actionButton = (
+    label: string,
+    Icon: React.ElementType,
+    action: () => void,
+    variant: "outline" | "destructive" = "outline"
+  ) => (
+    <Button variant={variant} size="sm" onClick={action} className="gap-1">
+      <Icon className="w-4 h-4" /> {label}
+    </Button>
+  );
+
+  return (
+    <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <CardContent className="p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {/* User Info */}
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center shadow-inner">
+              <span className="text-primary font-bold text-lg">
+                {user.name.charAt(0)}
+              </span>
             </div>
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>{user.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>{user.phone || "No phone"}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Action Buttons */}
-        <div className="flex gap-2 lg:self-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              onSuspend(user._id as string);
-              toast.success(`User ${user.name} suspended`);
-            }}
-            className="gap-1"
-          >
-            <UserMinus className="w-4 h-4" />
-            Suspend
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              onActivate(user._id as string);
-              toast.success(`User ${user.name} activated`);
-            }}
-            className="gap-1"
-          >
-            <UserPlus className="w-4 h-4" />
-            Activate
-          </Button>
-          
-          {/* Delete Confirmation Dialog */}
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" className="gap-1">
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the user
-                  <span className="font-semibold"> {user.name}</span> and remove their data
-                  from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    onDelete(user._id as string);
-                    toast.success(`User ${user.name} deleted`);
-                  }}
-                  className="bg-destructive hover:bg-destructive/90"
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-semibold text-lg">{user.name}</h3>
+                <Badge
+                  variant={user.role === "admin" ? "default" : "secondary"}
+                  className="text-xs"
                 >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                  {user.role}
+                </Badge>
+              </div>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  <span>{user.email}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  <span>{user.phone || "No phone"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-2 lg:self-center">
+            {actionButton("Suspend", UserMinus, () =>
+              onSuspend(user._id as string)
+            )}
+            {actionButton("Activate", UserPlus, () =>
+              onActivate(user._id as string)
+            )}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                {actionButton("Delete", Trash2, () => {}, "destructive")}
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete{" "}
+                    <span className="font-semibold">{user.name}</span> and their
+                    data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => onDelete(user._id as string)}
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 export default function UserManagementPage() {
   const { data: users, isLoading } = useGetAllUserQuery(undefined);
   const { data: userStats } = useGetAllUserStatsQuery(undefined);
+  const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+
   const stats = userStats?.data || [];
   const userList = users?.data?.data || [];
 
-  const handleSuspendUser = (userId: string) =>
-    console.log("Suspend user:", userId);
-  const handleActivateUser = (userId: string) =>
-    console.log("Activate user:", userId);
-  const handleDeleteUser = (userId: string) =>
-    console.log("Delete user:", userId);
+  const handleSuspendUser = async (userId: string) => {
+    try {
+      const res = await updateUser({
+        userId,
+        data: { isSuspend: true },
+      }).unwrap();
+
+      if (res.success) toast.success("User suspended successfully");
+    } catch (error) {
+      toast.error("Failed to suspend user");
+      console.log(error);
+    }
+  };
+
+  const handleActivateUser = async (userId: string) => {
+    try {
+      const res = await updateUser({
+        userId,
+        data: { isActive: "ACTIVE" },
+      }).unwrap();
+      console.log(res)
+      if (res.success) toast.success("User activated successfully");
+    } catch (error) {
+      toast.error("Failed to activate user");
+      console.log(error);
+    }
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    try {
+      await deleteUser(id).unwrap();
+      toast.success("User deleted successfully");
+    } catch {
+      toast.error("Failed to delete user");
+    }
+  };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loading variant="bars" />
-      </div>
-    );
+    return <Loading variant="bars" />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                User Management
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Manage all users on the platform
-              </p>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-background rounded-lg border">
-              <Users className="text-muted-foreground" />
-              <span className="font-medium">{userList.length} users</span>
-            </div>
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              User Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage all users on the platform
+            </p>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-background rounded-lg border">
+            <Users className="text-muted-foreground" />
+            <span className="font-medium">{userList.length} users</span>
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat: { title: string; value: string }) => (
             <StatCard
@@ -184,7 +200,7 @@ export default function UserManagementPage() {
           ))}
         </div>
 
-        {/* User List */}
+        {/* Users */}
         {userList.length === 0 ? (
           <Card className="border-0 shadow-lg text-center py-16">
             <CardContent>

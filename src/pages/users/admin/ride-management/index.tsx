@@ -20,6 +20,7 @@ import Loading from "@/components/loading";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { useGetRidesStatsQuery } from "@/redux/features/admin/admin.api";
 import StatCard from "@/components/module/admin/StatCard";
+import { Link } from "react-router";
 
 export default function AdminRideManagement() {
   const { data: rides, isLoading } = useGetAllRidesQuery(undefined);
@@ -166,13 +167,15 @@ export default function AdminRideManagement() {
                             : "-"}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
+                          <Link to={`/admin/ride/${ride._id}`}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))

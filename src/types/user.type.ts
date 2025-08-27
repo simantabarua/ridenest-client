@@ -1,3 +1,5 @@
+import type { IDriverInfo } from "./driver.type";
+
 export const IRole = {
   ADMIN: "ADMIN",
   DRIVER: "DRIVER",
@@ -12,11 +14,6 @@ export interface IAuthProvider {
   providerId: string;
 }
 
-export interface IDriverInfo {
-  licenseNumber: string;
-  vehicleType: string;
-}
-
 export interface IRiderInfo {
   defaultPaymentMethod?: string;
 }
@@ -25,7 +22,6 @@ export interface IUser {
   readonly _id?: string;
   name: string;
   email: string;
-  password?: string;
   phone?: string;
   picture?: string;
   address?: string;
@@ -34,10 +30,10 @@ export interface IUser {
   isActive?: string;
   isApproved?: boolean;
   isVerified?: boolean;
-  isSuspended?: boolean;
+  isSuspend?: boolean;
   auths?: IAuthProvider[];
-  driverInfo?: IDriverInfo;
-  riderInfo?: IRiderInfo;
+  driverInfo?: IDriverInfo | string;
+  riderInfo?: IRiderInfo | string;
   agreeToTerms: boolean;
   agreeToMarketing: boolean;
 }
