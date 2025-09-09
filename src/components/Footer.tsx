@@ -1,5 +1,4 @@
 import {
-  Car,
   Mail,
   Phone,
   MapPin,
@@ -9,6 +8,7 @@ import {
   Linkedin,
 } from "lucide-react";
 import { Link } from "react-router";
+import Logo from "./logo";
 
 export default function Footer() {
   const footerLinks = {
@@ -40,9 +40,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Car className="w-8 h-8 text-primary" />
-              <span className="text-xl font-bold">Ridenest</span>
+            <div className="flex justify-start">
+              <Logo />
             </div>
             <p className="text-sm text-muted-foreground">
               Your trusted ride-sharing platform, connecting riders and drivers

@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import { Link } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { UserDropdown } from "./user-drop-down";
+import Logo from "./logo";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,9 +43,7 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="text-xl font-bold">
-            Ridenest
-          </Link>
+          <Logo />
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">

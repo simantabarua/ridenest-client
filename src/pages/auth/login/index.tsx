@@ -30,6 +30,7 @@ import {
   useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
 import Loading from "@/components/loading";
+import DemoLogin from "./components/DemoLogin";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -109,17 +110,7 @@ export default function Login() {
         <div className="max-w-md w-full space-y-8">
           {/* Logo and Title */}
           <div className="text-center">
-            <Link
-              to="/"
-              className="flex items-center justify-center space-x-2 mb-6"
-            >
-              <div className="relative w-10 h-10">
-                <div className="w-10 h-10 flex items-center justify-center">
-                  <Logo />
-                </div>
-              </div>
-              <span className="text-2xl font-bold text-primary">Ridenest</span>
-            </Link>
+            <Logo />
             <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Sign in to your account to continue your journey
@@ -277,6 +268,7 @@ export default function Login() {
               </div>
             </CardContent>
           </Card>
+          <DemoLogin form={form} />
           {/* Help Links */}
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
