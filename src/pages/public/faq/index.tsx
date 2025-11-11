@@ -360,7 +360,7 @@ export default function FAQPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-primary"
+                className="text-lg px-8 py-6 border-white text-white hover:bg-background hover:text-primary"
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Call Us

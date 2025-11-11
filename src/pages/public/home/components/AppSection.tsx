@@ -61,7 +61,7 @@ export default function AppSection() {
               <div className="space-y-4 mb-6">
                 {appFeatures.map((feature, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center flex-shrink-0">
                       <feature.icon className="w-4 h-4 text-primary" />
                     </div>
                     <div>
@@ -75,11 +75,11 @@ export default function AppSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg p-3 text-center">
+                <div className="bg-background rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-primary">1M+</p>
                   <p className="text-xs text-muted-foreground">Active Users</p>
                 </div>
-                <div className="bg-white rounded-lg p-3 text-center">
+                <div className="bg-background rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-primary">50K+</p>
                   <p className="text-xs text-muted-foreground">Daily Rides</p>
                 </div>
@@ -116,10 +116,10 @@ export default function AppSection() {
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-center">App Features</h3>
 
-                <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="bg-background rounded-xl p-6 shadow-lg">
                   <h4 className="font-semibold mb-4">Core Features</h4>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                           <Zap className="w-4 h-4 text-primary" />
@@ -128,7 +128,7 @@ export default function AppSection() {
                       </div>
                       <span className="text-green-600 text-sm">✓</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                           <Shield className="w-4 h-4 text-primary" />
@@ -137,7 +137,7 @@ export default function AppSection() {
                       </div>
                       <span className="text-green-600 text-sm">✓</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                           <Star className="w-4 h-4 text-primary" />
@@ -146,7 +146,7 @@ export default function AppSection() {
                       </div>
                       <span className="text-green-600 text-sm">✓</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                           <Smartphone className="w-4 h-4 text-primary" />
@@ -158,7 +158,7 @@ export default function AppSection() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="bg-background rounded-xl p-6 shadow-lg">
                   <h4 className="font-semibold mb-4">What Users Love</h4>
                   <div className="space-y-3">
                     <div className="p-3 bg-primary/5 rounded-lg">

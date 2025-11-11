@@ -17,11 +17,11 @@ interface LocationProps {
   onRefresh: () => void;
 }
 
-export default function Location({ 
-  currentLocation, 
-  isSharingLocation, 
-  locationError, 
-  onRefresh 
+export default function Location({
+  currentLocation,
+  isSharingLocation,
+  locationError,
+  onRefresh,
 }: LocationProps) {
   return (
     <div className="space-y-3">
@@ -59,7 +59,7 @@ export default function Location({
       )}
       <button
         onClick={onRefresh}
-        className="w-full py-2 px-4 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-500"
+        className="w-full py-2 px-4 border border-gray-300 rounded-md text-sm font-medium hover:bg-background0"
       >
         Refresh Location
       </button>

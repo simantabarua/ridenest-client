@@ -5,17 +5,20 @@ const safetyFeatures = [
   {
     icon: CheckCircle,
     title: "Driver Verification",
-    description: "All drivers undergo comprehensive background checks and vehicle inspections",
+    description:
+      "All drivers undergo comprehensive background checks and vehicle inspections",
   },
   {
     icon: Eye,
     title: "Real-Time Tracking",
-    description: "Share your trip details with loved ones and track your ride in real-time",
+    description:
+      "Share your trip details with loved ones and track your ride in real-time",
   },
   {
     icon: Phone,
     title: "24/7 Support",
-    description: "Our safety team is available around the clock for any concerns",
+    description:
+      "Our safety team is available around the clock for any concerns",
   },
   {
     icon: Shield,
@@ -38,7 +41,7 @@ export default function SafetySection() {
             ride is secure and comfortable.
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {safetyFeatures.map((feature, index) => (
             <div key={index} className="text-center space-y-4">
@@ -77,22 +80,22 @@ export default function SafetySection() {
                 </li>
               </ul>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-lg">
+            <div className="bg-background rounded-xl p-6 shadow-lg">
               <h4 className="font-semibold mb-4">Safety Tips</h4>
               <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="p-3 bg-background rounded-lg">
                   <p className="font-medium text-sm">Verify your driver</p>
                   <p className="text-xs text-muted-foreground">
                     Check the license plate and driver photo before entering
                   </p>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="p-3 bg-background rounded-lg">
                   <p className="font-medium text-sm">Share your trip</p>
                   <p className="text-xs text-muted-foreground">
                     Let friends or family track your journey in real-time
                   </p>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="p-3 bg-background rounded-lg">
                   <p className="font-medium text-sm">Sit in the back</p>
                   <p className="text-xs text-muted-foreground">
                     For your safety and comfort, sit in the back seat

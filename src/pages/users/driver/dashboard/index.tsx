@@ -57,7 +57,7 @@ export default function DriverDashboard() {
                   }`}
                 >
                   {isOnline ? (
-                    <div className="w-6 h-6 bg-white rounded-full animate-pulse"></div>
+                    <div className="w-6 h-6 bg-background rounded-full animate-pulse"></div>
                   ) : (
                     <Pause className="w-6 h-6 text-white" />
                   )}

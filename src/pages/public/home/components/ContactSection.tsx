@@ -113,7 +113,7 @@ export default function ContactSection() {
             </p>
 
             <div className="space-y-4">
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-background rounded-lg p-4">
                 <h4 className="font-semibold mb-2">Emergency Support</h4>
                 <p className="text-2xl font-bold text-primary mb-2">
                   1-800-EMERGENCY
@@ -123,7 +123,7 @@ export default function ContactSection() {
                 </p>
               </div>
 
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-background rounded-lg p-4">
                 <h4 className="font-semibold mb-2">Business Inquiries</h4>
                 <p className="text-lg font-medium mb-2">
                   partnerships@ridenest.com
@@ -133,7 +133,7 @@ export default function ContactSection() {
                 </p>
               </div>
 
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-background rounded-lg p-4">
                 <h4 className="font-semibold mb-2">Media Contact</h4>
                 <p className="text-lg font-medium mb-2">media@ridenest.com</p>
                 <p className="text-sm text-muted-foreground">

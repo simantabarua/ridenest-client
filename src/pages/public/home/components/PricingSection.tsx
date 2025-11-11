@@ -132,7 +132,7 @@ export default function PricingSection() {
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-lg">
+            <div className="bg-background rounded-xl p-6 shadow-lg">
               <h4 className="font-semibold mb-4">Price Estimate Example</h4>
               <div className="space-y-3">
                 <div className="flex justify-between">
@@ -153,7 +153,8 @@ export default function PricingSection() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-4">
-                *Actual prices may vary based on traffic, route, and other factors
+                *Actual prices may vary based on traffic, route, and other
+                factors
               </p>
             </div>
           </div>
