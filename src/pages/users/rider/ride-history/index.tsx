@@ -12,22 +12,23 @@ export default function RideHistoryPage() {
   }
 
   return (
-    <div className="pb-10">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Ride History</h1>
-          <p className="text-muted-foreground">
-            View all your past rides and trips
-          </p>
-        </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Ride History
+        </h1>
+        <p className="text-muted-foreground mt-2 text-lg">
+          View all your past rides and trips
+        </p>
+      </div>
 
-        {/* Ride List */}
-        <div className="space-y-5">
-          {rides?.data?.map((ride: IRide) => (
-            <RideCard key={ride._id} ride={ride} />
-          ))}
-        </div>
+      {/* Ride List */}
+      <div className="grid gap-6">
+        {rides?.data?.map((ride: IRide) => (
+          <RideCard key={ride._id} ride={ride} />
+        ))}
+      </div>
 
         {rides?.data?.length === 0 && (
           <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed border-border">
@@ -37,6 +38,5 @@ export default function RideHistoryPage() {
           </div>
         )}
       </div>
-    </div>
   );
 }

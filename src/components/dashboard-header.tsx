@@ -6,17 +6,17 @@ export default function DashboardHeader() {
   const { name, role } = userInfo?.data || {};
 
   return (
-    <div className="mb-8 text-center sm:text-left">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
+    <div className="mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <h1 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl tracking-tight">
           Welcome back, {name}!
         </h1>
-        <Badge variant="secondary" className="self-start sm:self-center">
+        <Badge variant="secondary" className="w-fit h-6 px-3 text-xs font-semibold uppercase tracking-wider bg-primary/10 text-primary border-0">
           {role}
         </Badge>
       </div>
-      <p className="text-muted-foreground mt-2 text-lg">
-        Here's your dashboard overview
+      <p className="text-muted-foreground mt-2 text-base sm:text-lg leading-relaxed max-w-2xl">
+        Here's your dashboard overview for today.
       </p>
     </div>
   );

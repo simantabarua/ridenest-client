@@ -51,99 +51,105 @@ export default function RiderDashboard() {
   }
 
   return (
-    <div className="pb-10">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <DashboardHeader />
+    <div className="space-y-10">
+      {/* Header */}
+      <DashboardHeader />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-          {stats.map(
-            (stat: { title: string; value: string }, index: number) => (
-              <Card
-                key={index}
-                className="border border-border shadow-sm hover:shadow-md transition-shadow"
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div className="p-2 rounded-full bg-primary/10 text-primary">
-                    {statIcons[index]}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map(
+          (stat: { title: string; value: string }, index: number) => (
+            <Card
+              key={index}
+              className="border border-border bg-background shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  {stat.title}
+                </CardTitle>
+                <div className="p-2.5 rounded-xl bg-primary/5 text-primary">
+                  {statIcons[index]}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
+              </CardContent>
+            </Card>
+          )
+        )}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          Quick Actions
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {quickActions.map((action, index) => (
+            <Card
+              key={index}
+              className="border border-border bg-background shadow-sm overflow-hidden hover:shadow-md transition-all duration-200"
+            >
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`w-14 h-14 ${action.color} rounded-2xl flex items-center justify-center shrink-0 shadow-sm`}
+                  >
+                    <action.icon className="w-7 h-7 text-primary-foreground" />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
-                    {stat.value}
+                  <div>
+                    <CardTitle className="text-xl font-bold text-foreground">
+                      {action.title}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground mt-1 line-clamp-1">
+                      {action.description}
+                    </CardDescription>
                   </div>
-                </CardContent>
-              </Card>
-            )
-          )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full h-11 font-semibold shadow-sm transition-transform active:scale-[0.98]">
+                  <Link to={action.action}>
+                    Get Started
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Rides */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Recent Rides</h2>
+          <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary/80">
+             <Link to="/rider/ride-history">View All</Link>
+          </Button>
         </div>
 
-        {/* Quick Actions */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold text-foreground mb-6">
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {quickActions.map((action, index) => (
-              <Card
-                key={index}
-                className="border border-border shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-center">
-                    <div
-                      className={`w-14 h-14 ${action.color} rounded-xl flex items-center justify-center mr-4`}
-                    >
-                      <action.icon className="w-7 h-7 text-primary-foreground" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl text-foreground">
-                        {action.title}
-                      </CardTitle>
-                      <CardDescription className="text-muted-foreground mt-1">
-                        {action.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild className="w-full">
-                    <Link to={action.action}>
-                      Get Started
-                      <ArrowRight className="ml-2 w-4 h-4" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+        {recentRides?.data?.length === 0 ? (
+          <Card className="border border-border border-dashed bg-muted/10 p-12 text-center">
+            <div className="max-w-xs mx-auto">
+              <Car className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">
+                You don't have any recent rides yet
+              </p>
+              <Button asChild className="mt-6 shadow-sm">
+                 <Link to="/rider/request-ride">Book Your First Ride</Link>
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid gap-6">
+            {recentRides?.data?.map((ride: IRide) => (
+              <RideCard key={ride._id} ride={ride} />
             ))}
           </div>
-        </div>
-
-        {/* Recent Rides */}
-        <div>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-            <h2 className="text-2xl font-bold text-foreground">Recent Rides</h2>
-          </div>
-
-          {recentRides?.data?.length === 0 ? (
-            <Card className="border border-border p-8 text-center">
-              <p className="text-muted-foreground">
-                You don't have any recent rides
-              </p>
-              <Button className="mt-4">Book Your First Ride</Button>
-            </Card>
-          ) : (
-            <div className="space-y-5">
-              {recentRides?.data?.map((ride: IRide) => (
-                <RideCard key={ride._id} ride={ride} />
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Car, MapPin, DollarSign, Calendar } from "lucide-react";
+import { ArrowRight, Car, MapPin,  Calendar } from "lucide-react";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { Link } from "react-router";
 
