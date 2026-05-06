@@ -46,11 +46,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { data: user, isLoading: isUserLoading } = useUserInfoQuery(undefined);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
+
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -60,6 +56,21 @@ export default function Login() {
       rememberMe: false,
     },
   });
+
+  useEffect(() => {
+    if (user?.success && user.data) {
+      const role = user.data.role;
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (role === "DRIVER") {
+        navigate("/driver/dashboard");
+      } else if (role === "RIDER") {
+        navigate("/rider/dashboard");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [user, navigate]);
 
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
@@ -72,7 +83,16 @@ export default function Login() {
     try {
       const response = await login(userInfo).unwrap();
       if (response.success) {
-        navigate("/");
+        const role = response.data?.user?.role || response.data?.role;
+        if (role === "ADMIN" || role === "SUPER_ADMIN") {
+          navigate("/admin/dashboard");
+        } else if (role === "DRIVER") {
+          navigate("/driver/dashboard");
+        } else if (role === "RIDER") {
+          navigate("/rider/dashboard");
+        } else {
+          navigate("/");
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
