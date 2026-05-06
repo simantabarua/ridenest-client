@@ -98,6 +98,7 @@ export const router = createBrowserRouter([
       { path: "ride-history", Component: RideHistoryDriver },
       { path: "profile", Component: ProfileDriver },
       { path: "update-driver-profile", Component: ApplyDriver },
+      { path: "ride/:rideId", Component: RideDetails },
     ],
   },
   {

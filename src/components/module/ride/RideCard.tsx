@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Car, MapPin, Calendar, Clock, Navigation2, MoreHorizontal } from "lucide-react";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { Link } from "react-router";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 
 interface RideCardProps {
   ride: IRide;
 }
 
 export default function RideCard({ ride }: RideCardProps) {
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  const userRole = userInfo?.data?.role?.toLowerCase();
+
   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
@@ -25,6 +29,9 @@ export default function RideCard({ ride }: RideCardProps) {
           label: "Cancelled"
         };
       case "in_progress":
+      case "accepted":
+      case "ongoing":
+      case "intransit":
         return {
           color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
           dot: "bg-amber-500 animate-pulse",
@@ -60,6 +67,8 @@ export default function RideCard({ ride }: RideCardProps) {
   };
 
   const { date, time } = formatDate(ride.createdAt);
+
+  const detailPath = userRole ? `/${userRole}/ride/${ride._id}` : `/rider/ride/${ride._id}`;
 
   return (
     <Card className="group relative overflow-hidden border-border/50 bg-card/40 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1">
@@ -145,7 +154,7 @@ export default function RideCard({ ride }: RideCardProps) {
           
           <div className="flex items-center gap-2">
             <Button variant="secondary" size="sm" asChild className="h-9 px-4 font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-              <Link to={`/rider/ride/${ride._id}`}>
+              <Link to={detailPath}>
                 View Details
               </Link>
             </Button>
