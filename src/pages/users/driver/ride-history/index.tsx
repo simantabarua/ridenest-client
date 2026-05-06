@@ -26,7 +26,7 @@ export default function RideHistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
       <div >
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -45,7 +45,7 @@ export default function RideHistoryPage() {
         </div>
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 py-6 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Rides
@@ -56,7 +56,7 @@ export default function RideHistoryPage() {
               <div className="text-2xl font-bold">50</div>
             </CardContent>
           </Card>
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 py-6 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Completed
@@ -67,7 +67,7 @@ export default function RideHistoryPage() {
               <div className="text-2xl font-bold">25</div>
             </CardContent>
           </Card>
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 py-6 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Spent
@@ -78,7 +78,7 @@ export default function RideHistoryPage() {
               <div className="text-2xl font-bold">$2,500</div>
             </CardContent>
           </Card>
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 py-6 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Avg Rating

@@ -70,7 +70,7 @@ export default function ActiveRidePage() {
     );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
@@ -89,7 +89,7 @@ export default function ActiveRidePage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Trip Details */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">
                   Trip Details
@@ -143,7 +143,7 @@ export default function ActiveRidePage() {
             </Card>
 
             {/* Passenger Info */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">
                   Passenger Information
@@ -171,7 +171,7 @@ export default function ActiveRidePage() {
             </Card>
 
             {/* Trip Progress */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">
                   Trip Progress

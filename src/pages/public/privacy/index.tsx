@@ -90,7 +90,7 @@ export default function PrivacyPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen  p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Privacy Policy</h1>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
         </div>
 
         {/* Overview */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 py-6 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-primary" />

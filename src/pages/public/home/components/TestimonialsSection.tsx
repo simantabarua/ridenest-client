@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border-0 shadow-lg">
+            <Card key={index} className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="flex items-center space-x-2 mb-2">
                   {[...Array(testimonial.rating)].map((_, i) => (

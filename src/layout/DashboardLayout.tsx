@@ -28,7 +28,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Standardized Main Content Area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-background">
           <div className="max-w-7xl mx-auto w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             <div className="space-y-8">
               <Outlet />

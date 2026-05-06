@@ -48,7 +48,7 @@ export default function FeaturesSection() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((feature, index) => (
-            <Card key={index} className="text-center border-0 shadow-lg">
+            <Card key={index} className="text-center border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <feature.icon className="w-8 h-8 text-primary" />

@@ -117,7 +117,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             {contactInfo.map((info, index) => (
-              <Card key={index} className="text-center border-0 shadow-lg">
+              <Card key={index} className="text-center border-0 py-6 shadow-lg">
                 <CardHeader>
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <info.icon className="w-8 h-8 text-primary" />
@@ -148,7 +148,7 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              <Card className="border-0 shadow-lg">
+              <Card className="border-0 py-6 shadow-lg">
                 <CardHeader>
                   <CardTitle>Contact Form</CardTitle>
                   <CardDescription>
@@ -287,7 +287,7 @@ export default function ContactPage() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Building className="w-6 h-6 text-primary" />
@@ -300,7 +300,7 @@ export default function ContactPage() {
                 <p className="text-muted-foreground">Hours: 9AM-6PM EST</p>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Building className="w-6 h-6 text-primary" />
@@ -315,7 +315,7 @@ export default function ContactPage() {
                 <p className="text-muted-foreground">Hours: 9AM-6PM PST</p>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Building className="w-6 h-6 text-primary" />

@@ -59,7 +59,7 @@ export default function AdminRideManagement() {
           ))}
         </div>
         {/* Rides Table */}
-        <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 py-4">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl">All Rides</CardTitle>
             <CardDescription className="text-sm">

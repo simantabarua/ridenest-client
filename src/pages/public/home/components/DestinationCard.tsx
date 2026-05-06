@@ -292,10 +292,10 @@ const DestinationCard = ({
   const clearError = () => setError(null);
 
   return (
-    <div className="relative mx-auto w-full flex-1 container">
-      <Card className="border-0 shadow-lg">
+    <div className="relative mx-auto w-full flex-1 container ">
+      <Card className="border-0 py-6 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-foreground">
+          <CardTitle className="text-2xl font-bold text-foreground ">
             Trip Details
           </CardTitle>
         </CardHeader>

@@ -157,7 +157,7 @@ export default function TrackingPage() {
   ].filter((step) => step.time);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
           <div className="mb-4 md:mb-0">
@@ -173,7 +173,7 @@ export default function TrackingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-6">
             {/* Ride Status Card */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3 md:pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
@@ -201,7 +201,7 @@ export default function TrackingPage() {
 
             {/* Driver Card */}
             {driver && (
-              <Card className="border-0 shadow-lg">
+              <Card className="border-0 py-6 shadow-lg">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg md:text-xl flex items-center gap-2">
                     <User className="h-5 w-5" />
@@ -242,7 +242,7 @@ export default function TrackingPage() {
             )}
 
             {/* Trip Progress Card */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl flex items-center gap-2">
                   <Navigation className="h-5 w-5" />
@@ -313,7 +313,7 @@ export default function TrackingPage() {
 
           <div className="space-y-6">
             {/* Trip Details Card */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
@@ -377,7 +377,7 @@ export default function TrackingPage() {
             </Card>
 
             {/* Actions Card */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">Actions</CardTitle>
               </CardHeader>

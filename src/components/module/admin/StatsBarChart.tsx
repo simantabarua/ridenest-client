@@ -24,7 +24,7 @@ interface StatsBarChartProps {
 }
 
 const StatsBarChart = ({ data }: StatsBarChartProps) => (
-  <Card className="border-0 shadow-lg">
+  <Card className="border-0 shadow-lg py-6">
     <CardHeader>
       <CardTitle>Statistics Overview</CardTitle>
     </CardHeader>

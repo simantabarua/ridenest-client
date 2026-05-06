@@ -18,7 +18,7 @@ const UserDistributionChart = ({
   ];
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 py-6 shadow-lg">
       <CardHeader>
         <CardTitle>User Distribution</CardTitle>
       </CardHeader>

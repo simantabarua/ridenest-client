@@ -36,7 +36,7 @@ export default function RideDetailsPage() {
 
   if (!rideDetails) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">No Ride Found</h1>
           <p className="text-muted-foreground">
@@ -60,7 +60,7 @@ export default function RideDetailsPage() {
   } = rideDetails;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
       <div >
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -75,7 +75,7 @@ export default function RideDetailsPage() {
 
           <div className="grid grid-cols-1 gap-4">
             {/* Ride Status */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -150,7 +150,7 @@ export default function RideDetailsPage() {
             </Card>
 
             {/* Driver Information */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <CardTitle>Your Driver</CardTitle>
               </CardHeader>
@@ -189,7 +189,7 @@ export default function RideDetailsPage() {
             </Card>
 
             {/* Timeline */}
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <CardTitle>Trip Timeline</CardTitle>
               </CardHeader>
@@ -198,7 +198,7 @@ export default function RideDetailsPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 py-6 shadow-lg">
               <CardHeader>
                 <CardTitle>Pricing Breakdown</CardTitle>
               </CardHeader>
