@@ -115,7 +115,7 @@ export default function ContactPage() {
       {/* Contact Information */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             {contactInfo.map((info, index) => (
               <Card key={index} className="text-center border-0 shadow-lg">
                 <CardHeader>
@@ -286,7 +286,7 @@ export default function ContactPage() {
               nearest to you.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">

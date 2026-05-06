@@ -37,7 +37,7 @@ export default function HowItWorksSection() {
             reach your destination.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {howItWorks.map((step, index) => (
             <div key={index} className="text-center space-y-4">
               <div className="w-20 h-20 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">

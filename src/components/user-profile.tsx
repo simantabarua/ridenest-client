@@ -212,7 +212,7 @@ useEffect(() => {
   const userBadge = getUserBadge();
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className=" min-h-screen ">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -475,7 +475,7 @@ useEffect(() => {
           {/* Profile Card */}
           <Card className="mb-6">
             <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row gap-6 items-center">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <div className="relative">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                     <User className="w-8 h-8 text-primary" />

@@ -52,7 +52,7 @@ export default function RideCard({ ride }: RideCardProps) {
           ></div>
           
           <div className="flex-1 p-5">
-            <div className="flex flex-col lg:flex-row gap-6 justify-between">
+            <div className="flex flex-col lg:flex-row gap-4 justify-between">
               {/* Left Side: Ride Details */}
               <div className="flex items-start gap-4 flex-1 min-w-0">
                 <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-colors">

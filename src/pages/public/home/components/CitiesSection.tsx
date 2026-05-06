@@ -54,7 +54,7 @@ export default function CitiesSection() {
             more locations coming soon.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {cities.map((city, index) => (
             <div
               key={index}

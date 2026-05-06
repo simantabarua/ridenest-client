@@ -105,7 +105,7 @@ export default function AboutPage() {
       {/* Stats Section */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat, index) => (
               <Card key={index} className="text-center border-0 shadow-lg">
                 <CardHeader>
@@ -193,7 +193,7 @@ export default function AboutPage() {
               company.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
               <Card key={index} className="text-center border-0 shadow-lg">
                 <CardHeader>
@@ -226,7 +226,7 @@ export default function AboutPage() {
               transportation.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {team.map((member, index) => (
               <Card key={index} className="text-center border-0 shadow-lg">
                 <CardHeader>

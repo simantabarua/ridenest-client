@@ -64,7 +64,7 @@ export default function DriverSection() {
               <h3 className="text-2xl font-bold mb-6">
                 Why Drive With Ridenest?
               </h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 {driverBenefits.map((benefit, index) => (
                   <div key={index} className="flex items-start space-x-3">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">

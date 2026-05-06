@@ -61,7 +61,7 @@ export default function RideDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div >
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -73,7 +73,7 @@ export default function RideDetailsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-4">
             {/* Ride Status */}
             <Card className="border-0 shadow-lg">
               <CardHeader>

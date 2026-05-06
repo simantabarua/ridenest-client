@@ -242,7 +242,7 @@ export default function FAQPage() {
               <Badge variant="secondary">Popular Questions</Badge>
               <h2 className="text-3xl font-bold">Most Frequently Asked</h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {popularQuestions.map((faq) => (
                 <Card
                   key={faq.id}

@@ -116,8 +116,8 @@ export default function ApplyDriver() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 max-w-lg">
+    <div className=" min-h-screen ">
+      <div  >
         <Card className="shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl font-semibold">
@@ -133,7 +133,7 @@ export default function ApplyDriver() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="grid gap-6"
+                className="grid gap-4"
                 noValidate
               >
                 <div className="space-y-4">

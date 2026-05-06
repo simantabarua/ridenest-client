@@ -56,7 +56,7 @@ export default function RiderDashboard() {
       <DashboardHeader />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(
           (stat: { title: string; value: string }, index: number) => (
             <Card
@@ -86,7 +86,7 @@ export default function RiderDashboard() {
         <h2 className="text-2xl font-bold tracking-tight text-foreground">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickActions.map((action, index) => (
             <Card
               key={index}
@@ -144,7 +144,7 @@ export default function RiderDashboard() {
             </div>
           </Card>
         ) : (
-          <div className="grid gap-6">
+          <div className="grid gap-4">
             {recentRides?.data?.map((ride: IRide) => (
               <RideCard key={ride._id} ride={ride} />
             ))}

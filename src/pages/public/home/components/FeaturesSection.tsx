@@ -46,7 +46,7 @@ export default function FeaturesSection() {
             features designed for your comfort and safety.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((feature, index) => (
             <Card key={index} className="text-center border-0 shadow-lg">
               <CardHeader>

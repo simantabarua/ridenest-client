@@ -303,7 +303,7 @@ const DestinationCard = ({
           <div
             className={`grid grid-cols-1 ${
               showMap ? "lg:grid-cols-2" : ""
-            } gap-6`}
+            } gap-4`}
           >
             <div className="space-y-4">
               {/* Pickup Location */}

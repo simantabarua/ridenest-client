@@ -150,7 +150,7 @@ export default function GuidelinesPage() {
         </div>
 
         {/* Role-Specific Guidelines */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {riderGuidelines.map((section, index) => (
             <Card key={index}>
               <CardHeader>

@@ -24,7 +24,7 @@ export default function RideHistoryPage() {
       </div>
 
       {/* Ride List */}
-      <div className="grid gap-6">
+      <div className="grid gap-4">
         {rides?.data?.map((ride: IRide) => (
           <RideCard key={ride._id} ride={ride} />
         ))}
