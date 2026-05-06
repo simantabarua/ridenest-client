@@ -66,15 +66,17 @@ export default function EmergencySOS() {
   };
 
   return (
-    <div className="fixed bottom-24 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 sm:bottom-10 sm:right-10">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
             size="lg"
-            className="rounded-full w-24 h-24 bg-red-600 hover:bg-red-700 text-white shadow-lg flex items-center justify-center animate-pulse"
+            className="rounded-full w-16 h-16 sm:w-24 sm:h-24 bg-red-600 hover:bg-red-700 text-white shadow-xl flex items-center justify-center animate-pulse"
           >
-            <AlertTriangle className="w-8 h-8" />
-            <span>SOS</span>
+            <div className="flex flex-col items-center">
+              <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8" />
+              <span className="text-[10px] sm:text-xs font-bold mt-1">SOS</span>
+            </div>
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">

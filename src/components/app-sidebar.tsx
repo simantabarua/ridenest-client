@@ -64,7 +64,6 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-4 py-3">
           <Logo />
-          <span className="text-lg font-semibold tracking-tight">Ridenest</span>
         </div>
       </SidebarHeader>
 

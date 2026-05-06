@@ -37,8 +37,8 @@ export default function DriverDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+    <div className="pb-10">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <DashboardHeader />
 
