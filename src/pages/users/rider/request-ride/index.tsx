@@ -58,7 +58,7 @@ export default function RequestRidePage() {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-4xl">
           Request a Ride
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">

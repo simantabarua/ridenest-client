@@ -3,9 +3,11 @@ import Loading from "@/components/loading";
 import StatCard from "@/components/module/admin/StatCard";
 import StatsBarChart from "@/components/module/admin/StatsBarChart";
 import UserDistributionChart from "@/components/module/admin/UserDistributionChart";
+import RecentRidesTable from "@/components/module/admin/RecentRidesTable";
+import RecentUsersList from "@/components/module/admin/RecentUsersList";
 import { useGetAdminStatsQuery } from "@/redux/features/admin/admin.api";
-
-import { Users, Car, User, Route, DollarSign } from "lucide-react";
+import { Users, Car, User, Route, DollarSign, Activity, Bell, Settings, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface StatItem {
   title: string;
@@ -49,25 +51,40 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen ">
-      <div >
+    <div className="min-h-screen py-4 px-4 sm:px-6 lg:px-8 space-y-4 animate-in fade-in duration-700">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <DashboardHeader />
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          {stats.map((stat: StatItem, index: number) => (
-            <StatCard
-              key={index}
-              title={stat.title}
-              value={stat.value}
-              icon={iconMap[stat.title] || Users}
-            />
-          ))}
-        </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {stats.map((stat: StatItem, index: number) => (
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            icon={iconMap[stat.title] || Users}
+          />
+        ))}
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Analytics Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
           <StatsBarChart data={barChartData} />
+        </div>
+        <div>
           <UserDistributionChart drivers={totalDrivers} riders={totalRiders} />
+        </div>
+      </div>
+
+      {/* Activity Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-8">
+        <div className="lg:col-span-2">
+          <RecentRidesTable />
+        </div>
+        <div>
+          <RecentUsersList />
         </div>
       </div>
     </div>

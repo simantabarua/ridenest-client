@@ -117,7 +117,7 @@ export default function RideCard({ ride }: RideCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">Pickup</p>
               <p className="font-normal text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.pickupLocation}>

@@ -78,7 +78,7 @@ export default function DriverManagementPage() {
         {/* Header */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-xl font-bold tracking-tight">
               Driver Management
             </h1>
             <p className="text-muted-foreground mt-1">
