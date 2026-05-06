@@ -56,7 +56,7 @@ export default function ContactSection() {
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <Badge variant="secondary">Get In Touch</Badge>
-          <h2 className="text-3xl lg:text-4xl font-bold">We're Here to Help</h2>
+          <h2 className="text-3xl lg:text-2xl font-bold">We're Here to Help</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Have questions or need assistance? Our support team is available
             24/7 to ensure you have the best experience possible.

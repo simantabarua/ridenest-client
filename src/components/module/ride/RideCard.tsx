@@ -120,7 +120,7 @@ export default function RideCard({ ride }: RideCardProps) {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-6">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">Pickup</p>
-              <p className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.pickupLocation}>
+              <p className="font-normal text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.pickupLocation}>
                 {ride.pickupLocation}
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function RideCard({ ride }: RideCardProps) {
             
             <div className="space-y-1 lg:text-right">
               <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">Destination</p>
-              <p className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.destinationLocation}>
+              <p className="font-normal text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.destinationLocation}>
                 {ride.destinationLocation}
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function RideCard({ ride }: RideCardProps) {
           <div className="text-right">
             <div className="flex items-baseline justify-end gap-1">
               <span className="text-sm font-medium text-muted-foreground">৳</span>
-              <span className="text-3xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors">
+              <span className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
                 {ride.fare}
               </span>
             </div>

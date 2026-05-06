@@ -159,7 +159,7 @@ export default function TrackingPage() {
   return (
     <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-4">
           <div className="mb-4 md:mb-0">
             <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
               Track Your Ride

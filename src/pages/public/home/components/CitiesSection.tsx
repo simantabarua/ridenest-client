@@ -46,7 +46,7 @@ export default function CitiesSection() {
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <Badge variant="secondary">Available Cities</Badge>
-          <h2 className="text-3xl lg:text-4xl font-bold">
+          <h2 className="text-3xl lg:text-2xl font-bold">
             We're Growing Every Day
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

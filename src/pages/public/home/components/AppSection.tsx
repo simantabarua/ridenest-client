@@ -27,7 +27,7 @@ export default function AppSection() {
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <Badge variant="secondary">Download Our App</Badge>
-          <h2 className="text-3xl lg:text-4xl font-bold">
+          <h2 className="text-3xl lg:text-2xl font-bold">
             Ridenest in Your Pocket
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -37,7 +37,7 @@ export default function AppSection() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <div className="space-y-4">
             <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">

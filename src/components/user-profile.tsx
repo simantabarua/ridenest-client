@@ -215,7 +215,7 @@ useEffect(() => {
     <div className=" min-h-screen ">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
             <div>
               <h1 className="text-2xl font-bold">My Profile</h1>
               <p className="text-muted-foreground">Manage your account</p>

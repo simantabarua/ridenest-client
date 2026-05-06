@@ -13,11 +13,11 @@ export default function RideHistoryPage() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 py-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="container max-w-7xl mx-auto px-4 py-4 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-4xl font-black tracking-tight text-foreground">
+          <h1 className="text-2xl font-medium tracking-tight text-foreground">
             Ride History
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl">
@@ -36,7 +36,7 @@ export default function RideHistoryPage() {
       </div>
 
       {/* Ride List */}
-      <div className="grid gap-6">
+      <div className="grid gap-4">
         {rides?.data?.map((ride: IRide) => (
           <RideCard key={ride._id} ride={ride} />
         ))}

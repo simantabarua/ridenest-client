@@ -185,11 +185,11 @@ export default function FAQPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-6">
             <Badge variant="secondary">Help Center</Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold">
+            <h1 className="text-2xl lg:text-5xl font-bold">
               Frequently Asked
               <span className="text-primary"> Questions</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground  mx-auto">
               Find answers to common questions about Ridenest. Can't find what
               you're looking for? Our support team is here to help 24/7.
             </p>
@@ -238,7 +238,7 @@ export default function FAQPage() {
       {searchQuery === "" && activeCategory === "all" && (
         <section className="py-12 bg-background">
           <div className="container mx-auto px-4">
-            <div className="text-center space-y-4 mb-8">
+            <div className="text-center space-y-4 mb-4">
               <Badge variant="secondary">Popular Questions</Badge>
               <h2 className="text-3xl font-bold">Most Frequently Asked</h2>
             </div>
@@ -340,8 +340,8 @@ export default function FAQPage() {
       {/* Still Need Help */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold">
+          <div className=" mx-auto space-y-6">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               Still Have Questions?
             </h2>
             <p className="text-xl opacity-90">

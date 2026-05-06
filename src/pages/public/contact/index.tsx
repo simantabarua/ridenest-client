@@ -100,11 +100,11 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-6">
             <Badge variant="secondary">Contact Us</Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold">
+            <h1 className="text-2xl lg:text-5xl font-bold">
               Get in Touch with
               <span className="text-primary"> Ridenest</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground  mx-auto">
               We're here to help! Whether you have questions, feedback, or need
               support, our team is ready to assist you 24/7.
             </p>
@@ -278,7 +278,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
             <Badge variant="secondary">Our Locations</Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               Visit Our Offices
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -337,8 +337,8 @@ export default function ContactPage() {
       {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold">
+          <div className=" mx-auto space-y-6">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               Ready to Get Started?
             </h2>
             <p className="text-xl opacity-90">

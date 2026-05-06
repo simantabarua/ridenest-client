@@ -24,7 +24,7 @@ const StatCard = ({ title, value, icon: Icon, className, trend }: StatCardProps)
         <div className="space-y-1">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{title}</p>
           <div className="flex items-baseline gap-2">
-            <h3 className="text-3xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <h3 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
               {value}
             </h3>
             {trend && (

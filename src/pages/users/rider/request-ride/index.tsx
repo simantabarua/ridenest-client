@@ -55,7 +55,7 @@ export default function RequestRidePage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -136,7 +136,7 @@ export default function RequestRidePage() {
                   <div className="flex justify-between items-end">
                     <span className="text-base font-bold text-foreground">Total Fare</span>
                     <div className="flex flex-col items-end">
-                      <span className="text-2xl font-black text-primary tracking-tight">
+                      <span className="text-2xl font-medium text-primary tracking-tight">
                         <span className="text-sm font-medium mr-1">৳</span>
                         {totalFare?.toFixed(2)}
                       </span>

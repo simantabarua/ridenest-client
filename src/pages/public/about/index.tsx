@@ -88,11 +88,11 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-6">
             <Badge variant="secondary">About Ridenest</Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold">
+            <h1 className="text-2xl lg:text-5xl font-bold">
               Revolutionizing Transportation,
               <span className="text-primary"> One Ride at a Time</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground  mx-auto">
               Founded in 2020, Ridenest has grown from a simple idea to a
               trusted transportation platform serving millions of users across
               the country. Our mission is to make transportation safe,
@@ -133,7 +133,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <Badge variant="secondary">Our Mission</Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold">
+              <h2 className="text-3xl lg:text-2xl font-bold">
                 Making Transportation Better for Everyone
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
@@ -185,7 +185,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
             <Badge variant="secondary">Our Values</Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               The Principles That Guide Us
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -218,7 +218,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
             <Badge variant="secondary">Leadership Team</Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               Meet the People Behind Ridenest
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -252,8 +252,8 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold">
+          <div className=" mx-auto space-y-6">
+            <h2 className="text-3xl lg:text-2xl font-bold">
               Join Us in Shaping the Future of Transportation
             </h2>
             <p className="text-xl opacity-90">

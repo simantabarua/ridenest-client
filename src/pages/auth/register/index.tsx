@@ -168,7 +168,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-muted/20">
-        <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-full space-y-4">
           {/* Logo and Title */}
           <div className="text-center">
             <Logo />

@@ -49,7 +49,7 @@ export default function DriverSection() {
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <Badge variant="secondary">Join Our Team</Badge>
-          <h2 className="text-3xl lg:text-4xl font-bold">
+          <h2 className="text-3xl lg:text-2xl font-bold">
             Become a Ridenest Driver
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -59,7 +59,7 @@ export default function DriverSection() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          <div className="space-y-8">
+          <div className="space-y-4">
             <div>
               <h3 className="text-2xl font-bold mb-6">
                 Why Drive With Ridenest?

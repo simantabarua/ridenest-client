@@ -71,17 +71,17 @@ export default function RideDetailsPage() {
     <div className="min-h-screen py-8 animate-in fade-in duration-700">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
           <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tight text-foreground">Ride Details</h1>
+            <h1 className="text-2xl font-medium tracking-tight text-foreground">Ride Details</h1>
             <p className="text-muted-foreground text-lg">
               {isDriverOrAdmin ? "Detailed overview of the trip and rider" : "Detailed overview of your journey"}
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 space-y-4">
             {/* Ride Status Card */}
             <Card className="overflow-hidden border-border/50 bg-card/40 backdrop-blur-md shadow-xl">
               <CardHeader className="border-b border-border/50 bg-muted/20">
@@ -98,9 +98,9 @@ export default function RideDetailsPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-8">
-                <div className="space-y-8">
+                <div className="space-y-4">
                   {/* Route Visual */}
-                  <div className="relative space-y-8 pl-8">
+                  <div className="relative space-y-4 pl-8">
                     <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-gradient-to-b from-emerald-500 via-muted-foreground/20 to-rose-500" />
                     
                     <div className="relative">
@@ -126,10 +126,10 @@ export default function RideDetailsPage() {
                   </div>
 
                   {/* Trip Info Grid */}
-                  <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/50">
+                  <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border/50">
                     <div className="text-center space-y-1">
                       <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Distance</div>
-                      <div className="text-2xl font-black text-primary">{estimatedDistance} km</div>
+                      <div className="text-2xl font-medium text-primary">{estimatedDistance} km</div>
                     </div>
                     <div className="text-center space-y-1">
                       <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Status</div>
@@ -137,7 +137,7 @@ export default function RideDetailsPage() {
                     </div>
                     <div className="text-center space-y-1">
                       <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Base Fare</div>
-                      <div className="text-2xl font-black text-primary">৳{fare}</div>
+                      <div className="text-2xl font-medium text-primary">৳{fare}</div>
                     </div>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default function RideDetailsPage() {
             </Card>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-4">
             {/* Person Information (Driver or Rider) */}
             <Card className="overflow-hidden border-border/50 bg-card/40 backdrop-blur-md shadow-xl">
               <CardHeader className="bg-muted/20 border-b border-border/50">
@@ -228,7 +228,7 @@ export default function RideDetailsPage() {
                 <div className="pt-4 border-t border-border/50 flex justify-between items-end">
                   <div className="space-y-1">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Paid</div>
-                    <div className="text-3xl font-black text-primary leading-none">৳{totalFare || fare}</div>
+                    <div className="text-3xl font-medium text-primary leading-none">৳{totalFare || fare}</div>
                   </div>
                   <Badge variant="outline" className="border-primary/20 text-primary font-bold">PAID</Badge>
                 </div>

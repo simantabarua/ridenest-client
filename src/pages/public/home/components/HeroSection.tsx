@@ -20,12 +20,12 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-black/40 z-10" />
       <div className="relative z-20 container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 text-white">
+          <div className="space-y-4 text-white">
             <Badge variant="secondary" className="w-fit bg-white/20 text-white">
               Your Trusted Ride-Sharing Platform
             </Badge>
 
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+            <h1 className="text-2xl lg:text-6xl font-bold leading-tight">
               Ride with Confidence,
               <span className="text-primary"> Arrive with Style</span>
             </h1>

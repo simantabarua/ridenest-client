@@ -29,7 +29,7 @@ export default function RideHistoryPage() {
     <div className="min-h-screen ">
       <div >
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold mb-2">Ride History</h1>
             <p className="text-muted-foreground">
@@ -44,7 +44,7 @@ export default function RideHistoryPage() {
           </div>
         </div>
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <Card className="border-0 py-6 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
