@@ -60,6 +60,39 @@ export default function Home() {
       "-=1.0"
     );
 
+    // --- 1.5. Decorative SVGs animations ---
+    gsap.to(".gsap-svg-route-line", {
+      strokeDashoffset: -1000,
+      duration: 25,
+      ease: "none",
+      repeat: -1,
+    });
+
+    gsap.to(".gsap-svg-floating-star", {
+      y: "+=20",
+      rotation: "+=120",
+      duration: 6,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    gsap.to(".gsap-svg-floating-star-secondary", {
+      y: "-=25",
+      rotation: "-=95",
+      duration: 5,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    gsap.to(".gsap-svg-spinning-wheel", {
+      rotation: 360,
+      duration: 18,
+      ease: "none",
+      repeat: -1,
+    });
+
     // --- 2. Scroll Trigger Reveals ---
     
     // Features reveals

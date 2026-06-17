@@ -25,6 +25,52 @@ export default function HeroSection() {
         Your browser does not support the video tag.
       </video>
       <div className="absolute inset-0 bg-black/50 z-10" />
+
+      {/* Decorative SVGs for Brutalist aesthetic */}
+      <div className="absolute inset-0 pointer-events-none z-15 overflow-hidden">
+        {/* Animated route drawing line */}
+        <svg className="absolute w-full h-full opacity-35" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            className="gsap-svg-route-line"
+            d="M -100 150 C 300 120, 400 600, 800 450 C 1200 300, 1100 750, 1600 700"
+            stroke="url(#route-grad)"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray="20,15"
+          />
+          <defs>
+            <linearGradient id="route-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--primary)" />
+              <stop offset="100%" stopColor="#ff4500" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* Floating Brutalist Stars & Crosses */}
+        <svg
+          className="gsap-svg-floating-star absolute top-28 right-[12%] w-16 h-16 text-primary stroke-2 stroke-foreground fill-primary"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4Z" />
+        </svg>
+
+        <svg
+          className="gsap-svg-floating-star-secondary absolute bottom-40 left-[10%] w-12 h-12 text-secondary stroke-2 stroke-foreground fill-secondary"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4Z" />
+        </svg>
+
+        <svg
+          className="gsap-svg-spinning-wheel absolute top-[40%] left-[48%] w-20 h-20 text-white/10 fill-none stroke-current"
+          strokeWidth="1.5"
+          viewBox="0 0 100 100"
+        >
+          <circle cx="50" cy="50" r="40" strokeDasharray="10,6" />
+          <circle cx="50" cy="50" r="25" strokeDasharray="5,5" />
+          <path d="M50 10 L50 90 M10 50 L90 50" />
+        </svg>
+      </div>
       <div className="relative z-20 container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-white">
