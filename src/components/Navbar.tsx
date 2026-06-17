@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import { Link } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { UserDropdown } from "./user-drop-down";
+import { NotificationBell } from "./NotificationBell";
 import Logo from "./logo";
 
 export default function Navbar() {
@@ -60,6 +61,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4">
+            {isLoggedIn && <NotificationBell />}
             {isLoggedIn ? (
               <UserDropdown />
             ) : (

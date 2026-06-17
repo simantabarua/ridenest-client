@@ -3,10 +3,10 @@ import { baseApi } from "@/redux/base.api";
 export const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllUser: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/users",
         method: "GET",
-        data,
+        params,
       }),
       providesTags: ["Users"],
     }),
@@ -28,41 +28,41 @@ export const adminApi = baseApi.injectEndpoints({
     }),
 
     getAdminStats: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/dashboard",
         method: "GET",
-        data,
+        params,
       }),
     }),
     getAllUserStats: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/users-stats",
         method: "GET",
-        data,
+        params,
       }),
       providesTags: ["Users"],
     }),
     getAdminDriverStats: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/drivers-stats",
         method: "GET",
-        data,
+        params,
       }),
       providesTags: ["Driver"],
     }),
     getRidesStats: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/rides-stats",
         method: "GET",
-        data,
+        params,
       }),
       providesTags: ["Ride"],
     }),
     getDrivers: builder.query({
-      query: (data) => ({
+      query: (params) => ({
         url: "/admin/drivers",
         method: "GET",
-        data,
+        params,
       }),
       providesTags: ["Driver"],
     }),

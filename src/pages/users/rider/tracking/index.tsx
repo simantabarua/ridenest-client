@@ -42,6 +42,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Loading from "@/components/loading";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   reason: z.string().min(5, {
@@ -50,6 +51,7 @@ const formSchema = z.object({
 });
 
 export default function TrackingPage() {
+  const navigate = useNavigate();
   const {
     data: rides,
     isLoading,
@@ -96,6 +98,12 @@ export default function TrackingPage() {
           <p className="text-muted-foreground text-sm">
             You're all caught up! No active rides at the moment.
           </p>
+          <Button
+            onClick={() => navigate("/rider/dashboard")}
+            className="mt-4 border-2 border-foreground bg-yellow-400 text-foreground hover:bg-foreground hover:text-background font-extrabold uppercase text-xs tracking-wider shadow-[2px_2px_0px_0px_var(--foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all rounded-none h-9"
+          >
+            Go to Dashboard
+          </Button>
         </CardContent>
       </Card>
     );

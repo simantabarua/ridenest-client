@@ -120,7 +120,7 @@ const UserCard = ({
 };
 
 export default function UserManagementPage() {
-  const { data: users, isLoading } = useGetAllUserQuery(undefined);
+  const { data: users, isLoading } = useGetAllUserQuery({ limit: 100 });
   const { data: userStats } = useGetAllUserStatsQuery(undefined);
   const [deleteUser] = useDeleteUserMutation();
   const [updateUser] = useUpdateUserMutation();
@@ -145,7 +145,7 @@ export default function UserManagementPage() {
     try {
       const res = await updateUser({
         userId,
-        data: { isActive: "ACTIVE" },
+        data: { isActive: "ACTIVE", isSuspend: false },
       }).unwrap();
       if (res.success) toast.success("User activated successfully");
     } catch (error) {

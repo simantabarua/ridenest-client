@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   User,
-  Settings,
   LogOut,
   Moon,
   Sun,
@@ -113,10 +112,7 @@ export function UserDropdown() {
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </DropdownMenuItem>
+         
 
           <div className="w-full">
             <div

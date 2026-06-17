@@ -7,8 +7,10 @@ import {
 } from "@/redux/features/ride/ride.api";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export default function IncomingRequestsPage() {
+  const navigate = useNavigate();
   const { data: rides } = useGetRequestedRideQuery(undefined);
   const requests = rides?.data || [];
 
@@ -22,6 +24,7 @@ export default function IncomingRequestsPage() {
       }).unwrap();
 
       toast.success("Request Accepted");
+      navigate("/driver/active-ride");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(

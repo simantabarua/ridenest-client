@@ -7,8 +7,10 @@ import {
 } from "@/redux/features/ride/ride.api";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export default function ActiveRidePage() {
+  const navigate = useNavigate();
   const { data: rides } = useGetActiveRideDriverQuery(undefined);
   const activeRide: IRide = rides?.data?.[0] || null;
 
@@ -50,10 +52,15 @@ export default function ActiveRidePage() {
         status: status,
       }).unwrap();
 
-      toast.success("Request Accepted");
+      if (status === "complete") {
+        toast.success(`Ride completed! You earned BDT ${activeRide?.fare || 0}`);
+        navigate("/driver/dashboard");
+      } else {
+        toast.success(`Ride status updated to ${status}`);
+      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Failed to accept the request. Please try again.");
+      toast.error("Failed to update status. Please try again.");
     }
   };
   if (!activeRide)

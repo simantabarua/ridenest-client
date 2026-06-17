@@ -257,6 +257,12 @@ const DestinationCard = ({
     }
   }, [fromLocation, toLocation, dispatch]);
 
+  useEffect(() => {
+    if (fromLocation && toLocation) {
+      onSubmit();
+    }
+  }, [fromLocation, toLocation, onSubmit]);
+
   const handleSelectLocation = useCallback(
     (location: Suggestion, type: "from" | "to") => {
       const loc = {

@@ -5,6 +5,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { UserDropdown } from "@/components/user-drop-down";
+import { NotificationBell } from "@/components/NotificationBell";
 import EmergencySOS from "@/pages/users/emergency/EmergencySOS";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { Outlet } from "react-router";
@@ -24,7 +25,10 @@ export default function DashboardLayout() {
               Dashboard
             </h1>
           </div>
-          <UserDropdown />
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <UserDropdown />
+          </div>
         </header>
 
         {/* Standardized Main Content Area */}

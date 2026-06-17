@@ -5,6 +5,7 @@ import DestinationCard from "@/pages/public/home/components/DestinationCard";
 import { useAppSelector } from "@/redux/hooks";
 import { useRequestRideMutation } from "@/redux/features/ride/ride.api";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const shortenAddress = (address: string | null, maxLength = 25): string => {
   if (!address) return "Not selected";
@@ -19,6 +20,7 @@ const shortenAddress = (address: string | null, maxLength = 25): string => {
 
 export default function RequestRidePage() {
   const tripDetails = useAppSelector((state) => state.trip);
+  const navigate = useNavigate();
   const {
     pickupLocation,
     destinationLocation,
@@ -44,6 +46,7 @@ export default function RequestRidePage() {
         toast.success("Ride Requested!", {
           description: "Your ride has been successfully requested.",
         });
+        navigate("/rider/tracking");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -70,7 +73,7 @@ export default function RequestRidePage() {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* Left: Map/Destination Picker */}
         <div className="flex-1 w-full order-2 lg:order-1">
-          <DestinationCard />
+          <DestinationCard showMap={true} />
         </div>
 
         {/* Right: Trip Summary Sidebar */}
