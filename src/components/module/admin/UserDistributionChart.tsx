@@ -6,7 +6,7 @@ interface UserDistributionChartProps {
   riders: number;
 }
 
-const COLORS = ["#3b82f6", "#10b981"];
+const COLORS = ["var(--primary)", "var(--secondary)"];
 
 const UserDistributionChart = ({
   drivers,
@@ -18,64 +18,64 @@ const UserDistributionChart = ({
   ];
 
   return (
-    <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden h-full">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">User Distribution</CardTitle>
-        <CardDescription className="font-medium text-muted-foreground">
+    <Card className="rounded-none border-2 border-foreground bg-card text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)] overflow-hidden h-full">
+      <CardHeader className="p-3.5 pb-2">
+        <CardTitle className="text-sm font-black uppercase tracking-wider text-foreground">User Distribution</CardTitle>
+        <CardDescription className="text-xs text-muted-foreground mt-0.5">
           Drivers vs Riders ratio
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col items-center">
-        <div className="h-[250px] w-full">
+      <CardContent className="p-3.5 pt-0 flex flex-col items-center">
+        <div className="h-[155px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={8}
+                innerRadius={35}
+                outerRadius={55}
+                paddingAngle={4}
                 dataKey="value"
                 animationBegin={0}
-                animationDuration={1500}
+                animationDuration={1000}
               >
                 {data.map((_entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
-                    stroke="none"
+                    stroke="var(--foreground)"
+                    strokeWidth={1.5}
                   />
                 ))}
               </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: "rgba(15, 23, 42, 0.9)", 
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "12px",
-                  backdropFilter: "blur(8px)",
-                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+                  backgroundColor: "var(--background)", 
+                  border: "2px solid var(--foreground)",
+                  borderRadius: "0px",
+                  boxShadow: "2px 2px 0px 0px var(--foreground)"
                 }}
-                itemStyle={{ color: "#fff", fontWeight: "bold" }}
+                itemStyle={{ color: "var(--foreground)", fontWeight: "bold", fontSize: 11 }}
               />
               <Legend 
                 verticalAlign="bottom" 
-                height={36} 
-                iconType="circle"
-                formatter={(value) => <span className="text-xs font-bold text-muted-foreground ml-1">{value}</span>}
+                height={24} 
+                iconType="rect"
+                formatter={(value) => <span className="text-[10px] font-black text-foreground uppercase ml-1">{value}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
         
-        <div className="grid grid-cols-2 gap-4 w-full mt-4 pt-4 border-t border-border/50">
+        <div className="grid grid-cols-2 gap-2 w-full mt-3 pt-3 border-t border-foreground/15">
           <div className="text-center">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Drivers</p>
-            <p className="text-2xl font-black text-blue-500">{drivers}</p>
+            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Drivers</p>
+            <p className="text-lg font-black text-foreground">{drivers}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Riders</p>
-            <p className="text-2xl font-black text-emerald-500">{riders}</p>
+            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Riders</p>
+            <p className="text-lg font-black text-foreground">{riders}</p>
           </div>
         </div>
       </CardContent>

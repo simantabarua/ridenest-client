@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pause, Car, Star, Clock, DollarSign } from "lucide-react";
+import { Pause, Car, Star, Clock, DollarSign, Play } from "lucide-react";
 import {
   useGetDriverStatsQuery,
   useGetMyRidesQuery,
@@ -12,6 +12,7 @@ import {
 } from "@/redux/features/driver/driver.api";
 import RideCard from "@/components/module/ride/RideCard";
 import DashboardHeader from "@/components/dashboard-header";
+import StatCard from "@/components/module/admin/StatCard";
 
 export default function DriverDashboard() {
   const { data: availability } = useGetAvailabilityQuery(undefined);
@@ -29,100 +30,101 @@ export default function DriverDashboard() {
     }
   };
 
-  const statIcons = [
-    <Car className="w-5 h-5" />,
-    <Star className="w-5 h-5" />,
-    <Clock className="w-5 h-5" />,
-    <DollarSign className="w-5 h-5" />,
-  ];
+  const statIcons: Record<string, any> = {
+    "Total Rides": Car,
+    "Rating": Star,
+    "Hours Online": Clock,
+    "Earnings": DollarSign,
+  };
 
   return (
-    <div className="pb-10">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <DashboardHeader />
+    <div className="min-h-screen space-y-4 animate-in fade-in duration-700">
+      {/* Header */}
+      <DashboardHeader />
 
+      <div className="container max-w-6xl mx-auto px-4 pb-8 space-y-5">
         {/* Online Status Card */}
         <Card
-          className={`mb-6 ${
-            isOnline ? "border-green-200" : "border-gray-200"
-          }`}
+          className={`rounded-none border-2 border-foreground bg-card text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)]`}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className="p-3.5">
+            <div className="flex items-center justify-between gap-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                    isOnline ? "bg-green-500" : "bg-gray-400"
+                  className={`w-10 h-10 rounded-none border-2 border-foreground flex items-center justify-center shrink-0 ${
+                    isOnline ? "bg-green-500 text-white" : "bg-gray-400 text-white"
                   }`}
                 >
                   {isOnline ? (
-                    <div className="w-6 h-6 bg-background rounded-full animate-pulse"></div>
+                    <div className="w-5 h-5 bg-background rounded-none border border-foreground animate-pulse"></div>
                   ) : (
-                    <Pause className="w-6 h-6 text-white" />
+                    <Pause className="w-5 h-5 text-white fill-current" />
                   )}
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold">
-                    {isOnline ? "Online" : "Offline"}
+                <div className="space-y-0.5">
+                  <h2 className="text-sm font-black uppercase tracking-wider text-foreground">
+                    {isOnline ? "Online & Ready" : "Offline / Paused"}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground leading-none">
                     {isOnline
-                      ? "Receiving ride requests"
-                      : "Go online to start"}
+                      ? "Actively receiving ride requests nearby"
+                      : "Go online to start receiving ride offers"}
                   </p>
                 </div>
               </div>
               <Button
+                size="sm"
                 onClick={toggleOnlineStatus}
                 variant={isOnline ? "destructive" : "default"}
+                className="rounded-none border-2 border-foreground font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_var(--foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_var(--foreground)] transition-all"
               >
-                {isOnline ? "Go Offline" : "Go Online"}
+                {isOnline ? (
+                  <>
+                    <Pause className="mr-1 h-3.5 w-3.5 fill-current" />
+                    Go Offline
+                  </>
+                ) : (
+                  <>
+                    <Play className="mr-1 h-3.5 w-3.5 fill-current" />
+                    Go Online
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {stats?.map(
             (stat: { title: string; value: string }, index: number) => (
-              <Card
+              <StatCard
                 key={index}
-                className="border border-border shadow-sm hover:shadow-md transition-shadow"
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div className="p-2 rounded-full bg-primary/10 text-primary">
-                    {statIcons[index]}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
-                    {stat.value}
-                  </div>
-                </CardContent>
-              </Card>
+                title={stat.title}
+                value={stat.value}
+                icon={statIcons[stat.title] || Car}
+                className="bg-card"
+              />
             )
           )}
         </div>
 
         {/* Recent Rides */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Recent Rides</h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-black uppercase tracking-wider text-foreground">Recent Journeys</h2>
           </div>
           {recentRides?.data?.length === 0 ? (
-            <Card className="border border-border p-8 text-center">
-              <p className="text-muted-foreground">
-                You don't have any recent rides
+            <Card className="rounded-none border-2 border-dashed border-foreground bg-muted/10 p-8 text-center">
+              <p className="text-xs text-muted-foreground">
+                No recent rides in your dispatch log.
               </p>
-              <Button className="mt-4">Go Online to Start</Button>
+              <Button size="sm" onClick={toggleOnlineStatus} className="mt-4 rounded-none border-2 border-foreground bg-primary text-primary-foreground font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_0px_var(--foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_var(--foreground)] transition-all">
+                Go Online to Start
+              </Button>
             </Card>
           ) : (
-            <div className="space-y-5">
+            <div className="grid gap-3">
               {recentRides?.data?.map((ride: IRide) => (
                 <RideCard key={ride._id} ride={ride} />
               ))}

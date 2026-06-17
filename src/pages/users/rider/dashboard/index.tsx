@@ -29,16 +29,14 @@ export default function RiderDashboard() {
       description: "Fast and reliable rides at your doorstep",
       icon: Zap,
       action: "/rider/request-ride",
-      color: "from-primary to-primary/80",
-      iconColor: "text-primary-foreground",
+      bgClass: "bg-primary/20",
     },
     {
       title: "Ride History",
       description: "Review your past journeys and receipts",
       icon: History,
       action: "/rider/ride-history",
-      color: "from-secondary to-secondary/80",
-      iconColor: "text-secondary-foreground",
+      bgClass: "bg-secondary/20",
     },
   ];
 
@@ -54,64 +52,62 @@ export default function RiderDashboard() {
   }
 
   return (
-    <div className="min-h-screen space-y-8 animate-in fade-in duration-700">
+    <div className="min-h-screen space-y-4 animate-in fade-in duration-700">
       {/* Header Section */}
       <div className="relative">
         <DashboardHeader />
-        <div className="absolute top-0 right-0 -z-10 h-[300px] w-[300px] bg-primary/5 blur-[120px] rounded-full" />
       </div>
 
-      <div className="container max-w-7xl mx-auto p-4 space-y-12">
+      <div className="container max-w-7xl mx-auto px-4 pb-8 space-y-6">
         {/* Stats Grid */}
-        <section className="space-y-6">
+        <section className="space-y-2.5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Platform Insights</h2>
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Platform Insights</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {stats.map((stat: { title: string; value: string }, index: number) => (
               <StatCard
                 key={index}
                 title={stat.title}
                 value={stat.value}
                 icon={statIcons[stat.title] || Car}
-                className="bg-card/30"
+                className="bg-card"
               />
             ))}
           </div>
         </section>
 
         {/* Quick Actions & Featured */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <Zap className="h-5 w-5 text-primary" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5">
+          <div className="lg:col-span-2 space-y-3">
+            <h2 className="text-base font-black uppercase tracking-wider text-foreground flex items-center gap-1.5">
+              <Zap className="h-4.5 w-4.5 text-primary" />
               Quick Actions
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {quickActions.map((action, index) => (
                 <Card
                   key={index}
-                  className="group relative overflow-hidden border-border/50 bg-card/40 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5"
+                  className="rounded-none border-2 border-foreground bg-card text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_var(--foreground)]"
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                  <CardHeader className="p-6">
-                    <div className="flex items-start gap-5">
-                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${action.color} ${action.iconColor} shadow-lg shadow-primary/20 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
-                        <action.icon className="h-7 w-7" />
+                  <CardHeader className="p-4 pb-2">
+                    <div className="flex items-start gap-3">
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-none border-2 border-foreground ${action.bgClass} text-foreground`}>
+                        <action.icon className="h-5 w-5" />
                       </div>
-                      <div className="space-y-1">
-                        <CardTitle className="text-xl font-bold">{action.title}</CardTitle>
-                        <CardDescription className="text-sm text-muted-foreground/80 leading-relaxed">
+                      <div className="space-y-0.5">
+                        <CardTitle className="text-sm font-bold">{action.title}</CardTitle>
+                        <CardDescription className="text-xs text-muted-foreground leading-snug">
                           {action.description}
                         </CardDescription>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 pt-0">
-                    <Button asChild className="w-full h-11 font-bold tracking-wide shadow-md hover:shadow-primary/20 transition-all active:scale-[0.98]">
+                  <CardContent className="p-4 pt-2">
+                    <Button asChild size="sm" className="w-full h-8 rounded-none border-2 border-foreground bg-primary text-primary-foreground font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_var(--foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_var(--foreground)] transition-all">
                       <Link to={action.action}>
                         Launch Action
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-1 h-3 w-3" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -121,27 +117,27 @@ export default function RiderDashboard() {
           </div>
 
           {/* Side Promotion/Info Card */}
-          <Card className="relative overflow-hidden border-primary/20 bg-primary/5 backdrop-blur-md self-start">
-            <div className="absolute top-0 right-0 p-4">
-              <ShieldCheck className="h-12 w-12 text-primary/20" />
-            </div>
-            <CardHeader>
-              <CardTitle className="text-lg font-bold pt-4">Safety First</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Your safety is our top priority. All our drivers are verified and rides are tracked in real-time.
+          <Card className="rounded-none border-2 border-foreground bg-primary/10 text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)] self-start">
+            <CardHeader className="p-4 pb-2 relative">
+              <div className="absolute top-2 right-2">
+                <ShieldCheck className="h-8 w-8 text-foreground/15" />
+              </div>
+              <CardTitle className="text-xs font-black uppercase tracking-wider text-foreground">Safety Protocol</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground/90 mt-1 leading-normal">
+                Verified drivers & real-time trip tracking for your security.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-sm font-medium">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  24/7 Support Available
+            <CardContent className="p-4 pt-2">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                  <div className="h-2 w-2 rounded-none border border-foreground bg-primary" />
+                  24/7 Live Support
                 </div>
-                <div className="flex items-center gap-3 text-sm font-medium">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Verified Drivers Only
+                <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                  <div className="h-2 w-2 rounded-none border border-foreground bg-primary" />
+                  Real-time GPS Monitoring
                 </div>
-                <Button variant="outline" className="w-full border-primary/20 hover:bg-primary/10 transition-colors">
+                <Button variant="outline" size="sm" className="w-full h-7 rounded-none border-2 border-foreground bg-background text-foreground font-black text-[10px] uppercase tracking-wider hover:bg-muted transition-colors">
                   Learn More
                 </Button>
               </div>
@@ -150,39 +146,39 @@ export default function RiderDashboard() {
         </div>
 
         {/* Recent Rides Section */}
-        <section className="space-y-4">
+        <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Recent Journeys</h2>
-              <p className="text-sm text-muted-foreground">Monitor and manage your latest ride activity</p>
+            <div className="space-y-0.5">
+              <h2 className="text-base font-black uppercase tracking-wider text-foreground">Recent Journeys</h2>
+              <p className="text-xs text-muted-foreground">Monitor and manage your latest ride activity</p>
             </div>
-            <Button variant="ghost" size="sm" asChild className="text-primary hover:bg-primary/5 font-bold tracking-wide">
-               <Link to="/rider/ride-history" className="flex items-center gap-2">
-                 View All Activity
-                 <ArrowRight className="h-4 w-4" />
+            <Button variant="ghost" size="sm" asChild className="h-7 px-2 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-wider">
+               <Link to="/rider/ride-history" className="flex items-center gap-1">
+                 View All
+                 <ArrowRight className="h-3 w-3" />
                </Link>
             </Button>
           </div>
 
           {recentRides?.data?.length === 0 ? (
-            <Card className="border border-border border-dashed bg-muted/5 py-16 text-center rounded-3xl">
-              <div className="max-w-xs mx-auto space-y-6">
-                <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-muted/10">
-                  <Car className="h-10 w-10 text-muted-foreground/30" />
+            <Card className="rounded-none border-2 border-dashed border-foreground bg-muted/10 py-10 text-center">
+              <div className="max-w-xs mx-auto space-y-4">
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-none border-2 border-foreground bg-muted/20">
+                  <Car className="h-6 w-6 text-foreground/60" />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold pt-4">No rides found</h3>
-                  <p className="text-sm text-muted-foreground">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold">No rides found</h3>
+                  <p className="text-xs text-muted-foreground">
                     Your recent ride activity will appear here once you start booking.
                   </p>
                 </div>
-                <Button asChild className="px-8 h-12 rounded-full font-bold shadow-lg shadow-primary/20">
+                <Button asChild size="sm" className="px-6 h-8 rounded-none border-2 border-foreground bg-primary text-primary-foreground font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_0px_var(--foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_var(--foreground)] transition-all">
                    <Link to="/rider/request-ride">Book Your First Ride</Link>
                 </Button>
               </div>
             </Card>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {recentRides?.data?.map((ride: IRide) => (
                 <RideCard key={ride._id} ride={ride} />
               ))}

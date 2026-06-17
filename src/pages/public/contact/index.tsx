@@ -40,7 +40,7 @@ export default function ContactPage() {
     {
       icon: Phone,
       title: "Phone Support",
-      value: "1-800-Ridenest",
+      value: "1-800-4654897",
       description: "Available 24/7 for urgent matters",
     },
     {
