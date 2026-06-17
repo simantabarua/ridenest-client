@@ -48,7 +48,7 @@ export default function HowItWorksSection() {
             {howItWorks.map((step, index) => (
               <div 
                 key={index} 
-                className="bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-y-[-4px] transition-all relative group"
+                className="gsap-step-card bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-y-[-4px] transition-all relative group"
               >
                 <div className="w-16 h-16 bg-primary text-primary-foreground border-2 border-foreground flex items-center justify-center text-2xl font-black shadow-[3px_3px_0px_0px_var(--foreground)] mb-6 transition-transform group-hover:rotate-12 select-none">
                   {step.step}

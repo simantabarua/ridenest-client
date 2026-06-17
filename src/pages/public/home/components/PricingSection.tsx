@@ -57,7 +57,7 @@ export default function PricingSection() {
           {rideOptions.map((option, index) => (
             <div
               key={index}
-              className={`relative bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between ${
+              className={`gsap-pricing-card relative bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between ${
                 option.popular ? "bg-yellow-50/50 dark:bg-yellow-950/20 ring-2 ring-foreground" : ""
               }`}
             >

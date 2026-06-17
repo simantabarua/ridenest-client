@@ -44,7 +44,7 @@ export default function FeaturesSection() {
 
         <div className="grid lg:grid-cols-3 gap-8 items-stretch">
           {/* Editorial statement block */}
-          <div className="bg-primary text-primary-foreground border-2 border-foreground p-8 flex flex-col justify-between shadow-[6px_6px_0px_0px_var(--foreground)] rotate-[-1deg]">
+          <div className="gsap-feature-statement bg-primary text-primary-foreground border-2 border-foreground p-8 flex flex-col justify-between shadow-[6px_6px_0px_0px_var(--foreground)] rotate-[-1deg]">
             <div>
               <span className="font-mono text-xs uppercase tracking-widest bg-black text-white px-2.5 py-1 inline-block mb-6">
                 Core Principles
@@ -63,7 +63,7 @@ export default function FeaturesSection() {
             {features.map((feature, index) => (
               <div 
                 key={index} 
-                className="bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between"
+                className="gsap-feature-card bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="w-12 h-12 bg-primary/10 border-2 border-foreground flex items-center justify-center mb-4">

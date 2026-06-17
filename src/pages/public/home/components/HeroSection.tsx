@@ -28,23 +28,23 @@ export default function HeroSection() {
       <div className="relative z-20 container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-white">
-            <Badge variant="secondary" className="w-fit bg-secondary text-secondary-foreground border-2 border-foreground shadow-[2px_2px_0px_0px_currentColor] px-3 py-1 font-mono uppercase text-xs rotate-[-1.5deg]">
+            <Badge variant="secondary" className="gsap-hero-badge w-fit bg-secondary text-secondary-foreground border-2 border-foreground shadow-[2px_2px_0px_0px_currentColor] px-3 py-1 font-mono uppercase text-xs rotate-[-1.5deg]">
               Your Trusted Ride-Sharing Platform
             </Badge>
 
-            <h1 className="text-4xl lg:text-6xl font-black leading-none uppercase tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <h1 className="gsap-hero-title text-4xl lg:text-6xl font-black leading-none uppercase tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               Ride with <span className="bg-primary text-primary-foreground px-2 py-0.5 inline-block border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[1.5deg]">Confidence</span>
               <br />
               Arrive in <span className="text-primary underline decoration-primary decoration-4 underline-offset-8">Style</span>
             </h1>
 
-            <p className="text-lg text-gray-200 leading-relaxed max-w-xl">
+            <p className="gsap-hero-desc text-lg text-gray-200 leading-relaxed max-w-xl">
               Experience safe, reliable, and affordable transportation at your
               fingertips. Whether you're commuting to work or heading out for
               the night, we've got you covered.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <div className="gsap-hero-cta flex flex-col sm:flex-row gap-4 pt-2">
               <Link to="/login" className="w-fit">
                 <Button
                   size="lg"
@@ -57,22 +57,22 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-6">
-              <div className="flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
+              <div className="gsap-hero-stats flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
                 <Users className="w-4 h-4 text-primary" />
                 <span className="font-bold">1M+ Users</span>
               </div>
-              <div className="flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
+              <div className="gsap-hero-stats flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
                 <Star className="w-4 h-4 text-primary" />
                 <span className="font-bold">4.8 Rating</span>
               </div>
-              <div className="flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
+              <div className="gsap-hero-stats flex items-center space-x-2 bg-black/80 text-white border-2 border-white/20 px-4 py-2 rounded-none font-mono text-xs uppercase tracking-wider">
                 <CheckCircle className="w-4 h-4 text-primary" />
                 <span className="font-bold">Safe & Secure</span>
               </div>
             </div>
           </div>
 
-          <div className="relative z-20">
+          <div className="gsap-hero-card relative z-20">
             <PublicDestinationCard />
           </div>
         </div>

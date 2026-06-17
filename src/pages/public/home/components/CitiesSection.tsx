@@ -60,7 +60,7 @@ export default function CitiesSection() {
           {cities.map((city, index) => (
             <div
               key={index}
-              className="bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between"
+              className="gsap-city-card bg-card border-2 border-foreground p-6 shadow-[4px_4px_0px_0px_var(--foreground)] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--foreground)] transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center space-x-3 mb-4">
