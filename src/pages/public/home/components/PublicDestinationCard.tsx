@@ -351,7 +351,7 @@ export default function PublicDestinationCard() {
             onClick={handleUseMyLocation}
             disabled={loading}
             variant="outline"
-            className="flex-1 border-2 border-foreground bg-background hover:bg-secondary text-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12"
+            className="gsap-magnetic flex-1 border-2 border-foreground bg-background hover:bg-secondary text-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12"
           >
             {loading ? (
               <>
@@ -369,7 +369,7 @@ export default function PublicDestinationCard() {
             type="button"
             onClick={handleSubmit(onSubmit)}
             disabled={loading}
-            className="flex-1 border-2 border-foreground bg-primary hover:bg-primary text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12"
+            className="gsap-magnetic flex-1 border-2 border-foreground bg-primary hover:bg-primary text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12"
           >
             {loading ? (
               <>
@@ -444,7 +444,7 @@ export default function PublicDestinationCard() {
               <Button
                 type="button"
                 onClick={handleBookRide}
-                className="w-full border-2 border-foreground bg-primary hover:bg-primary text-primary-foreground font-mono font-black uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12 mt-2"
+                className="gsap-magnetic w-full border-2 border-foreground bg-primary hover:bg-primary text-primary-foreground font-mono font-black uppercase rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all h-12 mt-2"
               >
                 Book Ride
                 <ArrowRight className="ml-2 w-5 h-5" />

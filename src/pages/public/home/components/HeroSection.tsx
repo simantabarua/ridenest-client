@@ -32,10 +32,14 @@ export default function HeroSection() {
               Your Trusted Ride-Sharing Platform
             </Badge>
 
-            <h1 className="gsap-hero-title text-4xl lg:text-6xl font-black leading-none uppercase tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              Ride with <span className="bg-primary text-primary-foreground px-2 py-0.5 inline-block border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[1.5deg]">Confidence</span>
-              <br />
-              Arrive in <span className="text-primary underline decoration-primary decoration-4 underline-offset-8">Style</span>
+            <h1 className="gsap-hero-title text-4xl lg:text-6xl font-black leading-none uppercase tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] flex flex-wrap gap-x-3 gap-y-1">
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block">Ride</span></span>
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block">with</span></span>
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block bg-primary text-primary-foreground px-2 py-0.5 border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[1.5deg]">Confidence</span></span>
+              <span className="w-full h-0"></span>
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block">Arrive</span></span>
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block">in</span></span>
+              <span className="inline-block overflow-hidden"><span className="gsap-word inline-block text-primary underline decoration-primary decoration-4 underline-offset-8">Style</span></span>
             </h1>
 
             <p className="gsap-hero-desc text-lg text-gray-200 leading-relaxed max-w-xl">
@@ -45,7 +49,7 @@ export default function HeroSection() {
             </p>
 
             <div className="gsap-hero-cta flex flex-col sm:flex-row gap-4 pt-2">
-              <Link to="/login" className="w-fit">
+              <Link to="/login" className="w-fit gsap-magnetic block">
                 <Button
                   size="lg"
                   className="text-lg px-8 py-6 bg-primary hover:bg-primary text-primary-foreground font-black border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all cursor-pointer"
