@@ -25,52 +25,60 @@ interface StatsBarChartProps {
   data: ChartData[];
 }
 
-const COLORS = ["var(--primary)", "var(--secondary)", "var(--accent)", "#ff4500", "#8b5cf6"];
+const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
 const StatsBarChart = ({ data }: StatsBarChartProps) => {
   return (
-    <Card className="rounded-none border-2 border-foreground bg-card text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)]">
-      <CardHeader className="p-3.5 pb-2">
-        <CardTitle className="text-sm font-black uppercase tracking-wider text-foreground">Platform Overview</CardTitle>
-        <CardDescription className="text-xs text-muted-foreground mt-0.5">
-          Key performance metrics distribution
+    <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">Platform Overview</CardTitle>
+        <CardDescription className="font-medium text-muted-foreground">
+          Visual representation of key performance metrics
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-3.5 pt-0">
-        <div className="h-[210px] w-full mt-2">
+      <CardContent>
+        <div className="h-[300px] w-full mt-4">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.15)" />
+            <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <defs>
+                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={1} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.6} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
               <XAxis 
                 dataKey="title" 
-                axisLine={{ stroke: "var(--foreground)", strokeWidth: 1.5 }} 
-                tickLine={{ stroke: "var(--foreground)", strokeWidth: 1.5 }} 
-                tick={{ fill: "var(--foreground)", fontSize: 10, fontWeight: 700 }}
-                dy={5}
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12, fontWeight: 600 }}
+                dy={10}
               />
               <YAxis 
-                axisLine={{ stroke: "var(--foreground)", strokeWidth: 1.5 }} 
-                tickLine={{ stroke: "var(--foreground)", strokeWidth: 1.5 }} 
-                tick={{ fill: "var(--foreground)", fontSize: 10, fontWeight: 700 }}
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12, fontWeight: 600 }}
               />
               <Tooltip 
-                cursor={{ fill: "var(--foreground)", opacity: 0.08 }}
+                cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{ 
-                  backgroundColor: "var(--background)", 
-                  border: "2px solid var(--foreground)",
-                  borderRadius: "0px",
-                  boxShadow: "2px 2px 0px 0px var(--foreground)"
+                  backgroundColor: "rgba(15, 23, 42, 0.9)", 
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
                 }}
-                itemStyle={{ color: "var(--foreground)", fontWeight: "bold", fontSize: 11 }}
-                labelStyle={{ color: "var(--muted-foreground)", fontWeight: "bold", fontSize: 10, marginBottom: "2px" }}
+                itemStyle={{ color: "#fff", fontWeight: "bold" }}
+                labelStyle={{ color: "rgba(255,255,255,0.6)", fontWeight: "bold", marginBottom: "4px" }}
               />
               <Bar 
                 dataKey="value" 
-                radius={[0, 0, 0, 0]} 
-                barSize={30}
+                radius={[6, 6, 0, 0]} 
+                barSize={40}
               >
                 {data.map((_entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="var(--foreground)" strokeWidth={1.5} />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>

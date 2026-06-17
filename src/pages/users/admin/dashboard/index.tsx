@@ -50,40 +50,40 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen space-y-4 animate-in fade-in duration-700">
-      <DashboardHeader />
+    <div className="min-h-screen py-4 px-4 sm:px-6 lg:px-8 space-y-4 animate-in fade-in duration-700">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <DashboardHeader />
+      </div>
 
-      <div className="container max-w-7xl mx-auto px-4 pb-8 space-y-4">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {stats.map((stat: StatItem, index: number) => (
-            <StatCard
-              key={index}
-              title={stat.title}
-              value={stat.value}
-              icon={iconMap[stat.title] || Users}
-            />
-          ))}
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {stats.map((stat: StatItem, index: number) => (
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            icon={iconMap[stat.title] || Users}
+          />
+        ))}
+      </div>
+
+      {/* Analytics Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <StatsBarChart data={barChartData} />
         </div>
-
-        {/* Analytics Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5">
-          <div className="lg:col-span-2">
-            <StatsBarChart data={barChartData} />
-          </div>
-          <div>
-            <UserDistributionChart drivers={totalDrivers} riders={totalRiders} />
-          </div>
+        <div>
+          <UserDistributionChart drivers={totalDrivers} riders={totalRiders} />
         </div>
+      </div>
 
-        {/* Activity Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5">
-          <div className="lg:col-span-2">
-            <RecentRidesTable />
-          </div>
-          <div>
-            <RecentUsersList />
-          </div>
+      {/* Activity Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-8">
+        <div className="lg:col-span-2">
+          <RecentRidesTable />
+        </div>
+        <div>
+          <RecentUsersList />
         </div>
       </div>
     </div>

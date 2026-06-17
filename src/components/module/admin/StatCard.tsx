@@ -14,31 +14,40 @@ interface StatCardProps {
 
 const StatCard = ({ title, value, icon: Icon, className, trend }: StatCardProps) => (
   <Card className={cn(
-    "relative rounded-none border-2 border-foreground bg-card text-card-foreground shadow-[3px_3px_0px_0px_var(--foreground)] transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_var(--foreground)]",
+    "group relative overflow-hidden border-border/50 bg-card/40 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1",
     className
   )}>
-    <CardContent className="p-3.5 flex items-center justify-between gap-3">
-      <div className="space-y-0.5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/85">{title}</p>
-        <div className="flex items-center gap-1.5">
-          <h3 className="text-base font-black tracking-tight text-foreground">
-            {value}
-          </h3>
-          {trend && (
-            <span className={cn(
-              "text-[9px] font-black px-1 py-0.2 rounded-none border border-foreground uppercase tracking-tighter",
-              trend.isUp 
-                ? "text-green-600 bg-green-500/15" 
-                : "text-rose-600 bg-rose-500/15"
-            )}>
-              {trend.isUp ? "▲" : "▼"} {trend.value}
-            </span>
-          )}
+    <div className="absolute -inset-px bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    
+    <CardContent className="p-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{title}</p>
+          <div className="flex items-baseline gap-2">
+            <h3 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+              {value}
+            </h3>
+            {trend && (
+              <span className={cn(
+                "text-[10px] font-bold px-1.5 py-0.5 rounded-full border",
+                trend.isUp 
+                  ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" 
+                  : "text-rose-500 bg-rose-500/10 border-rose-500/20"
+              )}>
+                {trend.isUp ? "↑" : "↓"} {trend.value}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-primary/20">
+          <Icon className="h-6 w-6" />
         </div>
       </div>
       
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none border-2 border-foreground bg-primary/20 text-foreground">
-        <Icon className="h-4.5 w-4.5" />
+      {/* Subtle decorative line */}
+      <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted/30">
+        <div className="h-full w-1/3 rounded-full bg-primary/30 transition-all duration-500 group-hover:w-full group-hover:bg-primary/50" />
       </div>
     </CardContent>
   </Card>
