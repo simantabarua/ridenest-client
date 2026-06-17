@@ -71,17 +71,17 @@ export default function AdminAnalytics() {
 
   if (isOverallLoading) {
     return (
-      <div className="p-6 md:p-10 space-y-8 max-w-7xl mx-auto">
+      <div className="py-4 px-4 sm:px-6 lg:px-8 space-y-4 max-w-7xl mx-auto">
         <div className="space-y-2">
           <Skeleton className="h-9 w-64" />
           <Skeleton className="h-5 w-96" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-28 rounded-2xl" />
           ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Skeleton className="h-[350px] rounded-2xl" />
           <Skeleton className="h-[350px] rounded-2xl" />
         </div>
@@ -91,7 +91,7 @@ export default function AdminAnalytics() {
 
   if (isAdminError) {
     return (
-      <div className="p-10 text-center max-w-xl mx-auto space-y-4">
+      <div className="py-4 px-4 sm:px-6 lg:px-8 text-center max-w-xl mx-auto space-y-4">
         <AlertTriangle className="h-12 w-12 text-destructive mx-auto animate-bounce" />
         <h2 className="text-xl font-bold">Failed to load analytics</h2>
         <p className="text-muted-foreground">Please check your permissions, database connection, or try again later.</p>
@@ -133,13 +133,13 @@ export default function AdminAnalytics() {
   ];
 
   return (
-    <div className="p-6 md:p-10 space-y-8 max-w-7xl mx-auto bg-background min-h-screen">
+    <div className="py-4 px-4 sm:px-6 lg:px-8 space-y-4 animate-in fade-in duration-700">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2">
-          <Activity className="h-8 w-8 text-primary" /> Analytics Dashboard
+      <div className="mb-4 px-4">
+        <h1 className="text-2xl font-semibold text-foreground sm:text-3xl lg:text-2xl tracking-tight flex items-center gap-2">
+          <Activity className="h-6 w-6 text-primary" /> Analytics Dashboard
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground text-base leading-relaxed mt-1">
           Monitor users, driver distribution, ride metrics, and business performance.
         </p>
       </div>
