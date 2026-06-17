@@ -29,9 +29,9 @@ export default function DriverManagementPage() {
         data: { isApproved: true, isSuspend: false },
       }).unwrap();
 
-      if (res.success) toast.success("User suspended successfully");
+      if (res.success) toast.success("Driver approved successfully");
     } catch (error) {
-      toast.error("Failed to suspend user");
+      toast.error("Failed to approve driver");
     }
   };
   const handleSuspendDriver = async (userId: string) => {
@@ -41,9 +41,9 @@ export default function DriverManagementPage() {
         data: { isSuspend: true, isApproved: false },
       }).unwrap();
 
-      if (res.success) toast.success("User suspended successfully");
+      if (res.success) toast.success("Driver suspended successfully");
     } catch (error) {
-      toast.error("Failed to suspend user");
+      toast.error("Failed to suspend driver");
     }
   };
 
@@ -55,18 +55,18 @@ export default function DriverManagementPage() {
         data: { isApproved: false },
       }).unwrap();
 
-      if (res.success) toast.success("User activated successfully");
+      if (res.success) toast.success("Driver rejected successfully");
     } catch (error) {
-      toast.error("Failed to activate user");
+      toast.error("Failed to reject driver");
     }
   };
 
   const handleDeleteDriver = async (userId: string) => {
     try {
       await deleteUser(userId).unwrap();
-      toast.success("User deleted successfully");
+      toast.success("Driver deleted successfully");
     } catch {
-      toast.error("Failed to delete user");
+      toast.error("Failed to delete driver");
     }
   };
 
@@ -91,7 +91,7 @@ export default function DriverManagementPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {stats.map((stat: { title: string; value: string }) => (
             <StatCard
               key={stat.title}

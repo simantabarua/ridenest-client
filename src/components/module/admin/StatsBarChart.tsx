@@ -29,7 +29,7 @@ const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
 const StatsBarChart = ({ data }: StatsBarChartProps) => {
   return (
-    <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden">
+    <Card className="py-6 border-border/50 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
       <CardHeader>
         <CardTitle className="text-xl font-bold">Platform Overview</CardTitle>
