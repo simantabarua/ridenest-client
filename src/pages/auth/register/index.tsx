@@ -166,37 +166,37 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-muted/20">
-        <div className="max-w-md w-full space-y-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-md w-full space-y-6">
           {/* Logo and Title */}
-          <div className="text-center">
+          <div className="text-center space-y-2">
             <Logo />
-            <h2 className="text-3xl font-bold text-foreground">
+            <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
               Create your account
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-xs font-mono uppercase text-muted-foreground">
               Join thousands of travelers exploring the world with us
             </p>
           </div>
 
           {/* Registration Form */}
-          <Card>
-            <CardHeader className="space-y-1">
-              <CardTitle>Sign up</CardTitle>
-              <CardDescription>
+          <Card className="border-2 border-foreground bg-card shadow-[4px_4px_0px_0px_var(--foreground)] rounded-none">
+            <CardHeader className="space-y-1 border-b-2 border-foreground pb-4">
+              <CardTitle className="text-xl font-black uppercase tracking-tight text-foreground">Sign up</CardTitle>
+              <CardDescription className="text-xs font-mono uppercase text-muted-foreground">
                 Fill in the details below to create your account
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-4"
                 >
                   {error && (
-                    <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md flex items-center">
-                      <AlertCircle className="h-4 w-4 mr-2" />
+                    <div className="p-3 text-xs font-mono uppercase text-red-600 bg-red-50 border-2 border-red-600 rounded-none flex items-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                      <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
                       {error}
                     </div>
                   )}
@@ -206,18 +206,18 @@ export default function RegisterPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Full Name</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               placeholder="John"
-                              className="pl-10"
+                              className="pl-10 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus-visible:ring-0 focus:bg-secondary/10"
                               {...field}
                             />
                           </div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-mono" />
                       </FormItem>
                     )}
                   />
@@ -227,19 +227,19 @@ export default function RegisterPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email Address</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Email Address</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               type="email"
                               placeholder="john@example.com"
-                              className="pl-10"
+                              className="pl-10 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus-visible:ring-0 focus:bg-secondary/10"
                               {...field}
                             />
                           </div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-mono" />
                       </FormItem>
                     )}
                   />
@@ -249,17 +249,17 @@ export default function RegisterPage() {
                     name="phone"
                     render={({ field, fieldState }) => (
                       <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Phone Number</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <span className="absolute left-8 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                            <span className="absolute left-8 top-1/2 transform -translate-y-1/2 text-xs font-mono text-muted-foreground">
                               +88
                             </span>
                             <Input
                               type="tel"
                               placeholder="01XXXXXXXXX"
-                              className="pl-16"
+                              className="pl-16 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus-visible:ring-0 focus:bg-secondary/10"
                               {...field}
                               onChange={(e) => {
                                 const value = e.target.value.replace(
@@ -271,7 +271,7 @@ export default function RegisterPage() {
                             />
                           </div>
                         </FormControl>
-                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                        <FormMessage className="text-xs font-mono">{fieldState.error?.message}</FormMessage>
                       </FormItem>
                     )}
                   />
@@ -281,14 +281,14 @@ export default function RegisterPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               type={showPassword ? "text" : "password"}
                               placeholder="Create a strong password"
-                              className="pl-10 pr-10"
+                              className="pl-10 pr-10 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus-visible:ring-0 focus:bg-secondary/10"
                               {...field}
                             />
                             <button
@@ -304,8 +304,8 @@ export default function RegisterPage() {
                             </button>
                           </div>
                         </FormControl>
-                        <FormMessage />
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <FormMessage className="text-xs font-mono" />
+                        <p className="text-xs font-mono text-muted-foreground mt-1">
                           Must be at least 8 characters with 1 uppercase, 1
                           number, and 1 special character
                         </p>
@@ -318,14 +318,14 @@ export default function RegisterPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Confirm Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                               type={showConfirmPassword ? "text" : "password"}
                               placeholder="Confirm your password"
-                              className="pl-10 pr-10"
+                              className="pl-10 pr-10 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus-visible:ring-0 focus:bg-secondary/10"
                               {...field}
                             />
                             <button
@@ -343,12 +343,12 @@ export default function RegisterPage() {
                             </button>
                           </div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-mono" />
                       </FormItem>
                     )}
                   />
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 pt-2">
                     <FormField
                       control={form.control}
                       name="agreeToTerms"
@@ -358,14 +358,15 @@ export default function RegisterPage() {
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
+                              className="rounded-none border-2 border-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                             />
                           </FormControl>
                           <div className="leading-none">
-                            <div className="text-sm font-medium">
+                            <div className="text-xs font-mono uppercase font-bold">
                               I agree to the
                               <Link
                                 to="/terms"
-                                className="text-primary hover:underline"
+                                className="text-primary hover:underline font-bold"
                               >
                                 {" "}
                                 Terms of Service{" "}
@@ -373,13 +374,13 @@ export default function RegisterPage() {
                               and
                               <Link
                                 to="/privacy"
-                                className="text-primary hover:underline"
+                                className="text-primary hover:underline font-bold"
                               >
                                 {" "}
                                 Privacy Policy
                               </Link>
                             </div>
-                            <FormMessage>
+                            <FormMessage className="text-xs font-mono">
                               {fieldState.error?.message}
                             </FormMessage>
                           </div>
@@ -396,10 +397,11 @@ export default function RegisterPage() {
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
+                              className="rounded-none border-2 border-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                             />
                           </FormControl>
                           <div className="space-y-1 leading-none">
-                            <FormLabel className="text-sm">
+                            <FormLabel className="text-xs font-mono uppercase font-bold text-foreground">
                               I would like to receive travel deals and updates
                               (optional)
                             </FormLabel>
@@ -409,26 +411,30 @@ export default function RegisterPage() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button
+                    type="submit"
+                    className="w-full border-2 border-foreground bg-primary hover:bg-primary/80 text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] py-6 text-sm"
+                    disabled={isLoading}
+                  >
                     {isLoading ? "Creating account..." : "Create Account"}
                   </Button>
                 </form>
               </Form>
               <div className="mt-6">
-                <Separator className="my-4" />
-                <div className="text-center">
-                  <span className="text-sm text-muted-foreground">
+                <Separator className="my-4 bg-foreground/15" />
+                <div className="text-center font-mono text-xs uppercase">
+                  <span className="text-muted-foreground">
                     Already have an account?
                   </span>
                   <Link
                     to="/login"
-                    className="text-sm text-primary hover:underline ml-1"
+                    className="text-primary hover:underline ml-1 font-bold"
                   >
                     Sign in
                   </Link>
                   <Button
                     variant="outline"
-                    className="w-full mt-6"
+                    className="w-full mt-6 border-2 border-foreground bg-background hover:bg-secondary text-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] py-6"
                     type="button"
                     onClick={() => {
                       window.location.href = `${
@@ -436,7 +442,7 @@ export default function RegisterPage() {
                       }/auth/google`;
                     }}
                   >
-                    <FcGoogle />
+                    <FcGoogle className="w-5 h-5 mr-2" />
                     Signup with Google
                   </Button>
                 </div>

@@ -43,7 +43,7 @@ export default function Footer() {
             <div className="flex justify-start">
               <Logo />
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed font-mono uppercase">
               Your trusted ride-sharing platform, connecting riders and drivers
               across Bangladesh with complete safety, fair pricing, and convenience.
             </p>
@@ -63,7 +63,7 @@ export default function Footer() {
 
           {/* Company Links */}
           <div className="space-y-6">
-            <h3 className="font-black uppercase tracking-tight text-sm border-b-2 border-foreground/10 pb-2">
+            <h3 className="font-mono font-black uppercase tracking-widest text-xs border-b-2 border-foreground pb-2">
               Company
             </h3>
             <ul className="space-y-3">
@@ -71,7 +71,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground font-medium hover:underline decoration-2 transition-colors"
+                    className="text-xs text-muted-foreground hover:text-primary font-mono uppercase font-bold tracking-wider hover:underline decoration-2 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -82,7 +82,7 @@ export default function Footer() {
 
           {/* Support Links */}
           <div className="space-y-6">
-            <h3 className="font-black uppercase tracking-tight text-sm border-b-2 border-foreground/10 pb-2">
+            <h3 className="font-mono font-black uppercase tracking-widest text-xs border-b-2 border-foreground pb-2">
               Support
             </h3>
             <ul className="space-y-3">
@@ -90,7 +90,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground font-medium hover:underline decoration-2 transition-colors"
+                    className="text-xs text-muted-foreground hover:text-primary font-mono uppercase font-bold tracking-wider hover:underline decoration-2 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -101,48 +101,48 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <h3 className="font-black uppercase tracking-tight text-sm border-b-2 border-foreground/10 pb-2">
+            <h3 className="font-mono font-black uppercase tracking-widest text-xs border-b-2 border-foreground pb-2">
               Contact
             </h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3 text-sm text-muted-foreground">
+            <div className="space-y-4 font-mono text-xs uppercase">
+              <div className="flex items-start space-x-3 text-muted-foreground">
                 <Mail className="w-4 h-4 mt-0.5 text-foreground shrink-0" />
-                <span className="font-mono">support@ridenest.com</span>
+                <span>support@ridenest.com</span>
               </div>
-              <div className="flex items-start space-x-3 text-sm text-muted-foreground">
+              <div className="flex items-start space-x-3 text-muted-foreground">
                 <Phone className="w-4 h-4 mt-0.5 text-foreground shrink-0" />
-                <span className="font-mono">+880 9612-445566</span>
+                <span>+880 9612-445566</span>
               </div>
-              <div className="flex items-start space-x-3 text-sm text-muted-foreground">
+              <div className="flex items-start space-x-3 text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-0.5 text-foreground shrink-0" />
-                <span>123 Kazi Nazrul Islam Ave, Dhaka 1215, Bangladesh</span>
+                <span className="normal-case">123 Kazi Nazrul Islam Ave, Dhaka 1215, Bangladesh</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t-2 border-foreground/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground font-medium">
+        <div className="mt-12 pt-8 border-t-2 border-foreground">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-xs uppercase font-bold">
+            <p className="text-muted-foreground">
               © 2026 Ridenest. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link
                 to="/privacy"
-                className="text-sm text-muted-foreground hover:text-foreground hover:underline decoration-2 transition-colors"
+                className="text-muted-foreground hover:text-primary hover:underline decoration-2 transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link
                 to="/terms"
-                className="text-sm text-muted-foreground hover:text-foreground hover:underline decoration-2 transition-colors"
+                className="text-muted-foreground hover:text-primary hover:underline decoration-2 transition-colors"
               >
                 Terms of Service
               </Link>
               <Link
                 to="/privacy"
-                className="text-sm text-muted-foreground hover:text-foreground hover:underline decoration-2 transition-colors"
+                className="text-muted-foreground hover:text-primary hover:underline decoration-2 transition-colors"
               >
                 Cookie Policy
               </Link>

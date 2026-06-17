@@ -125,34 +125,34 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-muted/20">
-        <div className="max-w-md w-full space-y-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-md w-full space-y-6">
           {/* Logo and Title */}
-          <div className="text-center">
+          <div className="text-center space-y-2">
             <Logo />
-            <h2 className="text-3xl font-bold text-foreground">Welcome back</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">Welcome back</h2>
+            <p className="mt-2 text-xs font-mono uppercase text-muted-foreground">
               Sign in to your account to continue your journey
             </p>
           </div>
           {/* Login Form */}
-          <Card>
-            <CardHeader className="space-y-1">
-              <CardTitle>Sign in</CardTitle>
-              <CardDescription>
+          <Card className="border-2 border-foreground bg-card shadow-[4px_4px_0px_0px_var(--foreground)] rounded-none">
+            <CardHeader className="space-y-1 border-b-2 border-foreground pb-4">
+              <CardTitle className="text-xl font-black uppercase tracking-tight text-foreground">Sign in</CardTitle>
+              <CardDescription className="text-xs font-mono uppercase text-muted-foreground">
                 Enter your credentials to access your account
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-4"
                 >
                   {error && (
-                    <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md flex items-center">
-                      <AlertCircle className="h-4 w-4 mr-2" />
+                    <div className="p-3 text-xs font-mono uppercase text-red-600 bg-red-50 border-2 border-red-600 rounded-none flex items-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                      <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
                       {error}
                     </div>
                   )}
@@ -161,14 +161,14 @@ export default function Login() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email address</FormLabel>
+                        <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Email address</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <input
                               type="email"
                               placeholder="Enter your email"
-                              className="w-full pl-10 pr-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                              className="w-full pl-10 pr-3 py-2 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus:bg-secondary/10"
                               {...field}
                             />
                           </div>
@@ -176,7 +176,7 @@ export default function Login() {
                         <FormDescription className="sr-only">
                           Enter your email
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-mono" />
                       </FormItem>
                     )}
                   />
@@ -186,10 +186,10 @@ export default function Login() {
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center justify-between">
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel className="text-xs font-mono uppercase font-black text-foreground">Password</FormLabel>
                           <Link
                             to="/forgot-password"
-                            className="text-sm text-primary hover:underline"
+                            className="text-xs font-mono uppercase text-primary hover:underline"
                           >
                             Forgot password?
                           </Link>
@@ -200,7 +200,7 @@ export default function Login() {
                             <input
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
-                              className="w-full pl-10 pr-10 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                              className="w-full pl-10 pr-10 py-2 bg-background text-foreground border-2 border-foreground rounded-none focus-visible:outline-none focus:bg-secondary/10"
                               {...field}
                             />
                             <button
@@ -219,7 +219,7 @@ export default function Login() {
                         <FormDescription className="sr-only">
                           Enter your password
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-mono" />
                       </FormItem>
                     )}
                   />
@@ -227,25 +227,26 @@ export default function Login() {
                     control={form.control}
                     name="rememberMe"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            className="rounded-none border-2 border-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                           />
                         </FormControl>
                         <FormDescription className="sr-only">
                           Remember me
                         </FormDescription>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Remember me</FormLabel>
+                          <FormLabel className="text-xs font-mono uppercase font-bold text-foreground">Remember me</FormLabel>
                         </div>
                       </FormItem>
                     )}
                   />
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full border-2 border-foreground bg-primary hover:bg-primary/80 text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] py-6 text-sm"
                     disabled={isLoginLoading}
                   >
                     {isLoginLoading ? "Signing in..." : "Sign in"}
@@ -253,14 +254,14 @@ export default function Login() {
                 </form>
               </Form>
               <div className="mt-6">
-                <Separator className="my-4" />
-                <div className="text-center">
-                  <span className="text-sm text-muted-foreground">
+                <Separator className="my-4 bg-foreground/15" />
+                <div className="text-center font-mono text-xs uppercase">
+                  <span className="text-muted-foreground">
                     Don't have an account?
                   </span>
                   <Link
                     to="/register"
-                    className="text-sm text-primary hover:underline ml-1"
+                    className="text-primary hover:underline ml-1 font-bold"
                   >
                     Sign up
                   </Link>
@@ -269,12 +270,12 @@ export default function Login() {
             </CardContent>
           </Card>
           {/* Social Login */}
-          <Card>
+          <Card className="border-2 border-foreground bg-card shadow-[4px_4px_0px_0px_var(--foreground)] rounded-none">
             <CardContent className="pt-6">
               <div className="space-y-3">
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-2 border-foreground bg-background hover:bg-secondary text-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] py-6"
                   type="button"
                   onClick={() => {
                     window.location.href = `${
@@ -282,7 +283,7 @@ export default function Login() {
                     }/auth/google`;
                   }}
                 >
-                  <FcGoogle />
+                  <FcGoogle className="w-5 h-5 mr-2" />
                   Continue with Google
                 </Button>
               </div>
@@ -290,15 +291,15 @@ export default function Login() {
           </Card>
           <DemoLogin form={form} />
           {/* Help Links */}
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">
+          <div className="text-center space-y-2 font-mono text-xs uppercase">
+            <p className="text-muted-foreground">
               Having trouble signing in?
             </p>
-            <div className="flex justify-center space-x-4 text-sm">
-              <Link to="/guidelines" className="text-primary hover:underline">
+            <div className="flex justify-center space-x-4">
+              <Link to="/guidelines" className="text-primary hover:underline font-bold">
                 Help Center
               </Link>
-              <Link to="/contact" className="text-primary hover:underline">
+              <Link to="/contact" className="text-primary hover:underline font-bold">
                 Contact Support
               </Link>
             </div>

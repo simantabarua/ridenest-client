@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Shield, Lock, Eye, Database, Trash2, Settings } from "lucide-react";
 
 export default function PrivacyPage() {
@@ -90,26 +89,35 @@ export default function PrivacyPage() {
   ];
 
   return (
-    <div className="min-h-screen  p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Privacy Policy</h1>
-          <p className="text-muted-foreground">Last updated: August 22, 2025</p>
+    <div className="min-h-screen bg-background py-12 px-6">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center md:text-left space-y-4">
+          <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+            Privacy
+          </span>
+          <h1 className="text-4xl font-black uppercase tracking-tight text-foreground">
+            Privacy Policy
+          </h1>
+          <p className="text-muted-foreground font-mono text-sm">
+            LAST UPDATED: AUGUST 22, 2025
+          </p>
         </div>
 
         {/* Overview */}
-        <Card className="border-0 py-6 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-primary" />
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] bg-card">
+          <CardHeader className="border-b-2 border-foreground">
+            <CardTitle className="flex items-center space-x-3 text-lg font-black uppercase">
+              <div className="p-1.5 border-2 border-foreground bg-secondary">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
               <span>Our Commitment to Privacy</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-mono text-xs pt-1">
               At Ridenest, we take your privacy seriously. This policy explains
               how we collect, use, and protect your personal information.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
               Your privacy is important to us. This Privacy Policy outlines our
               practices regarding the collection, use, and disclosure of your
@@ -121,39 +129,45 @@ export default function PrivacyPage() {
         </Card>
 
         {/* Privacy Principles */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="text-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
             <CardHeader>
-              <Lock className="w-8 h-8 mx-auto text-primary" />
-              <CardTitle className="text-lg">Security</CardTitle>
+              <div className="w-12 h-12 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-2">
+                <Lock className="w-6 h-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg font-black uppercase">Security</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Industry-standard encryption and security measures
+              <p className="text-xs text-muted-foreground font-mono">
+                Industry-standard encryption and security measures.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
+          <Card className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
             <CardHeader>
-              <Eye className="w-8 h-8 mx-auto text-primary" />
-              <CardTitle className="text-lg">Transparency</CardTitle>
+              <div className="w-12 h-12 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-2">
+                <Eye className="w-6 h-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg font-black uppercase">Transparency</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Clear information about data collection and use
+              <p className="text-xs text-muted-foreground font-mono">
+                Clear information about data collection and use.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
+          <Card className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
             <CardHeader>
-              <Settings className="w-8 h-8 mx-auto text-primary" />
-              <CardTitle className="text-lg">Control</CardTitle>
+              <div className="w-12 h-12 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-2">
+                <Settings className="w-6 h-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg font-black uppercase">Control</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                You control your personal information and preferences
+              <p className="text-xs text-muted-foreground font-mono">
+                You control your personal information and preferences.
               </p>
             </CardContent>
           </Card>
@@ -162,22 +176,21 @@ export default function PrivacyPage() {
         {/* Privacy Sections */}
         <div className="space-y-6">
           {privacySections.map((section, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-3">
-                  <section.icon className="w-6 h-6 text-primary" />
+            <Card key={index} className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+              <CardHeader className="border-b-2 border-foreground bg-secondary/15">
+                <CardTitle className="flex items-center space-x-3 text-base font-black uppercase">
+                  <div className="p-1.5 border-2 border-foreground bg-background">
+                    <section.icon className="w-5 h-5 text-primary" />
+                  </div>
                   <span>{section.title}</span>
                 </CardTitle>
-                <CardDescription>{section.content}</CardDescription>
+                <CardDescription className="text-sm font-mono pt-1 text-foreground">{section.content}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
+              <CardContent className="pt-6">
+                <ul className="space-y-3">
                   {section.details.map((detail, detailIndex) => (
-                    <li
-                      key={detailIndex}
-                      className="flex items-start space-x-2"
-                    >
-                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <li key={detailIndex} className="flex items-start space-x-2 text-sm">
+                      <div className="mt-1 w-2.5 h-2.5 border-2 border-foreground bg-primary flex-shrink-0"></div>
                       <span className="text-muted-foreground">{detail}</span>
                     </li>
                   ))}
@@ -188,61 +201,50 @@ export default function PrivacyPage() {
         </div>
 
         {/* Cookies and Tracking */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Cookies and Tracking Technologies</CardTitle>
-            <CardDescription>
-              How we use cookies and similar technologies on our platform
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+          <CardHeader className="border-b-2 border-foreground bg-secondary/10">
+            <CardTitle className="text-lg font-black uppercase">Cookies and Tracking Technologies</CardTitle>
+            <CardDescription className="font-mono text-xs pt-1">
+              How we use cookies and similar technologies on our platform.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                We use cookies and similar tracking technologies to enhance your
-                experience, analyze usage patterns, and improve our services.
-                You can control cookie preferences through your browser
-                settings.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium">Essential Cookies</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Required for basic functionality and security
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium">Analytics Cookies</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Help us understand how you use our service
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium">Marketing Cookies</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Used for personalized advertising (optional)
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium">Preference Cookies</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Remember your settings and preferences
-                  </p>
-                </div>
+          <CardContent className="pt-6 space-y-6">
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              We use cookies and similar tracking technologies to enhance your
+              experience, analyze usage patterns, and improve our services.
+              You can control cookie preferences through your browser settings.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 border-2 border-foreground bg-secondary/5">
+                <h4 className="font-bold font-mono uppercase text-sm mb-1">Essential Cookies</h4>
+                <p className="text-xs text-muted-foreground">Required for basic functionality and security</p>
+              </div>
+              <div className="p-4 border-2 border-foreground bg-secondary/5">
+                <h4 className="font-bold font-mono uppercase text-sm mb-1">Analytics Cookies</h4>
+                <p className="text-xs text-muted-foreground">Help us understand how you use our service</p>
+              </div>
+              <div className="p-4 border-2 border-foreground bg-secondary/5">
+                <h4 className="font-bold font-mono uppercase text-sm mb-1">Marketing Cookies</h4>
+                <p className="text-xs text-muted-foreground">Used for personalized advertising (optional)</p>
+              </div>
+              <div className="p-4 border-2 border-foreground bg-secondary/5">
+                <h4 className="font-bold font-mono uppercase text-sm mb-1">Preference Cookies</h4>
+                <p className="text-xs text-muted-foreground">Remember your settings and preferences</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* International Users */}
-        <Card>
-          <CardHeader>
-            <CardTitle>International Data Transfers</CardTitle>
-            <CardDescription>
-              How we handle data for users outside your country
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+          <CardHeader className="border-b-2 border-foreground bg-secondary/10">
+            <CardTitle className="text-lg font-black uppercase">International Data Transfers</CardTitle>
+            <CardDescription className="font-mono text-xs pt-1">
+              How we handle data for users outside your country.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground leading-relaxed">
+          <CardContent className="pt-6">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Ridenest operates globally, and your information may be
               transferred to and processed in countries other than your country
               of residence. We ensure appropriate safeguards are in place for
@@ -254,44 +256,45 @@ export default function PrivacyPage() {
         </Card>
 
         {/* Contact Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Contact Us</CardTitle>
-            <CardDescription>
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+          <CardHeader className="border-b-2 border-foreground">
+            <CardTitle className="text-lg font-black uppercase">Contact Us</CardTitle>
+            <CardDescription className="font-mono text-xs">
               Questions about our privacy practices? We're here to help.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                If you have any questions, concerns, or requests regarding this
-                Privacy Policy or our data practices, please don't hesitate to
-                contact us.
-              </p>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-                <p>
-                  <strong>Email:</strong> privacy@Ridenest.com
-                </p>
-                <p>
-                  <strong>Phone:</strong> +1 (555) 123-4567
-                </p>
-                <p>
-                  <strong>Address:</strong> 123 Privacy Lane, San Francisco, CA
-                  94105
-                </p>
-                <p>
-                  <strong>Data Protection Officer:</strong> dpo@Ridenest.com
-                </p>
+          <CardContent className="pt-6 space-y-4">
+            <p className="text-muted-foreground text-sm">
+              If you have any questions, concerns, or requests regarding this
+              Privacy Policy or our data practices, please don't hesitate to
+              contact us.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-mono text-muted-foreground">
+              <div className="p-3 border-2 border-foreground bg-secondary/10">
+                <strong className="block text-foreground uppercase text-xs mb-1">Email</strong>
+                privacy@ridenest.com
+              </div>
+              <div className="p-3 border-2 border-foreground bg-secondary/10">
+                <strong className="block text-foreground uppercase text-xs mb-1">Phone</strong>
+                +1 (555) 123-4567
+              </div>
+              <div className="p-3 border-2 border-foreground bg-secondary/10">
+                <strong className="block text-foreground uppercase text-xs mb-1">Address</strong>
+                123 Privacy Lane, SF, CA 94105
+              </div>
+              <div className="p-3 border-2 border-foreground bg-secondary/10">
+                <strong className="block text-foreground uppercase text-xs mb-1">Data Protection Officer</strong>
+                dpo@ridenest.com
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Footer */}
-        <div className="text-center py-8">
-          <Badge variant="secondary">
-            © 2024 Ridenest. All rights reserved.
-          </Badge>
+        <div className="text-center py-6">
+          <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1.5 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+            © 2026 Ridenest. All rights reserved.
+          </span>
         </div>
       </div>
     </div>

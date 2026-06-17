@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Users,
@@ -82,17 +81,19 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-background py-20">
+      <section className="border-b-2 border-foreground py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-6">
-            <Badge variant="secondary">About Ridenest</Badge>
-            <h1 className="text-2xl lg:text-5xl font-bold">
+          <div className="text-center space-y-6 max-w-3xl mx-auto">
+            <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+              About Ridenest
+            </span>
+            <h1 className="text-3xl lg:text-5xl font-black uppercase tracking-tight text-foreground">
               Revolutionizing Transportation,
               <span className="text-primary"> One Ride at a Time</span>
             </h1>
-            <p className="text-xl text-muted-foreground  mx-auto">
+            <p className="text-base text-muted-foreground font-mono mx-auto">
               Founded in 2020, Ridenest has grown from a simple idea to a
               trusted transportation platform serving millions of users across
               the country. Our mission is to make transportation safe,
@@ -107,17 +108,17 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat, index) => (
-              <Card key={index} className="text-center border-0 py-6 shadow-lg">
+              <Card key={index} className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] py-6 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-4">
                     <stat.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-3xl font-bold text-primary">
+                  <CardTitle className="text-3xl font-black text-primary">
                     {stat.value}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-lg font-medium">
+                  <CardDescription className="text-sm font-mono uppercase font-bold">
                     {stat.label}
                   </CardDescription>
                 </CardContent>
@@ -128,53 +129,54 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20">
+      <section className="py-20 border-y-2 border-foreground">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <Badge variant="secondary">Our Mission</Badge>
-              <h2 className="text-3xl lg:text-2xl font-bold">
+              <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+                Our Mission
+              </span>
+              <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
                 Making Transportation Better for Everyone
               </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base text-muted-foreground leading-relaxed">
                 At Ridenest, we believe that everyone deserves access to safe,
                 reliable, and affordable transportation. Our platform connects
                 riders with professional drivers, creating a community built on
                 trust and convenience.
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base text-muted-foreground leading-relaxed">
                 We're committed to reducing traffic congestion, lowering carbon
                 emissions, and providing economic opportunities for drivers
                 while offering exceptional service to our riders.
               </p>
-              <div className="flex items-center space-x-4">
-                <Award className="w-8 h-8 text-primary" />
-                <span className="font-semibold">
+              <div className="flex items-center space-x-4 border-2 border-foreground p-4 bg-secondary/50 shadow-[2px_2px_0px_0px_var(--foreground)]">
+                <Award className="w-8 h-8 text-primary flex-shrink-0" />
+                <span className="font-mono font-bold uppercase text-sm">
                   Award-winning service since 2020
                 </span>
               </div>
             </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-3xl"></div>
-              <div className="relative bg-background rounded-2xl shadow-2xl p-8">
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Our Impact</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                      <span>Carbon Emissions Reduced</span>
-                      <Badge variant="secondary">25%</Badge>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                      <span>Driver Income Generated</span>
-                      <Badge variant="secondary">$50M+</Badge>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                      <span>Customer Satisfaction</span>
-                      <Badge variant="secondary">98%</Badge>
-                    </div>
+            <div>
+              <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+                <CardHeader className="border-b-2 border-foreground">
+                  <CardTitle className="text-xl font-black uppercase">Our Impact</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-3">
+                  <div className="flex justify-between items-center p-3 border-2 border-foreground bg-secondary/30">
+                    <span className="font-mono text-sm">Carbon Emissions Reduced</span>
+                    <span className="border-2 border-foreground bg-primary text-primary-foreground px-3 py-0.5 text-xs font-mono font-bold uppercase">25%</span>
                   </div>
-                </div>
-              </div>
+                  <div className="flex justify-between items-center p-3 border-2 border-foreground bg-secondary/30">
+                    <span className="font-mono text-sm">Driver Income Generated</span>
+                    <span className="border-2 border-foreground bg-primary text-primary-foreground px-3 py-0.5 text-xs font-mono font-bold uppercase">$50M+</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 border-2 border-foreground bg-secondary/30">
+                    <span className="font-mono text-sm">Customer Satisfaction</span>
+                    <span className="border-2 border-foreground bg-primary text-primary-foreground px-3 py-0.5 text-xs font-mono font-bold uppercase">98%</span>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -184,26 +186,28 @@ export default function AboutPage() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
-            <Badge variant="secondary">Our Values</Badge>
-            <h2 className="text-3xl lg:text-2xl font-bold">
+            <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+              Our Values
+            </span>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
               The Principles That Guide Us
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto font-mono">
               Our core values shape our decisions and define who we are as a
               company.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
-              <Card key={index} className="text-center border-0 py-6 shadow-lg">
+              <Card key={index} className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] py-6 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-4">
                     <value.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-xl">{value.title}</CardTitle>
+                  <CardTitle className="text-lg font-black uppercase">{value.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-sm">
                     {value.description}
                   </CardDescription>
                 </CardContent>
@@ -214,32 +218,34 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20">
+      <section className="py-20 border-y-2 border-foreground">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
-            <Badge variant="secondary">Leadership Team</Badge>
-            <h2 className="text-3xl lg:text-2xl font-bold">
+            <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+              Leadership Team
+            </span>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
               Meet the People Behind Ridenest
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto font-mono">
               Our diverse team of experts is dedicated to revolutionizing
               transportation.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {team.map((member, index) => (
-              <Card key={index} className="text-center border-0 py-6 shadow-lg">
+              <Card key={index} className="text-center border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] py-6 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
                 <CardHeader>
-                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 border-2 border-foreground bg-secondary flex items-center justify-center mx-auto mb-4">
                     <Users className="w-10 h-10 text-primary" />
                   </div>
-                  <CardTitle className="text-xl">{member.name}</CardTitle>
-                  <CardDescription className="font-medium text-primary">
+                  <CardTitle className="text-lg font-black uppercase">{member.name}</CardTitle>
+                  <CardDescription className="font-mono font-bold text-primary uppercase text-xs">
                     {member.role}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-sm">
                     {member.bio}
                   </CardDescription>
                 </CardContent>
@@ -250,21 +256,20 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
+      <section className="py-20 bg-foreground text-background">
         <div className="container mx-auto px-4 text-center">
-          <div className=" mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-2xl font-bold">
+          <div className="mx-auto space-y-6 max-w-2xl">
+            <h2 className="text-3xl font-black uppercase tracking-tight">
               Join Us in Shaping the Future of Transportation
             </h2>
-            <p className="text-xl opacity-90">
+            <p className="text-base opacity-80 font-mono">
               Whether you're looking to ride, drive, or partner with us, we'd
               love to have you as part of our community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                variant="secondary"
-                className="text-lg px-8 py-6"
+                className="border-2 border-background bg-primary text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.3)] transition-all px-8 py-6 text-base"
               >
                 Start Riding
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -272,7 +277,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-6 border-white text-primary hover:bg-background hover:text-primary"
+                className="border-2 border-background bg-transparent text-background hover:bg-background hover:text-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.3)] transition-all px-8 py-6 text-base"
               >
                 Become a Driver
               </Button>

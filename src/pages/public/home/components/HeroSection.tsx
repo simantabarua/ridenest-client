@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Star, Users } from "lucide-react";
-import DestinationCard from "./DestinationCard";
+import PublicDestinationCard from "./PublicDestinationCard";
 import { Link } from "react-router";
 import heroVideo from "../../../../assets/video/banner.mp4";
 export default function HeroSection() {
@@ -73,7 +73,7 @@ export default function HeroSection() {
           </div>
 
           <div className="relative z-20">
-            <DestinationCard />
+            <PublicDestinationCard />
           </div>
         </div>
       </div>

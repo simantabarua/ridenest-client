@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Users,
   Shield,
@@ -92,28 +91,35 @@ export default function GuidelinesPage() {
   ];
 
   return (
-    <div className="min-h-screen  p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Community Guidelines</h1>
-          <p className="text-muted-foreground">
-            Building a safe and respectful community
+    <div className="min-h-screen bg-background py-12 px-6">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center md:text-left space-y-4">
+          <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+            Community
+          </span>
+          <h1 className="text-4xl font-black uppercase tracking-tight text-foreground">
+            Community Guidelines
+          </h1>
+          <p className="text-muted-foreground font-mono text-sm">
+            BUILDING A SAFE AND RESPECTFUL COMMUNITY
           </p>
         </div>
 
         {/* Overview */}
-        <Card className="border-0 py-6 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] bg-card">
+          <CardHeader className="border-b-2 border-foreground">
+            <CardTitle className="flex items-center space-x-3 text-lg font-black uppercase">
+              <div className="p-1.5 border-2 border-foreground bg-secondary">
+                <CheckCircle className="w-5 h-5 text-primary" />
+              </div>
               <span>Our Community Standards</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-mono text-xs pt-1">
               These guidelines help ensure Ridenest remains a safe, respectful,
               and enjoyable platform for everyone.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
               At Ridenest, we believe in creating a community where everyone
               feels safe and respected. These guidelines outline the behavior we
@@ -125,21 +131,23 @@ export default function GuidelinesPage() {
         </Card>
 
         {/* Core Guidelines */}
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {guidelines.map((guideline, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-3">
-                  <guideline.icon className="w-6 h-6 text-primary" />
+            <Card key={index} className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all">
+              <CardHeader className="border-b-2 border-foreground bg-secondary/15">
+                <CardTitle className="flex items-center space-x-3 text-base font-black uppercase">
+                  <div className="p-1.5 border-2 border-foreground bg-background">
+                    <guideline.icon className="w-5 h-5 text-primary" />
+                  </div>
                   <span>{guideline.title}</span>
                 </CardTitle>
-                <CardDescription>{guideline.description}</CardDescription>
+                <CardDescription className="font-mono text-xs pt-1">{guideline.description}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
+              <CardContent className="pt-6">
+                <ul className="space-y-3">
                   {guideline.points.map((point, pointIndex) => (
-                    <li key={pointIndex} className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <li key={pointIndex} className="flex items-start space-x-2 text-sm">
+                      <div className="mt-0.5 w-4 h-4 border border-foreground flex items-center justify-center bg-primary text-primary-foreground font-mono text-[9px] font-bold flex-shrink-0">✓</div>
                       <span className="text-muted-foreground">{point}</span>
                     </li>
                   ))}
@@ -150,20 +158,20 @@ export default function GuidelinesPage() {
         </div>
 
         {/* Role-Specific Guidelines */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {riderGuidelines.map((section, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-blue-500" />
+            <Card key={index} className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+              <CardHeader className="border-b-2 border-foreground bg-secondary/10">
+                <CardTitle className="flex items-center space-x-2 text-base font-black uppercase">
+                  <Users className="w-5 h-5 text-primary" />
                   <span>{section.title}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
+              <CardContent className="pt-6">
+                <ul className="space-y-3">
                   {section.points.map((point, pointIndex) => (
-                    <li key={pointIndex} className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <li key={pointIndex} className="flex items-start space-x-2 text-sm">
+                      <div className="mt-0.5 w-4 h-4 border border-foreground flex items-center justify-center bg-primary text-primary-foreground font-mono text-[9px] font-bold flex-shrink-0">✓</div>
                       <span className="text-muted-foreground">{point}</span>
                     </li>
                   ))}
@@ -173,18 +181,18 @@ export default function GuidelinesPage() {
           ))}
 
           {driverGuidelines.map((section, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5 text-green-500" />
+            <Card key={index} className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+              <CardHeader className="border-b-2 border-foreground bg-secondary/10">
+                <CardTitle className="flex items-center space-x-2 text-base font-black uppercase">
+                  <Shield className="w-5 h-5 text-primary" />
                   <span>{section.title}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
+              <CardContent className="pt-6">
+                <ul className="space-y-3">
                   {section.points.map((point, pointIndex) => (
-                    <li key={pointIndex} className="flex items-start space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <li key={pointIndex} className="flex items-start space-x-2 text-sm">
+                      <div className="mt-0.5 w-4 h-4 border border-foreground flex items-center justify-center bg-primary text-primary-foreground font-mono text-[9px] font-bold flex-shrink-0">✓</div>
                       <span className="text-muted-foreground">{point}</span>
                     </li>
                   ))}
@@ -195,48 +203,50 @@ export default function GuidelinesPage() {
         </div>
 
         {/* Prohibited Activities */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+          <CardHeader className="border-b-2 border-foreground">
+            <CardTitle className="flex items-center space-x-3 text-lg font-black uppercase">
+              <div className="p-1.5 border-2 border-foreground bg-secondary">
+                <AlertTriangle className="w-5 h-5 text-destructive" />
+              </div>
               <span>Prohibited Activities</span>
             </CardTitle>
-            <CardDescription>
-              The following activities are strictly prohibited on our platform
+            <CardDescription className="font-mono text-xs pt-1">
+              The following activities are strictly prohibited on our platform.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium">Safety Violations</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3 p-4 border-2 border-foreground bg-destructive/5">
+                <h4 className="font-bold font-mono uppercase text-sm border-b border-foreground pb-1 text-destructive">Safety Violations</h4>
+                <ul className="space-y-1.5 text-xs font-mono text-muted-foreground">
                   <li>• Driving under the influence</li>
                   <li>• Reckless or dangerous driving</li>
                   <li>• Vehicle not meeting safety standards</li>
                   <li>• Ignoring traffic laws</li>
                 </ul>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-medium">Behavioral Issues</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
+              <div className="space-y-3 p-4 border-2 border-foreground bg-destructive/5">
+                <h4 className="font-bold font-mono uppercase text-sm border-b border-foreground pb-1 text-destructive">Behavioral Issues</h4>
+                <ul className="space-y-1.5 text-xs font-mono text-muted-foreground">
                   <li>• Harassment or discrimination</li>
                   <li>• Verbal or physical abuse</li>
                   <li>• Unwanted advances</li>
                   <li>• Disrespectful behavior</li>
                 </ul>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-medium">Policy Violations</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
+              <div className="space-y-3 p-4 border-2 border-foreground bg-destructive/5">
+                <h4 className="font-bold font-mono uppercase text-sm border-b border-foreground pb-1 text-destructive">Policy Violations</h4>
+                <ul className="space-y-1.5 text-xs font-mono text-muted-foreground">
                   <li>• Cash payments outside the app</li>
                   <li>• Sharing account credentials</li>
                   <li>• Fraudulent activities</li>
                   <li>• Spam or unsolicited communications</li>
                 </ul>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-medium">Legal Issues</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
+              <div className="space-y-3 p-4 border-2 border-foreground bg-destructive/5">
+                <h4 className="font-bold font-mono uppercase text-sm border-b border-foreground pb-1 text-destructive">Legal Issues</h4>
+                <ul className="space-y-1.5 text-xs font-mono text-muted-foreground">
                   <li>• Illegal activities during rides</li>
                   <li>• Transporting prohibited items</li>
                   <li>• Violating local laws</li>
@@ -248,38 +258,48 @@ export default function GuidelinesPage() {
         </Card>
 
         {/* Reporting Violations */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Reporting Guidelines Violations</CardTitle>
-            <CardDescription>
-              Help us maintain a safe community by reporting violations
+        <Card className="border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--foreground)]">
+          <CardHeader className="border-b-2 border-foreground">
+            <CardTitle className="text-lg font-black uppercase">Reporting Guidelines Violations</CardTitle>
+            <CardDescription className="font-mono text-xs">
+              Help us maintain a safe community by reporting violations.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                If you witness or experience any violation of these guidelines,
-                please report it immediately through our app. All reports are
-                taken seriously and investigated promptly.
-              </p>
-              <div className="bg-muted/50 p-4 rounded-lg">
-                <h4 className="font-medium mb-2">How to Report:</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
-                  <li>• Use the "Report" button in the app after a ride</li>
-                  <li>• Contact our support team through the Help Center</li>
-                  <li>• Email us at support@Ridenest.com</li>
-                  <li>• Call our 24/7 hotline: +1 (555) 123-4567</li>
-                </ul>
-              </div>
+          <CardContent className="pt-6 space-y-4">
+            <p className="text-muted-foreground text-sm">
+              If you witness or experience any violation of these guidelines,
+              please report it immediately through our app. All reports are
+              taken seriously and investigated promptly.
+            </p>
+            <div className="border-2 border-foreground p-4 bg-secondary/20">
+              <h4 className="font-bold font-mono uppercase text-sm mb-3">How to Report:</h4>
+              <ul className="space-y-2 text-xs font-mono text-muted-foreground">
+                <li className="flex items-center space-x-2">
+                  <span className="w-1.5 h-1.5 bg-foreground flex-shrink-0"></span>
+                  <span>Use the "Report" button in the app after a ride</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-1.5 h-1.5 bg-foreground flex-shrink-0"></span>
+                  <span>Contact our support team through the Help Center</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-1.5 h-1.5 bg-foreground flex-shrink-0"></span>
+                  <span>Email us at support@ridenest.com</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-1.5 h-1.5 bg-foreground flex-shrink-0"></span>
+                  <span>Call our 24/7 hotline: +1 (555) 123-4567</span>
+                </li>
+              </ul>
             </div>
           </CardContent>
         </Card>
 
         {/* Footer */}
-        <div className="text-center py-8">
-          <Badge variant="secondary">
-            © 2024 Ridenest. All rights reserved.
-          </Badge>
+        <div className="text-center py-6">
+          <span className="inline-block border-2 border-foreground bg-secondary px-4 py-1.5 text-xs font-mono uppercase font-bold shadow-[2px_2px_0px_0px_var(--foreground)]">
+            © 2026 Ridenest. All rights reserved.
+          </span>
         </div>
       </div>
     </div>
