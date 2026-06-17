@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
   AccordionContent,
@@ -179,18 +178,22 @@ export default function FAQPage() {
   const popularQuestions = faqs.slice(0, 5);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-background py-20">
+      <section className="bg-background border-b-2 border-foreground py-20">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-6">
-            <Badge variant="secondary">Help Center</Badge>
-            <h1 className="text-2xl lg:text-5xl font-bold">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <div>
+              <span className="inline-block border-2 border-foreground bg-secondary text-secondary-foreground font-mono font-bold uppercase rounded-none px-3 py-1 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                Help Center
+              </span>
+            </div>
+            <h1 className="text-4xl lg:text-6xl font-black uppercase tracking-tight text-foreground">
               Frequently Asked
-              <span className="text-primary"> Questions</span>
+              <span className="text-primary block sm:inline"> Questions</span>
             </h1>
-            <p className="text-xl text-muted-foreground  mx-auto">
-              Find answers to common questions about Ridenest. Can't find what
+            <p className="text-lg md:text-xl font-mono text-muted-foreground max-w-2xl mx-auto">
+              Find answers to common questions about RideNest. Can't find what
               you're looking for? Our support team is here to help 24/7.
             </p>
           </div>
@@ -198,17 +201,17 @@ export default function FAQPage() {
       </section>
 
       {/* Search Section */}
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-background border-b-2 border-foreground">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search for answers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 py-6 text-lg"
+                className="pl-12 py-6 text-lg bg-background text-foreground border-2 border-foreground rounded-none focus-visible:ring-0 focus:bg-secondary/10 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               />
             </div>
           </div>
@@ -216,15 +219,18 @@ export default function FAQPage() {
       </section>
 
       {/* Category Filters */}
-      <section className="py-12">
+      <section className="py-12 border-b-2 border-foreground bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={activeCategory === category.id ? "default" : "outline"}
                 onClick={() => setActiveCategory(category.id)}
-                className="flex items-center space-x-2"
+                className={`flex items-center space-x-2 border-2 border-foreground font-mono font-bold uppercase rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px] hover:translate-x-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all ${
+                  activeCategory === category.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-foreground hover:bg-secondary"
+                }`}
               >
                 <category.icon className="w-4 h-4" />
                 <span>{category.label}</span>
@@ -236,30 +242,34 @@ export default function FAQPage() {
 
       {/* Popular Questions */}
       {searchQuery === "" && activeCategory === "all" && (
-        <section className="py-12 bg-background">
+        <section className="py-16 bg-background border-b-2 border-foreground">
           <div className="container mx-auto px-4">
-            <div className="text-center space-y-4 mb-4">
-              <Badge variant="secondary">Popular Questions</Badge>
-              <h2 className="text-3xl font-bold">Most Frequently Asked</h2>
+            <div className="text-center space-y-4 mb-12">
+              <div>
+                <span className="inline-block border-2 border-foreground bg-secondary text-secondary-foreground font-mono font-bold uppercase rounded-none px-3 py-1 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  Popular Questions
+                </span>
+              </div>
+              <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">Most Frequently Asked</h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {popularQuestions.map((faq) => (
                 <Card
                   key={faq.id}
-                  className="border-0 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+                  className="border-2 border-foreground bg-card shadow-[4px_4px_0px_0px_var(--foreground)] rounded-none cursor-pointer hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_var(--foreground)] transition-all py-4"
                 >
                   <CardHeader>
                     <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <faq.icon className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 bg-secondary border-2 border-foreground flex items-center justify-center flex-shrink-0 rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <faq.icon className="w-5 h-5 text-secondary-foreground" />
                       </div>
-                      <CardTitle className="text-lg leading-tight">
+                      <CardTitle className="text-lg leading-tight font-black uppercase tracking-tight text-foreground">
                         {faq.question}
                       </CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="line-clamp-3">
+                  <CardContent className="pt-2">
+                    <CardDescription className="line-clamp-3 font-mono text-xs text-muted-foreground uppercase leading-relaxed">
                       {faq.answer}
                     </CardDescription>
                   </CardContent>
@@ -271,15 +281,15 @@ export default function FAQPage() {
       )}
 
       {/* FAQ Accordion */}
-      <section className="py-20">
+      <section className="py-20 border-b-2 border-foreground bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center space-y-4 mb-12">
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
                 {filteredFaqs.length}{" "}
                 {filteredFaqs.length === 1 ? "Question" : "Questions"} Found
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-md font-mono text-muted-foreground">
                 {searchQuery && `Showing results for "${searchQuery}"`}
                 {activeCategory !== "all" &&
                   ` in ${
@@ -294,20 +304,20 @@ export default function FAQPage() {
                   <AccordionItem
                     key={faq.id}
                     value={`item-${faq.id}`}
-                    className="border-0 shadow-lg rounded-lg px-6"
+                    className="border-2 border-foreground bg-card shadow-[4px_4px_0px_0px_var(--foreground)] rounded-none px-6 py-2"
                   >
-                    <AccordionTrigger className="hover:no-underline">
+                    <AccordionTrigger className="hover:no-underline font-black text-lg uppercase tracking-tight text-foreground">
                       <div className="flex items-start space-x-3 text-left">
-                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <faq.icon className="w-4 h-4 text-primary" />
+                        <div className="w-8 h-8 bg-secondary border-2 border-foreground flex items-center justify-center flex-shrink-0 rounded-none shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+                          <faq.icon className="w-4 h-4 text-secondary-foreground" />
                         </div>
-                        <span className="text-lg font-medium">
+                        <span>
                           {faq.question}
                         </span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="ml-11">
-                      <p className="text-muted-foreground leading-relaxed">
+                    <AccordionContent className="ml-11 border-t border-foreground/10 pt-4 mt-2">
+                      <p className="font-mono text-sm text-muted-foreground leading-relaxed uppercase">
                         {faq.answer}
                       </p>
                     </AccordionContent>
@@ -315,12 +325,12 @@ export default function FAQPage() {
                 ))}
               </Accordion>
             ) : (
-              <div className="text-center py-12">
+              <div className="text-center py-12 border-2 border-dashed border-foreground/30 rounded-none bg-muted/50 p-6">
                 <HelpCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">
+                <h3 className="text-xl font-black uppercase tracking-tight text-foreground mb-2">
                   No questions found
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="font-mono text-sm text-muted-foreground mb-6">
                   Try adjusting your search or browse a different category.
                 </p>
                 <Button
@@ -328,6 +338,7 @@ export default function FAQPage() {
                     setSearchQuery("");
                     setActiveCategory("all");
                   }}
+                  className="border-2 border-foreground bg-primary hover:bg-primary/80 text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px] hover:translate-x-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
                 >
                   Reset Filters
                 </Button>
@@ -340,27 +351,25 @@ export default function FAQPage() {
       {/* Still Need Help */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <div className=" mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-2xl font-bold">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <h2 className="text-3xl lg:text-5xl font-black uppercase tracking-tight">
               Still Have Questions?
             </h2>
-            <p className="text-xl opacity-90">
+            <p className="text-lg font-mono uppercase opacity-90">
               Our support team is available 24/7 to help you with any questions
               or concerns.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 size="lg"
-                variant="secondary"
-                className="text-lg px-8 py-6"
+                className="border-2 border-foreground bg-secondary hover:bg-secondary/80 text-secondary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] py-6 text-md"
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Contact Support
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 border-white text-white hover:bg-background hover:text-primary"
+                className="border-2 border-primary-foreground bg-transparent hover:bg-primary-foreground hover:text-primary text-primary-foreground font-mono font-bold uppercase rounded-none shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-[-2px] hover:translate-x-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] py-6 text-md"
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Call Us
