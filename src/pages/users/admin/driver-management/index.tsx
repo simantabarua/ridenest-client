@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import {
   useDeleteUserMutation,
-  useGetDriverStatsQuery,
+  useGetAdminDriverStatsQuery,
   useGetDriversQuery,
   useUpdateUserMutation,
 } from "@/redux/features/admin/admin.api";
@@ -14,7 +14,7 @@ import type { IDriverInfo } from "@/types/driver.type";
 
 export default function DriverManagementPage() {
   const { data: driverStats, isLoading: statsLoading } =
-    useGetDriverStatsQuery(undefined);
+    useGetAdminDriverStatsQuery(undefined);
   const { data: driversData, isLoading: driversLoading } =
     useGetDriversQuery(undefined);
   const [updateUser] = useUpdateUserMutation();

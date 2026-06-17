@@ -13,17 +13,17 @@ import Logo from "./logo";
 export default function Footer() {
   const footerLinks = {
     company: [
-      { label: "About Us", href: "about" },
-      { label: "Blog", href: "#" },
+      { label: "About Us", href: "/about" },
+      { label: "Blog", href: "/blog" },
       { label: "Careers", href: "#" },
       { label: "Partners", href: "#" },
     ],
     support: [
-      { label: "Help Center", href: "faq" },
-      { label: "Contact Us", href: "contact" },
-      { label: "Guidelines", href: "guidelines" },
-      { label: "Terms of Service", href: "terms" },
-      { label: "Privacy Policy", href: "privacy" },
+      { label: "Help Center", href: "/faq" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Guidelines", href: "/guidelines" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
     ],
   };
 
@@ -129,19 +129,19 @@ export default function Footer() {
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
-                to="#"
+                to="/privacy"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
               </Link>
               <Link
-                to="#"
+                to="/terms"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Terms of Service
               </Link>
               <Link
-                to="#"
+                to="/privacy"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Cookie Policy

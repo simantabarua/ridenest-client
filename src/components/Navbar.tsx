@@ -12,12 +12,21 @@ export default function Navbar() {
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
   const isLoggedIn = !!userInfo && !isLoading;
 
-  const publicLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-    { href: "/faq", label: "FAQ" },
-  ];
+  const links = isLoggedIn
+    ? [
+        { href: "/", label: "Home" },
+        { href: "/explore", label: "Explore Drivers" },
+        { href: "/about", label: "About" },
+        { href: "/contact", label: "Contact" },
+        { href: "/faq", label: "Help Center" },
+        { href: "/blog", label: "Blog" },
+      ]
+    : [
+        { href: "/", label: "Home" },
+        { href: "/explore", label: "Explore Drivers" },
+        { href: "/about", label: "About" },
+        { href: "/faq", label: "Help Center" },
+      ];
 
   const NavLinks = ({ mobile = false }) => (
     <div
@@ -25,7 +34,7 @@ export default function Navbar() {
         mobile ? "flex-col space-y-2" : "items-center space-x-6"
       }`}
     >
-      {publicLinks.map((link) => (
+      {links.map((link) => (
         <Link
           key={link.href}
           to={link.href}

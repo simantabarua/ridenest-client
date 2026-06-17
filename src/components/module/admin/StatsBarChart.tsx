@@ -77,7 +77,7 @@ const StatsBarChart = ({ data }: StatsBarChartProps) => {
                 radius={[6, 6, 0, 0]} 
                 barSize={40}
               >
-                {data.map((entry, index) => (
+                {data.map((_entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Bar>

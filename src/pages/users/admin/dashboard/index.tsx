@@ -6,8 +6,7 @@ import UserDistributionChart from "@/components/module/admin/UserDistributionCha
 import RecentRidesTable from "@/components/module/admin/RecentRidesTable";
 import RecentUsersList from "@/components/module/admin/RecentUsersList";
 import { useGetAdminStatsQuery } from "@/redux/features/admin/admin.api";
-import { Users, Car, User, Route, DollarSign, Activity, Bell, Settings, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Users, Car, User, Route, DollarSign } from "lucide-react";
 
 interface StatItem {
   title: string;

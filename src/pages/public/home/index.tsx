@@ -1,4 +1,3 @@
-import AppSection from "./components/AppSection";
 import CitiesSection from "./components/CitiesSection";
 import ContactSection from "./components/ContactSection";
 import DriverSection from "./components/DriverSection";
@@ -20,7 +19,6 @@ export default function Home() {
       <SafetySection />
       <PricingSection />
       <DriverSection />
-      <AppSection />
       <ContactSection />
     </>
   );

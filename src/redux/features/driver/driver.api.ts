@@ -18,6 +18,20 @@ export const driverApi = baseApi.injectEndpoints({
       query: () => ({ url: "/drivers/availability", method: "GET" }),
       providesTags: ["Availability"],
     }),
+    getPublicDrivers: builder.query({
+      query: (params) => ({
+        url: "/drivers",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Driver"],
+    }),
+    getPublicDriverById: builder.query({
+      query: (id) => ({
+        url: `/drivers/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -25,4 +39,6 @@ export const {
   useGetEarningsQuery,
   useSetAvailabilityMutation,
   useGetAvailabilityQuery,
+  useGetPublicDriversQuery,
+  useGetPublicDriverByIdQuery,
 } = driverApi;

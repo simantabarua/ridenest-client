@@ -15,6 +15,9 @@ const Privacy = lazy(() => import("@/pages/public/privacy"));
 const Terms = lazy(() => import("@/pages/public/terms"));
 const UnauthorizedPage = lazy(() => import("@/pages/public/unauthorized"));
 const NotFoundPage = lazy(() => import("@/pages/public/404"));
+const Explore = lazy(() => import("@/pages/public/explore"));
+const DriverDetails = lazy(() => import("@/pages/public/driver-details"));
+const Blog = lazy(() => import("@/pages/public/blog"));
 
 // Auth pages
 const Login = lazy(() => import("@/pages/auth/login"));
@@ -54,6 +57,7 @@ const RideManagement = lazy(
   () => import("@/pages/users/admin/ride-management")
 );
 const ProfileAdmin = lazy(() => import("@/pages/users/admin/profile"));
+const AdminAnalytics = lazy(() => import("@/pages/users/admin/analytics"));
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +71,9 @@ export const router = createBrowserRouter([
       { path: "guidelines", Component: Guidelines },
       { path: "privacy", Component: Privacy },
       { path: "terms", Component: Terms },
+      { path: "explore", Component: Explore },
+      { path: "drivers/:id", Component: DriverDetails },
+      { path: "blog", Component: Blog },
     ],
   },
   { path: "/login", Component: Login },
@@ -84,6 +91,7 @@ export const router = createBrowserRouter([
       { path: "driver-management", Component: DriverManagement },
       { path: "ride-management", Component: RideManagement },
       { path: "profile", Component: ProfileAdmin },
+      { path: "analytics", Component: AdminAnalytics },
       { path: "ride/:rideId", Component: RideDetails },
     ],
   },

@@ -12,7 +12,7 @@ import {
 import Logo from "./logo";
 import { Link } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { Home, Car, MapPin, History, Users } from "lucide-react";
+import { Home, Car, MapPin, History, Users, BarChart3, User } from "lucide-react";
 type NavLink = {
   href: string;
   label: string;
@@ -46,9 +46,11 @@ const navigationConfig = {
 
   admin: [
     { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+    { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/user-management", label: "User Management", icon: Users },
     { href: "/admin/driver-management", label: "Driver Management", icon: Car },
     { href: "/admin/ride-management", label: "Ride Management", icon: MapPin },
+    { href: "/admin/profile", label: "Profile", icon: User },
   ] as NavLink[],
 };
 

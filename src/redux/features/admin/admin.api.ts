@@ -16,7 +16,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "PATCH",
         data,
       }),
-      invalidatesTags: ["User", "Driver"],
+      invalidatesTags: ["Users", "Driver"],
     }),
 
     deleteUser: builder.mutation({
@@ -40,9 +40,9 @@ export const adminApi = baseApi.injectEndpoints({
         method: "GET",
         data,
       }),
-      providesTags: ["User"],
+      providesTags: ["Users"],
     }),
-    getDriverStats: builder.query({
+    getAdminDriverStats: builder.query({
       query: (data) => ({
         url: "/admin/drivers-stats",
         method: "GET",
@@ -73,7 +73,7 @@ export const {
   useGetAllUserQuery,
   useGetAdminStatsQuery,
   useGetDriversQuery,
-  useGetDriverStatsQuery,
+  useGetAdminDriverStatsQuery,
   useGetRidesStatsQuery,
   useGetAllUserStatsQuery,
   useUpdateUserMutation,
