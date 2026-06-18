@@ -229,7 +229,7 @@ export default function TrackingPage() {
 
   // Helper status calculations
   const isEnRoute = ["accepted", "ongoing"].includes(rideStatus);
-  const isPickedUp = ["pickedUp", "inTransit"].includes(rideStatus);
+  const isPickedUp = ["picked_up", "in_transit"].includes(rideStatus);
 
   const getStatusLabel = () => {
     switch (rideStatus) {
@@ -237,9 +237,9 @@ export default function TrackingPage() {
         return "Searching for driver";
       case "accepted":
         return "Driver is arriving";
-      case "pickedUp":
+      case "picked_up":
         return "Trip started";
-      case "inTransit":
+      case "in_transit":
         return "In Transit";
       case "completed":
         return "Completed";

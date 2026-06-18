@@ -46,9 +46,7 @@ export interface IRide {
     | "ongoing"
     | "completed"
     | "cancelled"
-    | "rejected"
-    | "pickedUp"
-    | "inTransit";
+    | "rejected";
 
   fare: number;
   totalFare?: number;

@@ -127,7 +127,7 @@ export default function RequestRidePage() {
       setActiveRideData(active);
       if (active.status === "requested") {
         setStep("searching");
-      } else if (["accepted", "ongoing", "pickedUp", "inTransit"].includes(active.status)) {
+      } else if (["accepted", "ongoing", "picked_up", "in_transit"].includes(active.status)) {
         setStep("assigned");
       }
     }
@@ -142,7 +142,7 @@ export default function RequestRidePage() {
       setActiveRideData(updatedRide);
       if (updatedRide.status === "requested") {
         setStep("searching");
-      } else if (["accepted", "ongoing", "pickedUp", "inTransit"].includes(updatedRide.status)) {
+      } else if (["accepted", "ongoing", "picked_up", "in_transit"].includes(updatedRide.status)) {
         setStep("assigned");
         toast.success(`Driver ${updatedRide.driver?.name || ""} assigned!`);
       } else if (updatedRide.status === "completed") {
@@ -772,7 +772,7 @@ export default function RequestRidePage() {
                     variant="outline"
                     className="w-full text-xs font-bold h-10 border-border"
                     onClick={handleCancelRide}
-                    disabled={activeRideData.status === "ongoing" || activeRideData.status === "inTransit"}
+                    disabled={activeRideData.status === "ongoing" || activeRideData.status === "in_transit"}
                   >
                     Cancel Ride
                   </Button>
