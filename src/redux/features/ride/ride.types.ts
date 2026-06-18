@@ -27,6 +27,8 @@ export interface IRide {
     _id: string;
     name: string;
     email: string;
+    vehicleModel?: string;
+    licensePlate?: string;
   };
 
   pickupLocation: string;
@@ -39,15 +41,25 @@ export interface IRide {
   status:
     | "requested"
     | "accepted"
+    | "picked_up"
+    | "in_transit"
     | "ongoing"
     | "completed"
     | "cancelled"
     | "rejected"
+    | "pickedUp"
     | "inTransit";
 
   fare: number;
   totalFare?: number;
   rating?: number;
+
+  // New state machine & routing fields
+  pickupCoords?: { lat: number; lng: number };
+  destinationCoords?: { lat: number; lng: number };
+  routeGeometry?: string;
+  otp?: string;
+  vehicleType?: "moto" | "sedan" | "xl";
 
   timestamps: {
     requestedAt: string;
@@ -71,8 +83,13 @@ export interface IRequestRideBody {
   estimatedTime?: number;
   totalFare?: number;
   paymentMethod?: "cash" | "card";
+  pickupCoords?: { lat: number; lng: number };
+  destinationCoords?: { lat: number; lng: number };
+  routeGeometry?: string;
+  vehicleType?: "moto" | "sedan" | "xl";
 }
 
 export interface ICancelRideBody {
   reason: string;
 }
+

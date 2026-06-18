@@ -243,11 +243,14 @@ const DestinationCard = ({
           destinationLatitude: toLocation.lat,
           destinationLongitude: toLocation.lon,
           destinationLocation: shortenAddress(toLocation.name),
+          pickupLatitude: fromLocation.lat,
+          pickupLongitude: fromLocation.lon,
           pickupLocation: shortenAddress(fromLocation.name),
           estimatedTime,
           estimatedDistance: distance,
           fare: price,
           totalFare: price,
+          routeGeometry: result.geometry ? JSON.stringify(result.geometry) : null,
         })
       );
     } catch (err) {

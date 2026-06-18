@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Phone, MessageCircle, User, Clock, Loader2, CreditCard, Banknote } from "lucide-react";
+import { Star, Phone, MessageCircle, User, Clock, Loader2, CreditCard } from "lucide-react";
 import { useParams } from "react-router";
 import { useGetRideByIdQuery } from "@/redux/features/ride/ride.api";
 import { formatDate, formatTime } from "@/utils/dateTimeFormater";

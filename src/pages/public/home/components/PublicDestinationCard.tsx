@@ -182,6 +182,8 @@ export default function PublicDestinationCard() {
           destinationLatitude: toLocation.lat,
           destinationLongitude: toLocation.lon,
           destinationLocation: shortenAddress(toLocation.name),
+          pickupLatitude: fromLocation.lat,
+          pickupLongitude: fromLocation.lon,
           pickupLocation: shortenAddress(fromLocation.name),
           estimatedTime,
           estimatedDistance: distance,

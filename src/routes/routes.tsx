@@ -46,6 +46,8 @@ const RideHistoryDriver = lazy(
 );
 const ProfileDriver = lazy(() => import("@/pages/users/driver/profile"));
 
+const WalletPage = lazy(() => import("@/pages/shared/wallet"));
+
 // Admin pages
 const UserManagement = lazy(
   () => import("@/pages/users/admin/user-management")
@@ -107,6 +109,7 @@ export const router = createBrowserRouter([
       { path: "profile", Component: ProfileDriver },
       { path: "update-driver-profile", Component: ApplyDriver },
       { path: "ride/:rideId", Component: RideDetails },
+      { path: "wallet", Component: WalletPage },
     ],
   },
   {
@@ -121,6 +124,7 @@ export const router = createBrowserRouter([
       { path: "tracking", Component: TrackingPage },
       { path: "ride/:rideId", Component: RideDetails },
       { path: "apply-for-driver", Component: ApplyDriver },
+      { path: "wallet", Component: WalletPage },
     ],
   },
 

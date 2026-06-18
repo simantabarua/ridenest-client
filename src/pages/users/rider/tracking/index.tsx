@@ -1,24 +1,28 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Star,
-  User,
-  Timer,
   MapPin,
   Navigation,
-  CheckCircle,
+  User,
+  Star,
+  Phone,
+  Shield,
+  ArrowLeft,
+  Loader2,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  MessageCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  useCancelRideMutation,
-  useGetActiveRideRiderQuery,
-} from "@/redux/features/ride/ride.api";
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useSocket } from "@/providers/SocketProvider";
+import { useGetActiveRideRiderQuery, useCancelRideMutation } from "@/redux/features/ride/ride.api";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +30,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -41,8 +43,50 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Loading from "@/components/loading";
-import { useNavigate } from "react-router";
+import type { IRide } from "@/redux/features/ride/ride.types";
+
+// Leaflet icon configuration
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+// Custom Driver Car Icon
+const carIcon = L.icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/3202/3202926.png", // Premium sports car flat icon
+  iconSize: [38, 38],
+  iconAnchor: [19, 19],
+  popupAnchor: [0, -19],
+});
+
+// Map controller to fit map bounds to pickup, destination, and driver markers
+interface MapControllerProps {
+  pickup: { lat: number; lng: number } | null;
+  destination: { lat: number; lng: number } | null;
+  driver: { lat: number; lng: number } | null;
+}
+
+function MapController({ pickup, destination, driver }: MapControllerProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    const coords: L.LatLngExpression[] = [];
+    if (pickup) coords.push([pickup.lat, pickup.lng]);
+    if (destination) coords.push([destination.lat, destination.lng]);
+    if (driver) coords.push([driver.lat, driver.lng]);
+
+    if (coords.length >= 2) {
+      const bounds = L.latLngBounds(coords);
+      map.fitBounds(bounds.pad(0.25));
+    } else if (coords.length === 1) {
+      map.setView(coords[0], 15);
+    }
+  }, [pickup, destination, driver, map]);
+
+  return null;
+}
 
 const formSchema = z.object({
   reason: z.string().min(5, {
@@ -52,13 +96,18 @@ const formSchema = z.object({
 
 export default function TrackingPage() {
   const navigate = useNavigate();
-  const {
-    data: rides,
-    isLoading,
-    isError,
-  } = useGetActiveRideRiderQuery(undefined);
-  const [cancelRide, { isLoading: isCancelling }] = useCancelRideMutation();
-  const rideDetails = rides?.data[0];
+  const { socket } = useSocket();
+  const { data: rideResponse, isLoading, isError, refetch } = useGetActiveRideRiderQuery(undefined);
+  const [cancelRide] = useCancelRideMutation();
+
+  const ride = rideResponse?.data?.[0] as IRide | undefined;
+
+  // Real-time State
+  const [driverLoc, setDriverLoc] = useState<{ lat: number; lng: number } | null>(null);
+  const [rideStatus, setRideStatus] = useState<string>("requested");
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [isCalling, setIsCalling] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,410 +115,364 @@ export default function TrackingPage() {
     },
   });
 
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  // Sync state initially
+  useEffect(() => {
+    if (ride) {
+      setRideStatus(ride.status);
+      
+      // Default driver location if assigned but no update received yet
+      if (ride.driver && ride.pickupCoords && !driverLoc) {
+        setDriverLoc({
+          lat: ride.pickupCoords.lat + 0.003,
+          lng: ride.pickupCoords.lng + 0.003,
+        });
+      }
+    }
+  }, [ride]);
 
-  const handleCancelRide = async (values: z.infer<typeof formSchema>) => {
+  // Socket triggers for live sync
+  useEffect(() => {
+    if (!socket || !ride) return;
+
+    // Join rooms
+    socket.emit("join_ride", ride._id);
+    if (ride.driver?._id) {
+      socket.emit("track_driver", ride.driver._id);
+    }
+
+    const handleStateChange = (updatedRide: IRide) => {
+      console.log("Socket state change in tracking:", updatedRide);
+      setRideStatus(updatedRide.status);
+      if (updatedRide.status === "completed") {
+        toast.success("Your ride has completed! Redirecting to details...");
+        navigate(`/rider/ride/${updatedRide._id}`);
+      } else if (updatedRide.status === "cancelled") {
+        toast.error("Your ride was cancelled.");
+        navigate("/rider/dashboard");
+      }
+    };
+
+    const handleDriverLocation = (data: { driverId: string; latitude: number; longitude: number }) => {
+      console.log("Socket: driver coordinate update", data);
+      setDriverLoc({ lat: data.latitude, lng: data.longitude });
+    };
+
+    socket.on("ride:state_change", handleStateChange);
+    socket.on("driver:location_changed", handleDriverLocation);
+
+    return () => {
+      socket.off("ride:state_change", handleStateChange);
+      socket.off("driver:location_changed", handleDriverLocation);
+    };
+  }, [socket, ride, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-65px)] gap-3">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <span className="text-sm font-semibold text-muted-foreground">Loading active ride details...</span>
+      </div>
+    );
+  }
+
+  if (isError || !ride) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-65px)] max-w-sm mx-auto px-6 text-center">
+        <Navigation className="w-12 h-12 text-muted-foreground mb-4 animate-bounce" />
+        <h3 className="text-xl font-bold text-foreground mb-2">No Active Ride Found</h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          You don't have any booking running currently. Request a ride to get started!
+        </p>
+        <Button onClick={() => navigate("/rider/request-ride")} className="w-full font-bold">
+          Book a Ride Now
+        </Button>
+      </div>
+    );
+  }
+
+  // Parse OSRM Polyline coords
+  const polylinePositions = (() => {
+    if (!ride.routeGeometry) return [];
+    try {
+      const geo = JSON.parse(ride.routeGeometry);
+      if (geo && geo.coordinates) {
+        return geo.coordinates.map((c: [number, number]) => [c[1], c[0]]);
+      }
+    } catch {
+      return [];
+    }
+    return [];
+  })();
+
+  const handleCancelSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await cancelRide({
-        rideId: rideDetails._id,
+        rideId: ride._id,
         reason: values.reason,
       }).unwrap();
       setIsCancelDialogOpen(false);
       form.reset();
-    } catch (error) {
-      console.error("Cancellation failed:", error);
+      toast.success("Ride cancelled successfully.");
+      navigate("/rider/dashboard");
+    } catch (err) {
+      toast.error("Failed to cancel the ride.");
     }
   };
 
-  const openCancelDialog = () => {
-    setIsCancelDialogOpen(true);
+  const handleCallDriver = () => {
+    setIsCalling(true);
+    setTimeout(() => {
+      setIsCalling(false);
+      toast.info(`Connecting mock call to ${ride.driver?.name || "Driver"}...`);
+    }, 1200);
   };
 
-  if (isLoading) {
-    return <Loading variant="bars" fullScreen />;
-  }
+  // Helper status calculations
+  const isEnRoute = ["accepted", "ongoing"].includes(rideStatus);
+  const isPickedUp = ["pickedUp", "inTransit"].includes(rideStatus);
 
-  if (isError || !rideDetails) {
-    return (
-      <Card className="container border-0 shadow-sm text-center py-8">
-        <CardContent>
-          <Navigation className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="text-lg font-semibold mb-2">No Active Rides</h3>
-          <p className="text-muted-foreground text-sm">
-            You're all caught up! No active rides at the moment.
-          </p>
-          <Button
-            onClick={() => navigate("/rider/dashboard")}
-            className="mt-4 border-2 border-foreground bg-yellow-400 text-foreground hover:bg-foreground hover:text-background font-extrabold uppercase text-xs tracking-wider shadow-[2px_2px_0px_0px_var(--foreground)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all rounded-none h-9"
-          >
-            Go to Dashboard
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const {
-    pickupLocation,
-    destinationLocation,
-    estimatedDistance,
-    estimatedTime,
-    totalFare,
-    status,
-    timestamps,
-    driver,
-  } = rideDetails;
-
-  const getStatusColor = () => {
-    switch (status) {
-      case "REQUESTED":
-        return "bg-blue-100 text-blue-800";
-      case "ACCEPTED":
-        return "bg-yellow-100 text-yellow-800";
-      case "PICKED_UP":
-        return "bg-purple-100 text-purple-800";
-      case "IN_TRANSIT":
-        return "bg-indigo-100 text-indigo-800";
-      case "COMPLETED":
-        return "bg-green-100 text-green-800";
-      case "CANCELLED":
-        return "bg-red-100 text-red-800";
-      case "REJECTED":
-        return "bg-red-100 text-red-800";
+  const getStatusLabel = () => {
+    switch (rideStatus) {
+      case "requested":
+        return "Searching for driver";
+      case "accepted":
+        return "Driver is arriving";
+      case "pickedUp":
+        return "Trip started";
+      case "inTransit":
+        return "In Transit";
+      case "completed":
+        return "Completed";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "Active Ride";
     }
   };
-
-  const timelineSteps = [
-    { id: 1, name: "Requested", time: timestamps?.requestedAt, icon: Timer },
-    {
-      id: 2,
-      name: "Accepted",
-      time: timestamps?.acceptedAt,
-      icon: CheckCircle,
-    },
-    { id: 3, name: "Picked Up", time: timestamps?.pickedUpAt, icon: User },
-    {
-      id: 4,
-      name: "In Transit",
-      time: timestamps?.inTransitAt,
-      icon: Navigation,
-    },
-    {
-      id: 5,
-      name: "Completed",
-      time: timestamps?.completedAt,
-      icon: CheckCircle,
-    },
-  ].filter((step) => step.time);
 
   return (
-    <div className="min-h-screen ">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-4">
-          <div className="mb-4 md:mb-0">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
-              Track Your Ride
-            </h1>
-            <p className="text-muted-foreground text-sm md:text-base">
-              Monitor your ride status and trip progress
-            </p>
-          </div>
-        </div>
+    <div className="relative w-full h-[calc(100vh-65px)] overflow-hidden flex flex-col bg-background">
+      
+      {/* Fullscreen Map Background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <MapContainer
+          center={[ride.pickupCoords?.lat || 23.8103, ride.pickupCoords?.lng || 90.4125]}
+          zoom={14}
+          zoomControl={false}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>'
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 space-y-6">
-            {/* Ride Status Card */}
-            <Card className="border-0 py-6 shadow-lg">
-              <CardHeader className="pb-3 md:pb-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <CardTitle className="text-lg md:text-xl">
-                      <Badge
-                        className={`text-sm md:text-base px-3 py-1 ${getStatusColor()}`}
-                      >
-                        {status.replace(/_/g, " ")}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription className="text-sm mt-1">
-                      Requested at:{" "}
-                      {new Date(timestamps.requestedAt).toLocaleString()}
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="text-sm md:text-base px-3 py-1 self-start sm:self-auto"
-                  >
-                    Est. Time: {estimatedTime} min
-                  </Badge>
-                </div>
-              </CardHeader>
-            </Card>
+          <MapController
+            pickup={ride.pickupCoords || null}
+            destination={ride.destinationCoords || null}
+            driver={driverLoc}
+          />
 
-            {/* Driver Card */}
-            {driver && (
-              <Card className="border-0 py-6 shadow-lg">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    Your Driver
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                      <User className="w-8 h-8 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-base md:text-lg">
-                          {driver.name}
-                        </h3>
-                        <div className="flex items-center space-x-1 bg-yellow-50 px-2 py-1 rounded">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium">
-                            {driver.rating || "4.5"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium">Vehicle:</span>
-                          <span>{driver.vehicleModel || "Vehicle Model"}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium">License:</span>
-                          <span>{driver.licensePlate || "ABC123"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          {/* Pickup Pin */}
+          {ride.pickupCoords && (
+            <Marker position={[ride.pickupCoords.lat, ride.pickupCoords.lng]} />
+          )}
 
-            {/* Trip Progress Card */}
-            <Card className="border-0 py-6 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                  <Navigation className="h-5 w-5" />
-                  Trip Progress
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="relative">
-                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+          {/* Destination Pin */}
+          {ride.destinationCoords && (
+            <Marker position={[ride.destinationCoords.lat, ride.destinationCoords.lng]} />
+          )}
 
-                  <div className="space-y-4">
-                    {timelineSteps.map((step, index) => {
-                      const Icon = step.icon;
-                      const isLast = index === timelineSteps.length - 1;
+          {/* Driver Pin */}
+          {driverLoc && (
+            <Marker position={[driverLoc.lat, driverLoc.lng]} icon={carIcon} />
+          )}
 
-                      return (
-                        <div
-                          key={step.id}
-                          className="flex items-start relative"
-                        >
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-4 z-10 ${
-                              step.time
-                                ? "bg-green-500 text-white"
-                                : "bg-gray-200 text-gray-500"
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div className="flex-1 min-w-0 pb-4">
-                            <div className="flex items-center justify-between">
-                              <div
-                                className={`text-sm md:text-base font-medium ${
-                                  step.time ? "text-green-600" : "text-gray-500"
-                                }`}
-                              >
-                                {step.name}
-                              </div>
-                              {!isLast && (
-                                <div className="text-xs text-muted-foreground">
-                                  {index === 0
-                                    ? "Started"
-                                    : index === timelineSteps.length - 1
-                                    ? "Completed"
-                                    : "Next"}
-                                </div>
-                              )}
-                            </div>
-                            {step.time && (
-                              <div className="text-xs md:text-sm text-muted-foreground mt-1">
-                                {new Date(step.time).toLocaleString([], {
-                                  month: "short",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* OSRM Route Path */}
+          {polylinePositions.length > 0 && (
+            <Polyline
+              positions={polylinePositions}
+              pathOptions={{ color: "var(--color-primary)", weight: 5, opacity: 0.8 }}
+            />
+          )}
+        </MapContainer>
 
-          <div className="space-y-6">
-            {/* Trip Details Card */}
-            <Card className="border-0 py-6 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  Trip Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mt-1.5 mr-3"></div>
-                    <div className="flex-1">
-                      <div className="text-xs md:text-sm font-medium text-muted-foreground">
-                        Pickup
-                      </div>
-                      <div className="text-sm md:text-base">
-                        {pickupLocation}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start">
-                    <div className="w-3 h-3 bg-red-500 rounded-full mt-1.5 mr-3"></div>
-                    <div className="flex-1">
-                      <div className="text-xs md:text-sm font-medium text-muted-foreground">
-                        Destination
-                      </div>
-                      <div className="text-sm md:text-base">
-                        {destinationLocation}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 pt-4 border-t">
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <div className="text-lg md:text-xl font-bold text-primary">
-                        {estimatedDistance} km
-                      </div>
-                      <div className="text-xs md:text-sm text-muted-foreground">
-                        Distance
-                      </div>
-                    </div>
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <div className="text-lg md:text-xl font-bold text-primary">
-                        {estimatedTime} min
-                      </div>
-                      <div className="text-xs md:text-sm text-muted-foreground">
-                        Est. Time
-                      </div>
-                    </div>
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <div className="text-lg md:text-xl font-bold text-primary">
-                        ৳{totalFare || 0}
-                      </div>
-                      <div className="text-xs md:text-sm text-muted-foreground">
-                        Total
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Actions Card */}
-            <Card className="border-0 py-6 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg md:text-xl">Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-3">
-                <Dialog
-                  open={isCancelDialogOpen}
-                  onOpenChange={setIsCancelDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      className="w-full"
-                      onClick={openCancelDialog}
-                      disabled={
-                        status === "COMPLETED" || status === "CANCELLED"
-                      }
-                    >
-                      Cancel Ride
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Cancel Ride</DialogTitle>
-                      <DialogDescription>
-                        Please provide a reason for cancelling your ride. This
-                        information helps us improve our service.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(handleCancelRide)}
-                        className="space-y-4"
-                      >
-                        <FormField
-                          control={form.control}
-                          name="reason"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel htmlFor="reason">Reason</FormLabel>
-                              <FormControl>
-                                <Input
-                                  id="reason"
-                                  placeholder="Enter cancellation reason"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <DialogFooter className="flex flex-col sm:flex-row sm:justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => {
-                              setIsCancelDialogOpen(false);
-                              form.reset();
-                            }}
-                            className="sm:order-1"
-                          >
-                            Back
-                          </Button>
-                          <Button
-                            type="submit"
-                            variant="destructive"
-                            disabled={isCancelling}
-                            className="sm:order-0"
-                          >
-                            {isCancelling ? (
-                              <>Cancelling...</>
-                            ) : (
-                              "Confirm Cancellation"
-                            )}
-                          </Button>
-                        </DialogFooter>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Back Button Floating */}
+        <div className="absolute top-4 left-4 z-10">
+          <Button
+            variant="outline"
+            className="rounded-full shadow-lg bg-background border border-border flex items-center justify-center p-2.5 h-10 w-10 hover:bg-muted"
+            onClick={() => navigate("/rider/dashboard")}
+          >
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </Button>
         </div>
       </div>
+
+      {/* Floating Bottom Sheet HUD */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 w-full p-4 md:max-w-md md:left-4 md:right-auto md:bottom-4 animate-slide-up">
+        <Card className="border border-border shadow-2xl bg-background/95 backdrop-blur-md rounded-2xl overflow-hidden">
+          <CardContent className="p-5 space-y-4">
+            
+            {/* Top State Bar */}
+            <div className="flex items-center justify-between border-b pb-3.5">
+              <div>
+                <span className="text-[10px] font-extrabold text-primary uppercase tracking-wider bg-primary/10 px-2.5 py-0.5 rounded-full">
+                  {getStatusLabel()}
+                </span>
+                <h3 className="font-extrabold text-foreground mt-1 text-base">
+                  {isPickedUp ? "Heading to Destination" : "Driver is approaching"}
+                </h3>
+              </div>
+              <div className="text-right">
+                <span className="text-[9px] text-muted-foreground uppercase font-bold block">Secure OTP</span>
+                <span className="font-mono text-sm font-extrabold text-foreground tracking-wider bg-muted border px-2 py-0.5 rounded-md">
+                  {ride.otp || "----"}
+                </span>
+              </div>
+            </div>
+
+            {/* Travel metrics HUD */}
+            <div className="grid grid-cols-3 gap-2.5 text-center">
+              <div className="bg-muted/30 border border-border p-2 rounded-xl">
+                <Clock className="w-4 h-4 mx-auto mb-1 text-primary" />
+                <span className="text-[10px] text-muted-foreground uppercase block">Est. Time</span>
+                <span className="text-sm font-extrabold text-foreground">{ride.estimatedTime || 0} mins</span>
+              </div>
+              <div className="bg-muted/30 border border-border p-2 rounded-xl">
+                <Navigation className="w-4 h-4 mx-auto mb-1 text-primary" />
+                <span className="text-[10px] text-muted-foreground uppercase block">Distance</span>
+                <span className="text-sm font-extrabold text-foreground">{ride.estimatedDistance?.toFixed(2) || 0} km</span>
+              </div>
+              <div className="bg-muted/30 border border-border p-2 rounded-xl">
+                <MapPin className="w-4 h-4 mx-auto mb-1 text-emerald-500" />
+                <span className="text-[10px] text-muted-foreground uppercase block">Fare</span>
+                <span className="text-sm font-extrabold text-primary">৳{ride.totalFare || ride.fare || 0}</span>
+              </div>
+            </div>
+
+            {/* Driver specifications */}
+            {ride.driver && (
+              <div className="flex items-center gap-3.5 bg-muted/20 border p-3 rounded-xl">
+                <div className="w-12 h-12 bg-primary/15 rounded-full flex items-center justify-center shrink-0 border border-primary/20">
+                  <User className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground truncate">{ride.driver.name}</h4>
+                      <p className="text-[10px] text-muted-foreground font-mono truncate">{ride.driver.email}</p>
+                    </div>
+                    <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-950/20 px-1.5 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/30">
+                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                      <span className="text-[10px] font-extrabold text-yellow-700 dark:text-yellow-500">4.9</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5 text-[10px] text-muted-foreground font-semibold">
+                    <span className="bg-muted px-2 py-0.5 rounded border text-foreground uppercase">
+                      {ride.driver.vehicleModel || "Vehicle Model"}
+                    </span>
+                    <span className="bg-muted px-2 py-0.5 rounded border text-foreground uppercase font-mono">
+                      {ride.driver.licensePlate || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Address Details summary */}
+            <div className="space-y-2 text-xs border-t pt-3">
+              <div className="flex items-start gap-2.5">
+                <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full mt-1 shrink-0" />
+                <div className="min-w-0">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold">Pickup</span>
+                  <p className="font-medium text-foreground truncate">{ride.pickupLocation}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-2.5 h-2.5 bg-rose-500 rounded-full mt-1 shrink-0" />
+                <div className="min-w-0">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold">Destination</span>
+                  <p className="font-medium text-foreground truncate">{ride.destinationLocation}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <Button
+                variant="outline"
+                onClick={() => setIsCancelDialogOpen(true)}
+                disabled={isPickedUp}
+                className="w-full text-xs font-bold h-10 border-border hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30"
+              >
+                Cancel Booking
+              </Button>
+              <Button
+                onClick={handleCallDriver}
+                disabled={isCalling}
+                className="w-full text-xs font-bold h-10 flex items-center justify-center gap-2 shadow-md shadow-primary/10"
+              >
+                {isCalling ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Phone className="w-4 h-4" />
+                    Call Driver
+                  </>
+                )}
+              </Button>
+            </div>
+
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Cancellation Dialog Modal */}
+      <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+        <DialogContent className="sm:max-w-[400px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">Cancel Booking</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Please enter a brief cancellation reason. This helps us ensure reliability.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleCancelSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="reason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-bold">Cancellation Reason</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Driver requested cash payment, delay, etc."
+                        className="text-xs h-9 bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-[10px]" />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="flex gap-2 sm:justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCancelDialogOpen(false)}
+                >
+                  Keep Ride
+                </Button>
+                <Button type="submit" variant="destructive" size="sm">
+                  Cancel Ride
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
