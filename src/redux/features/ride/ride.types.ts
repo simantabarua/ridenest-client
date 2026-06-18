@@ -1,3 +1,20 @@
+export interface IPaymentInfo {
+  _id: string;
+  paymentStatus: "pending" | "complete" | "failed";
+  paymentMethod: "cash" | "card";
+  amount: number;
+  currency: string;
+  transactionId?: string;
+  cardInfo?: {
+    brand: string;
+    last4: string;
+    expMonth: number;
+    expYear: number;
+  };
+  initiatedAt?: string;
+  completedAt?: string;
+}
+
 export interface IRide {
   _id: string;
   rider: {
@@ -16,6 +33,8 @@ export interface IRide {
   destinationLocation: string;
   estimatedDistance?: number;
   estimatedTime?: number;
+  paymentMethod?: "cash" | "card";
+  payment?: IPaymentInfo;
 
   status:
     | "requested"
@@ -27,6 +46,7 @@ export interface IRide {
     | "inTransit";
 
   fare: number;
+  totalFare?: number;
   rating?: number;
 
   timestamps: {
@@ -47,6 +67,10 @@ export interface IRequestRideBody {
   pickupLocation: string;
   destinationLocation: string;
   fare: number;
+  estimatedDistance?: number;
+  estimatedTime?: number;
+  totalFare?: number;
+  paymentMethod?: "cash" | "card";
 }
 
 export interface ICancelRideBody {

@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Car } from "lucide-react";
+import { ArrowRight, Car, CreditCard, Banknote } from "lucide-react";
 import DestinationCard from "@/pages/public/home/components/DestinationCard";
 import { useAppSelector } from "@/redux/hooks";
 import { useRequestRideMutation } from "@/redux/features/ride/ride.api";
@@ -30,6 +31,7 @@ export default function RequestRidePage() {
     totalFare,
   } = tripDetails;
   const [requestRide] = useRequestRideMutation();
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "card">("cash");
 
   const handleRideRequest = async () => {
     const rideInfo = {
@@ -39,6 +41,7 @@ export default function RequestRidePage() {
       estimatedTime: estimatedTime as number,
       fare: fare as number,
       totalFare: totalFare as number,
+      paymentMethod,
     };
     try {
       const response = await requestRide(rideInfo).unwrap();
@@ -133,7 +136,47 @@ export default function RequestRidePage() {
                     {estimatedTime ? `${estimatedTime} min` : "0 min"}
                   </span>
                 </div>
-                
+                {/* Payment Method Selection */}
+                <div className="pt-4 border-t border-border space-y-3">
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Method</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("cash")}
+                      className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all duration-200 ${
+                        paymentMethod === "cash"
+                          ? "border-primary bg-primary/5 ring-1 ring-primary"
+                          : "border-border bg-background hover:bg-muted/30"
+                      }`}
+                    >
+                      <div className={`p-1.5 rounded-lg ${paymentMethod === "cash" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                        <Banknote className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-foreground">Cash</div>
+                        <div className="text-[10px] text-muted-foreground">Pay driver</div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("card")}
+                      className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all duration-200 ${
+                        paymentMethod === "card"
+                          ? "border-primary bg-primary/5 ring-1 ring-primary"
+                          : "border-border bg-background hover:bg-muted/30"
+                      }`}
+                    >
+                      <div className={`p-1.5 rounded-lg ${paymentMethod === "card" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                        <CreditCard className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-foreground">Card</div>
+                        <div className="text-[10px] text-muted-foreground">Stripe</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Total Fare */}
                 <div className="pt-4 border-t border-border mt-2">
                   <div className="flex justify-between items-end">

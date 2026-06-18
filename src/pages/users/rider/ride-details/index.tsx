@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,18 +8,27 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Phone, MessageCircle, User, Clock } from "lucide-react";
+import { Star, Phone, MessageCircle, User, Clock, Loader2, CreditCard, Banknote } from "lucide-react";
 import { useParams } from "react-router";
 import { useGetRideByIdQuery } from "@/redux/features/ride/ride.api";
 import { formatDate, formatTime } from "@/utils/dateTimeFormater";
 import Loading from "@/components/loading";
 import TimeLine from "@/components/timeline";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import StripeCheckoutForm from "@/components/payment/StripeCheckoutForm";
+import { useCreatePaymentIntentMutation } from "@/redux/features/payment/payment.api";
+import { toast } from "sonner";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
 export default function RideDetailsPage() {
   const { rideId } = useParams<{ rideId: string }>();
   const { data: ride, isLoading: isRideLoading } = useGetRideByIdQuery(rideId);
   const { data: userInfo, isLoading: isUserLoading } = useUserInfoQuery(undefined);
+  const [createPaymentIntent, { isLoading: isInitializingPayment }] = useCreatePaymentIntentMutation();
+  const [clientSecret, setClientSecret] = useState<string>("");
   
   const rideDetails = ride?.data;
   const userRole = userInfo?.data?.role;
@@ -63,7 +73,27 @@ export default function RideDetailsPage() {
     rider,
     totalFare,
     status,
+    payment,
+    paymentMethod,
   } = rideDetails;
+
+  const handleInitializePayment = async () => {
+    try {
+      const response = await createPaymentIntent({ rideId: _id }).unwrap();
+      if (response.success && response.data?.clientSecret) {
+        setClientSecret(response.data.clientSecret);
+      } else {
+        toast.error("Failed to initialize payment gateway");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.data?.message || "Could not start payment process");
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setClientSecret("");
+  };
 
   const isDriverOrAdmin = userRole === "DRIVER" || userRole === "ADMIN";
 
@@ -227,13 +257,99 @@ export default function RideDetailsPage() {
                 </div>
                 <div className="pt-4 border-t border-border/50 flex justify-between items-end">
                   <div className="space-y-1">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Paid</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Amount</div>
                     <div className="text-3xl font-medium text-primary leading-none">৳{totalFare || fare}</div>
                   </div>
-                  <Badge variant="outline" className="border-primary/20 text-primary font-bold">PAID</Badge>
+                  <div>
+                    {payment?.paymentStatus === "complete" ? (
+                      <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 font-bold uppercase border">
+                        Paid
+                      </Badge>
+                    ) : payment?.paymentStatus === "failed" ? (
+                      <Badge className="bg-rose-100 text-rose-800 border-rose-200 font-bold uppercase border">
+                        Failed
+                      </Badge>
+                    ) : (payment?.paymentMethod || paymentMethod || "cash") === "card" ? (
+                      <Badge className="bg-rose-100 text-rose-800 border-rose-200 font-bold uppercase border animate-pulse">
+                        Unpaid
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-200 font-bold uppercase border">
+                        Cash
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Payment Section (Stripe Gateway) */}
+            {(payment?.paymentMethod || paymentMethod || "cash") === "card" && 
+              payment?.paymentStatus !== "complete" && 
+              status?.toLowerCase() === "completed" && 
+              !isDriverOrAdmin && (
+              <Card className="border-primary/20 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+                <CardHeader className="bg-muted/10 border-b border-border/50">
+                  <CardTitle className="text-lg font-bold flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    Complete Payment
+                  </CardTitle>
+                  <CardDescription>
+                    This trip was requested with Card payment. Please complete your transaction securely below.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  {!clientSecret ? (
+                    <Button
+                      onClick={handleInitializePayment}
+                      disabled={isInitializingPayment}
+                      className="w-full font-bold shadow-lg shadow-primary/20 transition-transform active:scale-[0.99] h-11"
+                    >
+                      {isInitializingPayment ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Initializing Stripe...
+                        </>
+                      ) : (
+                        "Pay Securely with Card"
+                      )}
+                    </Button>
+                  ) : (
+                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                      <StripeCheckoutForm
+                        clientSecret={clientSecret}
+                        rideId={_id}
+                        amount={totalFare || fare}
+                        onSuccess={handlePaymentSuccess}
+                        onCancel={() => setClientSecret("")}
+                      />
+                    </Elements>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Paid Card Details */}
+            {payment?.paymentStatus === "complete" && payment?.cardInfo && (
+              <Card className="border-emerald-500/20 bg-emerald-500/[0.02] backdrop-blur-md shadow-xl">
+                <CardContent className="p-6 space-y-3">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                    <div className="p-1 rounded bg-emerald-100 dark:bg-emerald-900/30">
+                      <CreditCard className="w-4 h-4" />
+                    </div>
+                    Payment Completed
+                  </div>
+                  <div className="text-sm font-medium text-foreground">
+                    Paid with {payment.cardInfo.brand.toUpperCase()} ending in {payment.cardInfo.last4}
+                  </div>
+                  {payment.transactionId && (
+                    <div className="text-xs text-muted-foreground font-mono truncate">
+                      Transaction ID: {payment.transactionId}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
