@@ -168,10 +168,30 @@ export default function ActiveRidePage() {
       }, 4000);
 
       return () => clearInterval(interval);
-    } else if (activeRide.status === "completed") {
+    } else if (activeRide.status === "arrived" || activeRide.status === "completed") {
       setDriverPos(destination);
     }
   }, [activeRide?.status, activeRide?._id]);
+
+  // Listen for socket events to refetch status instantly (e.g. payment completion)
+  useEffect(() => {
+    if (!socket || !activeRide) return;
+
+    socket.emit("join_ride", activeRide._id);
+
+    const handleStateChange = (updatedRide: IRide) => {
+      console.log("Socket: ride status / payment updated in ActiveRidePage", updatedRide);
+      refetchActive();
+      if (updatedRide.payment?.paymentStatus === "complete") {
+        toast.success("Passenger completed the payment! You can now complete the trip.");
+      }
+    };
+
+    socket.on("ride:state_change", handleStateChange);
+    return () => {
+      socket.off("ride:state_change", handleStateChange);
+    };
+  }, [socket, activeRide?._id, refetchActive]);
 
   // Update Status Steps Trigger
   const handleTransition = async (status: string) => {
@@ -262,24 +282,42 @@ export default function ActiveRidePage() {
   } else if (activeRide.status === "in_transit") {
     actionButton = (
       <Button
-        onClick={async () => {
-          try {
-            await updateRideStatus({
-              rideId: activeRide._id,
-              status: "complete",
-            }).unwrap();
-            toast.success(`Trip completed successfully! Earned ৳${activeRide.totalFare || activeRide.fare}`);
-            navigate("/driver/dashboard");
-          } catch (err: any) {
-            toast.error(err?.data?.message || "Failed to complete trip.");
-          }
-        }}
+        onClick={() => handleTransition("arrive")}
         disabled={isUpdating}
-        className="w-full font-bold h-12 shadow-lg shadow-rose-500/10 bg-rose-600 hover:bg-rose-700"
+        className="w-full font-bold h-12 shadow-lg shadow-blue-500/10 bg-blue-600 hover:bg-blue-700"
       >
-        <ShieldCheck className="w-5 h-5 mr-2" />
-        Complete Trip
+        <Navigation className="w-5 h-5 mr-2" />
+        Arrive Destination
       </Button>
+    );
+  } else if (activeRide.status === "arrived") {
+    const isPaid = activeRide.payment?.paymentStatus === "complete";
+    actionButton = (
+      <div className="space-y-3 w-full">
+        <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-semibold ${isPaid ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600" : "bg-amber-500/10 border-amber-500/30 text-amber-600 animate-pulse"}`}>
+          <span>Payment Status:</span>
+          <span>{isPaid ? "Paid" : "Unpaid (Waiting for Rider)"}</span>
+        </div>
+        <Button
+          onClick={async () => {
+            try {
+              await updateRideStatus({
+                rideId: activeRide._id,
+                status: "complete",
+              }).unwrap();
+              toast.success(`Trip completed successfully! Earned ৳${activeRide.totalFare || activeRide.fare}`);
+              navigate("/driver/dashboard");
+            } catch (err: any) {
+              toast.error(err?.data?.message || "Failed to complete trip.");
+            }
+          }}
+          disabled={isUpdating || !isPaid}
+          className={`w-full font-bold h-12 shadow-lg ${isPaid ? "shadow-rose-500/10 bg-rose-600 hover:bg-rose-700" : "bg-muted text-muted-foreground cursor-not-allowed"}`}
+        >
+          <ShieldCheck className="w-5 h-5 mr-2" />
+          {isPaid ? "Complete Trip" : "Complete Trip (Waiting for Payment)"}
+        </Button>
+      </div>
     );
   }
 

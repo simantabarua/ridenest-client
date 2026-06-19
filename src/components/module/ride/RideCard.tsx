@@ -38,6 +38,12 @@ export default function RideCard({ ride }: RideCardProps) {
           dot: "bg-rose-500",
           label: "Cancelled"
         };
+      case "arrived":
+        return {
+          color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+          dot: "bg-emerald-500 animate-pulse",
+          label: "Arrived"
+        };
       case "in_progress":
       case "accepted":
       case "ongoing":
@@ -66,15 +72,14 @@ export default function RideCard({ ride }: RideCardProps) {
 
   const getPaymentConfig = () => {
     if (!ride.payment) {
-      // Completed rides require payment. Other pending rides are just pending.
-      const isCompleted = ride.status.toLowerCase() === "completed";
+      const isPendingPaymentStatus = ride.status.toLowerCase() === "arrived" || ride.status.toLowerCase() === "completed";
       const isCard = ride.paymentMethod === "card";
       
       return {
-        color: isCompleted && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
-        label: isCompleted && isCard ? "Payment Pending" : `Unpaid (${ride.paymentMethod || "Cash"})`,
+        color: isPendingPaymentStatus && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
+        label: isPendingPaymentStatus && isCard ? "Payment Pending" : `Unpaid (${ride.paymentMethod || "Cash"})`,
         icon: AlertCircle,
-        actionRequired: isCompleted && isCard
+        actionRequired: isPendingPaymentStatus && isCard
       };
     }
 
@@ -89,12 +94,12 @@ export default function RideCard({ ride }: RideCardProps) {
     }
 
     const isCard = ride.payment.paymentMethod === "card";
-    const isCompleted = ride.status.toLowerCase() === "completed";
+    const isPendingPaymentStatus = ride.status.toLowerCase() === "arrived" || ride.status.toLowerCase() === "completed";
     return {
-      color: isCompleted && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
-      label: isCompleted && isCard ? "Payment Pending" : "Unpaid",
+      color: isPendingPaymentStatus && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
+      label: isPendingPaymentStatus && isCard ? "Payment Pending" : "Unpaid",
       icon: AlertCircle,
-      actionRequired: isCompleted && isCard
+      actionRequired: isPendingPaymentStatus && isCard
     };
   };
 

@@ -43,6 +43,7 @@ export interface IRide {
     | "accepted"
     | "picked_up"
     | "in_transit"
+    | "arrived"
     | "ongoing"
     | "completed"
     | "cancelled"
@@ -63,6 +64,7 @@ export interface IRide {
     acceptedAt?: string;
     pickedUpAt?: string;
     inTransitAt?: string;
+    arrivedAt?: string;
     completedAt?: string;
     cancelledAt?: string;
     rejectedAt?: string;

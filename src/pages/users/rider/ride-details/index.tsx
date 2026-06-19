@@ -80,6 +80,7 @@ export default function RideDetailsPage() {
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "completed":
+      case "arrived":
         return "bg-emerald-100 text-emerald-800 border-emerald-200";
       case "cancelled":
         return "bg-rose-100 text-rose-800 border-rose-200";
@@ -382,7 +383,7 @@ export default function RideDetailsPage() {
             {/* Payment Section (Stripe Gateway / Nest Wallet) */}
             {(payment?.paymentMethod || paymentMethod || "cash") === "card" && 
               payment?.paymentStatus !== "complete" && 
-              status?.toLowerCase() === "completed" && 
+              (status?.toLowerCase() === "arrived" || status?.toLowerCase() === "completed") && 
               !isDriverOrAdmin && (
               <Card className="border-primary/20 bg-gradient-to-br from-card/60 via-card/40 to-background/50 backdrop-blur-md shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
                 <CardHeader className="bg-muted/10 border-b border-border/50">

@@ -119,6 +119,10 @@ export default function TrackingPage() {
   useEffect(() => {
     if (ride) {
       setRideStatus(ride.status);
+      if (ride.status === "arrived" || ride.status === "completed") {
+        navigate(`/rider/ride/${ride._id}`);
+        return;
+      }
       
       // Default driver location if assigned but no update received yet
       if (ride.driver && ride.pickupCoords && !driverLoc) {
@@ -128,7 +132,7 @@ export default function TrackingPage() {
         });
       }
     }
-  }, [ride]);
+  }, [ride, navigate]);
 
   // Socket triggers for live sync
   useEffect(() => {
@@ -143,8 +147,12 @@ export default function TrackingPage() {
     const handleStateChange = (updatedRide: IRide) => {
       console.log("Socket state change in tracking:", updatedRide);
       setRideStatus(updatedRide.status);
-      if (updatedRide.status === "completed") {
-        toast.success("Your ride has completed! Redirecting to details...");
+      if (updatedRide.status === "completed" || updatedRide.status === "arrived") {
+        toast.success(
+          updatedRide.status === "arrived"
+            ? "You have arrived at your destination! Redirecting to details for payment..."
+            : "Your ride has completed! Redirecting to details..."
+        );
         navigate(`/rider/ride/${updatedRide._id}`);
       } else if (updatedRide.status === "cancelled") {
         toast.error("Your ride was cancelled.");
