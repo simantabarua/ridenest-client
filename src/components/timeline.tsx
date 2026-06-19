@@ -22,21 +22,23 @@ function formatEventName(key: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function TimeLine({ items = [] }: any) {
+export default function TimeLine({ items = {} }: any) {
   const timelineItems: TimelineEvent[] = Array.isArray(items)
     ? items
-    : Object.entries(items).map(([key, value]) => ({
-        event: formatEventName(key),
-        time: value,
-        color: "text-blue-600",
-      }));
+    : Object.entries(items)
+        .filter(([_, value]) => !!value)
+        .map(([key, value]) => ({
+          event: formatEventName(key),
+          time: value as string,
+          color: "text-emerald-500", 
+        }));
 
   timelineItems.sort(
     (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
   );
 
   return (
-    <Timeline defaultValue={3}>
+    <Timeline value={timelineItems.length}>
       {timelineItems.map((item, index) => (
         <TimelineItem key={index} step={index + 1}>
           <TimelineHeader>

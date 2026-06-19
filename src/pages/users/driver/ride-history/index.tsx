@@ -1,185 +1,244 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-
-import {
-  Calendar,
-  MapPin,
-  Star,
-  DollarSign,
-  Clock,
-  Car,
-  Download,
-  Eye,
-} from "lucide-react";
+import { useState, useMemo } from "react";
 import { useGetMyRidesQuery } from "@/redux/features/ride/ride.api";
 import Loading from "@/components/loading";
 import type { IRide } from "@/redux/features/ride/ride.types";
-import { Link } from "react-router";
-import getStatusColor from "@/utils/getStatus";
+import RideCard from "@/components/module/ride/RideCard";
+import { Car, Search, TrendingUp, Award, MapPin } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function RideHistoryPage() {
   const { data: rides, isLoading } = useGetMyRidesQuery(undefined);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "completed" | "ongoing" | "cancelled">("all");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "fare_high" | "fare_low">("newest");
+
+  const ridesList: IRide[] = rides?.data || [];
+
+  // Compute statistics for header overview cards
+  const stats = useMemo(() => {
+    const completed = ridesList.filter((r) => r.status.toLowerCase() === "completed");
+    const cancelled = ridesList.filter((r) => r.status.toLowerCase() === "cancelled" || r.status.toLowerCase() === "rejected");
+    const totalEarnings = completed.reduce((sum, r) => sum + (r.fare || 0) * 0.8, 0); // 80% driver earnings
+    const totalDistance = completed.reduce((sum, r) => sum + (r.estimatedDistance || 0), 0);
+    const completionRate = ridesList.length > 0 ? Math.round((completed.length / ridesList.length) * 100) : 0;
+
+    return {
+      totalTrips: ridesList.length,
+      completedTrips: completed.length,
+      cancelledTrips: cancelled.length,
+      totalEarnings,
+      totalDistance: parseFloat(totalDistance.toFixed(1)),
+      completionRate,
+    };
+  }, [ridesList]);
+
+  // Handle searching, tab filtering, and sorting
+  const filteredAndSortedRides = useMemo(() => {
+    let result = [...ridesList];
+
+    // Search filter (by pickup or destination location name)
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.pickupLocation.toLowerCase().includes(term) ||
+          r.destinationLocation.toLowerCase().includes(term)
+      );
+    }
+
+    // Status tab filter
+    if (activeTab === "completed") {
+      result = result.filter((r) => r.status.toLowerCase() === "completed");
+    } else if (activeTab === "ongoing") {
+      result = result.filter((r) =>
+        ["requested", "accepted", "picked_up", "in_transit", "ongoing"].includes(
+          r.status.toLowerCase()
+        )
+      );
+    } else if (activeTab === "cancelled") {
+      result = result.filter((r) =>
+        ["cancelled", "rejected"].includes(r.status.toLowerCase())
+      );
+    }
+
+    // Sorting
+    result.sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      if (sortBy === "fare_high") {
+        return (b.fare || 0) - (a.fare || 0);
+      }
+      if (sortBy === "fare_low") {
+        return (a.fare || 0) - (b.fare || 0);
+      }
+      return 0;
+    });
+
+    return result;
+  }, [ridesList, searchTerm, activeTab, sortBy]);
 
   if (isLoading) {
-    <Loading variant="bars" />;
+    return <Loading variant="bars" fullScreen />;
   }
 
   return (
-    <div className="min-h-screen ">
-      <div >
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Ride History</h1>
-            <p className="text-muted-foreground">
-              View all your past rides and trips
-            </p>
+    <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8 animate-in fade-in duration-750">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-primary animate-ping" />
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Driver Portal</span>
           </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl bg-gradient-to-r from-foreground to-foreground/75 bg-clip-text">
+            Ride History & Earnings
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl font-medium">
+            Manage, filter, and track all your previous trips, mileage, and earnings in one clean dashboard.
+          </p>
+        </div>
+      </div>
+
+      {/* Stats Widgets */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-4 duration-1000 delay-100">
+        {/* Total Trips */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/30 p-6 backdrop-blur-md transition-all hover:bg-card/45 hover:border-primary/20 group">
+          <div className="absolute -inset-px bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">Total Trips</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-2 tracking-tight">{stats.totalTrips}</h3>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
+              <Car className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-muted-foreground/70 font-semibold relative z-10">
+            <span>{stats.completedTrips} completed &bull; {stats.cancelledTrips} cancelled</span>
           </div>
         </div>
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <Card className="border-0 py-6 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Rides
-              </CardTitle>
-              <Car className="w-4 h-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">50</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 py-6 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Completed
-              </CardTitle>
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">25</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 py-6 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Spent
-              </CardTitle>
-              <DollarSign className="w-4 h-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$2,500</div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 py-6 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Avg Rating
-              </CardTitle>
-              <Star className="w-4 h-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">4.8</div>
-            </CardContent>
-          </Card>
+
+        {/* Total Earnings */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/30 p-6 backdrop-blur-md transition-all hover:bg-card/45 hover:border-emerald-500/20 group">
+          <div className="absolute -inset-px bg-gradient-to-r from-emerald-500/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">Net Earnings (80%)</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-2 tracking-tight">৳{stats.totalEarnings.toLocaleString()}</h3>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 transition-transform duration-300 group-hover:scale-110">
+              <TrendingUp className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-emerald-500/80 font-bold relative z-10">
+            <span>Avg: ৳{stats.completedTrips > 0 ? Math.round(stats.totalEarnings / stats.completedTrips) : 0} per trip</span>
+          </div>
         </div>
-        {/* Ride List */}
-        <div className="space-y-4">
-          {rides?.data?.map((ride: IRide) => (
-            <Card
-              key={ride._id}
-              className="border-0 shadow-lg hover:shadow-xl transition-shadow"
+
+        {/* Completion Rate */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/30 p-6 backdrop-blur-md transition-all hover:bg-card/45 hover:border-indigo-500/20 group">
+          <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">Completion Rate</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-2 tracking-tight">{stats.completionRate}%</h3>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-500 transition-transform duration-300 group-hover:scale-110">
+              <Award className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-muted-foreground/70 font-semibold relative z-10">
+            <span>High completion rate maintains driver rating</span>
+          </div>
+        </div>
+
+        {/* Distance Covered */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/30 p-6 backdrop-blur-md transition-all hover:bg-card/45 hover:border-amber-500/20 group">
+          <div className="absolute -inset-px bg-gradient-to-r from-amber-500/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">Distance Driven</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-2 tracking-tight">{stats.totalDistance} km</h3>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500 transition-transform duration-300 group-hover:scale-110">
+              <MapPin className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-muted-foreground/70 font-semibold relative z-10">
+            <span>Across all completed trips</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Search, Tabs & Sorting Bar */}
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card/25 border border-border/40 backdrop-blur-md rounded-2xl p-4 animate-in fade-in duration-700">
+        {/* Search */}
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search pickup or destination..."
+            className="pl-10 h-11 bg-card/40 border-border/50 backdrop-blur-sm focus-visible:ring-primary/20 focus-visible:border-primary/30 transition-all rounded-xl text-sm"
+          />
+        </div>
+
+        {/* Tab Filters */}
+        <div className="flex p-1 bg-muted/40 backdrop-blur-sm border border-border/30 rounded-xl overflow-x-auto w-full md:w-auto self-stretch md:self-auto justify-start md:justify-center">
+          {(["all", "completed", "ongoing", "cancelled"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all capitalize whitespace-nowrap ${
+                activeTab === tab
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-                  {/* Left Content */}
-                  <div className="flex-1 space-y-4">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <Badge className={getStatusColor(ride.status)}>
-                          {ride.status.replace("_", " ").toUpperCase()}
-                        </Badge>
-                        <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          <span>{ride.createdAt}</span>
-                          <span>•</span>
-                          <span>{ride.createdAt}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Route */}
-                    <div className="space-y-2">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">Pickup</div>
-                          <div className="text-sm text-muted-foreground">
-                            {ride.destinationLocation}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">Destination</div>
-                          <div className="text-sm text-muted-foreground">
-                            {ride.pickupLocation}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-4 h-4" />
-                        <span>{ride.estimatedDistance}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{ride.estimatedTime}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between lg:justify-end lg:space-x-6 mt-4 lg:mt-0">
-                    {/* Price and Rating */}
-                    <div className="text-right space-y-2">
-                      <div className="text-xl font-bold">{ride.fare}tk</div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex space-x-2">
-                      <Link to={`/rider/ride/${ride._id}`}>
-                        <Button variant="outline" size="sm">
-                          <Eye className="w-4 h-4 mr-2" />
-                          View
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              {tab === "ongoing" ? "Active" : tab}
+            </button>
           ))}
         </div>
-        {rides?.data?.length === 0 && (
-          <Card className="border-0 shadow-lg text-center py-12">
-            <CardContent>
-              <Car className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No rides found</h3>
-            </CardContent>
-          </Card>
-        )}
+
+        {/* Sorting selection */}
+        <div className="w-full md:w-auto flex items-center gap-2 self-stretch md:self-auto justify-between md:justify-end">
+          <span className="text-xs text-muted-foreground font-bold whitespace-nowrap">Sort by</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="h-11 px-3 text-xs bg-card/40 border border-border/50 rounded-xl backdrop-blur-sm text-foreground font-semibold outline-none focus:border-primary/30 focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer min-w-[140px]"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="fare_high">Fare: High to Low</option>
+            <option value="fare_low">Fare: Low to High</option>
+          </select>
+        </div>
       </div>
+
+      {/* Ride Cards List */}
+      <div className="grid gap-4">
+        {filteredAndSortedRides.map((ride: IRide) => (
+          <RideCard key={ride._id} ride={ride} />
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {filteredAndSortedRides.length === 0 && (
+        <div className="text-center py-20 bg-card/20 rounded-[2.5rem] border border-dashed border-border/50 backdrop-blur-sm p-6 max-w-lg mx-auto animate-in fade-in duration-500">
+          <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-muted/10 mb-6 text-muted-foreground/30">
+            <Car className="h-10 w-10" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground">No trips found</h3>
+          <p className="text-muted-foreground mt-2 max-w-sm mx-auto text-sm font-medium">
+            We couldn't find any trips matching your criteria. Try adjusting your search term or filters.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

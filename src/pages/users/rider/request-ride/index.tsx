@@ -116,6 +116,8 @@ export default function RequestRidePage() {
   const [destinationSuggestions, setDestinationSuggestions] = useState<Suggestion[]>([]);
   const [showPickupDropdown, setShowPickupDropdown] = useState(false);
   const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+  const [loadingPickupSuggestions, setLoadingPickupSuggestions] = useState(false);
+  const [loadingDestinationSuggestions, setLoadingDestinationSuggestions] = useState(false);
 
   const pickupRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
@@ -178,16 +180,20 @@ export default function RequestRidePage() {
 
   // Debounce search suggestions for pickup
   useEffect(() => {
-    if (!pickupText || pickupText.length < 3) {
+    if (!pickupText || pickupText.trim().length < 2) {
       setPickupSuggestions([]);
+      setLoadingPickupSuggestions(false);
       return;
     }
+    setLoadingPickupSuggestions(true);
     const delay = setTimeout(async () => {
       try {
         const res = await nominatimSearch(pickupText);
         setPickupSuggestions(res);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoadingPickupSuggestions(false);
       }
     }, 400);
     return () => clearTimeout(delay);
@@ -195,16 +201,20 @@ export default function RequestRidePage() {
 
   // Debounce search suggestions for destination
   useEffect(() => {
-    if (!destinationText || destinationText.length < 3) {
+    if (!destinationText || destinationText.trim().length < 2) {
       setDestinationSuggestions([]);
+      setLoadingDestinationSuggestions(false);
       return;
     }
+    setLoadingDestinationSuggestions(true);
     const delay = setTimeout(async () => {
       try {
         const res = await nominatimSearch(destinationText);
         setDestinationSuggestions(res);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoadingDestinationSuggestions(false);
       }
     }, 400);
     return () => clearTimeout(delay);
@@ -465,31 +475,46 @@ export default function RequestRidePage() {
                     className="pl-9 pr-9 text-sm h-10 bg-background text-foreground border-input"
                     placeholder="Enter pickup location"
                   />
-                  {pickupText && (
-                    <button
-                      onClick={() => {
-                        setPickupText("");
-                        setPickupCoords(null);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                  {loadingPickupSuggestions ? (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4 animate-spin" />
+                  ) : (
+                    pickupText && (
+                      <button
+                        onClick={() => {
+                          setPickupText("");
+                          setPickupCoords(null);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )
                   )}
                 </div>
 
-                {showPickupDropdown && pickupSuggestions.length > 0 && (
+                {showPickupDropdown && pickupText.trim().length >= 2 && (
                   <div className="absolute left-0 right-0 z-30 mt-1 max-h-56 overflow-y-auto bg-popover border border-border rounded-xl shadow-2xl">
-                    {pickupSuggestions.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSelectPickup(item)}
-                        className="w-full text-left px-3 py-2.5 text-xs text-foreground hover:bg-accent flex items-start gap-2 border-b border-muted last:border-0"
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
-                        <span className="truncate">{item.display_name}</span>
-                      </button>
-                    ))}
+                    {loadingPickupSuggestions ? (
+                      <div className="px-3 py-3 text-xs text-muted-foreground flex items-center justify-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-primary shrink-0" />
+                        <span>Searching locations...</span>
+                      </div>
+                    ) : pickupSuggestions.length > 0 ? (
+                      pickupSuggestions.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSelectPickup(item)}
+                          className="w-full text-left px-3 py-2.5 text-xs text-foreground hover:bg-accent flex items-start gap-2 border-b border-muted last:border-0"
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                          <span className="truncate">{item.display_name}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-3 text-xs text-muted-foreground text-center">
+                        No locations found
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -509,31 +534,46 @@ export default function RequestRidePage() {
                     className="pl-9 pr-9 text-sm h-10 bg-background text-foreground border-input"
                     placeholder="Where to?"
                   />
-                  {destinationText && (
-                    <button
-                      onClick={() => {
-                        setDestinationText("");
-                        setDestinationCoords(null);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                  {loadingDestinationSuggestions ? (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4 animate-spin" />
+                  ) : (
+                    destinationText && (
+                      <button
+                        onClick={() => {
+                          setDestinationText("");
+                          setDestinationCoords(null);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )
                   )}
                 </div>
 
-                {showDestinationDropdown && destinationSuggestions.length > 0 && (
+                {showDestinationDropdown && destinationText.trim().length >= 2 && (
                   <div className="absolute left-0 right-0 z-30 mt-1 max-h-56 overflow-y-auto bg-popover border border-border rounded-xl shadow-2xl">
-                    {destinationSuggestions.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSelectDestination(item)}
-                        className="w-full text-left px-3 py-2.5 text-xs text-foreground hover:bg-accent flex items-start gap-2 border-b border-muted last:border-0"
-                      >
-                        <Navigation className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
-                        <span className="truncate">{item.display_name}</span>
-                      </button>
-                    ))}
+                    {loadingDestinationSuggestions ? (
+                      <div className="px-3 py-3 text-xs text-muted-foreground flex items-center justify-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-primary shrink-0" />
+                        <span>Searching locations...</span>
+                      </div>
+                    ) : destinationSuggestions.length > 0 ? (
+                      destinationSuggestions.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSelectDestination(item)}
+                          className="w-full text-left px-3 py-2.5 text-xs text-foreground hover:bg-accent flex items-start gap-2 border-b border-muted last:border-0"
+                        >
+                          <Navigation className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                          <span className="truncate">{item.display_name}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-3 text-xs text-muted-foreground text-center">
+                        No locations found
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

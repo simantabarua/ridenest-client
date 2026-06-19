@@ -52,7 +52,6 @@ export interface IRide {
   totalFare?: number;
   rating?: number;
 
-  // New state machine & routing fields
   pickupCoords?: { lat: number; lng: number };
   destinationCoords?: { lat: number; lng: number };
   routeGeometry?: string;

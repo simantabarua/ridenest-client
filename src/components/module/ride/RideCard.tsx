@@ -1,7 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Car, MapPin, Calendar, Clock, Navigation2, MoreHorizontal } from "lucide-react";
+import { 
+  ArrowRight, 
+  Car, 
+  MapPin, 
+  Calendar, 
+  Clock, 
+  Navigation2, 
+  MoreHorizontal,
+  CheckCircle2,
+  AlertCircle
+} from "lucide-react";
 import type { IRide } from "@/redux/features/ride/ride.types";
 import { Link } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
@@ -32,6 +42,8 @@ export default function RideCard({ ride }: RideCardProps) {
       case "accepted":
       case "ongoing":
       case "intransit":
+      case "picked_up":
+      case "in_transit":
         return {
           color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
           dot: "bg-amber-500 animate-pulse",
@@ -52,7 +64,43 @@ export default function RideCard({ ride }: RideCardProps) {
     }
   };
 
+  const getPaymentConfig = () => {
+    if (!ride.payment) {
+      // Completed rides require payment. Other pending rides are just pending.
+      const isCompleted = ride.status.toLowerCase() === "completed";
+      const isCard = ride.paymentMethod === "card";
+      
+      return {
+        color: isCompleted && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
+        label: isCompleted && isCard ? "Payment Pending" : `Unpaid (${ride.paymentMethod || "Cash"})`,
+        icon: AlertCircle,
+        actionRequired: isCompleted && isCard
+      };
+    }
+
+    const isComplete = ride.payment.paymentStatus === "complete";
+    if (isComplete) {
+      return {
+        color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+        label: `Paid via ${ride.payment.paymentMethod === "card" ? "Card" : "Cash"}`,
+        icon: CheckCircle2,
+        actionRequired: false
+      };
+    }
+
+    const isCard = ride.payment.paymentMethod === "card";
+    const isCompleted = ride.status.toLowerCase() === "completed";
+    return {
+      color: isCompleted && isCard ? "text-amber-500 bg-amber-500/10 border-amber-500/20" : "text-muted-foreground bg-muted border-border",
+      label: isCompleted && isCard ? "Payment Pending" : "Unpaid",
+      icon: AlertCircle,
+      actionRequired: isCompleted && isCard
+    };
+  };
+
   const status = getStatusConfig(ride.status);
+  const paymentConfig = getPaymentConfig();
+  const showPayNow = paymentConfig.actionRequired && userRole === "rider";
 
   const formatDate = (dateString: string) => {
     try {
@@ -67,7 +115,6 @@ export default function RideCard({ ride }: RideCardProps) {
   };
 
   const { date, time } = formatDate(ride.createdAt);
-
   const detailPath = userRole ? `/${userRole}/ride/${ride._id}` : `/rider/ride/${ride._id}`;
 
   return (
@@ -75,7 +122,7 @@ export default function RideCard({ ride }: RideCardProps) {
       {/* Subtle background glow on hover */}
       <div className="absolute -inset-px bg-gradient-to-r from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       
-      <div className="relative flex flex-col md:flex-row items-stretch px-4 gap-4">
+      <div className="relative flex flex-col md:flex-row items-stretch p-6 gap-6">
         {/* Left: Visual Route & Vehicle */}
         <div className="flex flex-row md:flex-col items-center gap-4 border-b md:border-b-0 md:border-r border-border/50 pb-4 md:pb-0 md:pr-6 lg:pr-8">
           <div className="relative">
@@ -93,34 +140,29 @@ export default function RideCard({ ride }: RideCardProps) {
 
         {/* Center: Trip Details */}
         <div className="flex-1 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className={`${status.color} border font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1.5`}>
-                <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
-                {status.label}
-              </Badge>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                {time}
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5" />
-                <span>{date}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5" />
-                <span>{ride.estimatedDistance ? `${ride.estimatedDistance} km` : "N/A"}</span>
-              </div>
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Ride Status Badge */}
+            <Badge variant="outline" className={`${status.color} border font-bold px-3 py-1 rounded-full flex items-center gap-1.5 text-xs capitalize`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+              {status.label}
+            </Badge>
+
+            {/* Payment Status Badge */}
+            <Badge variant="outline" className={`${paymentConfig.color} border font-bold px-3 py-1 rounded-full flex items-center gap-1.5 text-xs`}>
+              <paymentConfig.icon className="h-3.5 w-3.5" />
+              {paymentConfig.label}
+            </Badge>
+
+            <span className="text-xs text-muted-foreground font-semibold ml-auto flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" />
+              {time}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
             <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">Pickup</p>
-              <p className="font-normal text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.pickupLocation}>
+              <p className="text-[10px] uppercase tracking-wider font-extrabold text-muted-foreground/60">Pickup</p>
+              <p className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors text-sm" title={ride.pickupLocation}>
                 {ride.pickupLocation}
               </p>
             </div>
@@ -132,10 +174,22 @@ export default function RideCard({ ride }: RideCardProps) {
             </div>
             
             <div className="space-y-1 lg:text-right">
-              <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">Destination</p>
-              <p className="font-normal text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={ride.destinationLocation}>
+              <p className="text-[10px] uppercase tracking-wider font-extrabold text-muted-foreground/60">Destination</p>
+              <p className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors text-sm" title={ride.destinationLocation}>
                 {ride.destinationLocation}
               </p>
+            </div>
+          </div>
+
+          {/* Date and Distance Footer */}
+          <div className="flex items-center gap-4 text-xs font-semibold text-muted-foreground/80 border-t border-border/20 pt-3">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4 text-muted-foreground/50" />
+              <span>{date}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <MapPin className="h-4 w-4 text-muted-foreground/50" />
+              <span>{ride.estimatedDistance ? `${ride.estimatedDistance} km` : "N/A"}</span>
             </div>
           </div>
         </div>
@@ -143,9 +197,9 @@ export default function RideCard({ ride }: RideCardProps) {
         {/* Right: Pricing & Actions */}
         <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-border/50 pt-4 md:pt-0 md:pl-6 lg:pl-8 lg:min-w-[140px]">
           <div className="text-right">
-            <div className="flex items-baseline justify-end gap-1">
-              <span className="text-sm font-medium text-muted-foreground">৳</span>
-              <span className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <div className="flex items-baseline justify-end gap-0.5">
+              <span className="text-sm font-semibold text-muted-foreground">৳</span>
+              <span className="text-2xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors">
                 {ride.fare}
               </span>
             </div>
@@ -153,12 +207,21 @@ export default function RideCard({ ride }: RideCardProps) {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" asChild className="h-9 px-4 font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+            <Button 
+              variant={showPayNow ? "default" : "secondary"} 
+              size="sm" 
+              asChild 
+              className={`h-9 px-4 font-bold transition-all duration-300 ${
+                showPayNow 
+                  ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm shadow-primary/20" 
+                  : "hover:bg-primary hover:text-primary-foreground"
+              }`}
+            >
               <Link to={detailPath}>
-                View Details
+                {showPayNow ? "Pay Now" : "View Details"}
               </Link>
             </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:bg-muted">
+            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:bg-muted rounded-xl">
               <MoreHorizontal className="h-5 w-5" />
             </Button>
           </div>

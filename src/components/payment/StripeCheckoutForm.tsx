@@ -9,6 +9,8 @@ interface StripeCheckoutFormProps {
   clientSecret: string;
   rideId: string;
   amount: number;
+  userId: string;
+  destinationLocation: string;
   onSuccess: () => void;
   onCancel?: () => void;
 }
@@ -17,6 +19,8 @@ export default function StripeCheckoutForm({
   clientSecret,
   rideId,
   amount,
+  userId,
+  destinationLocation,
   onSuccess,
   onCancel,
 }: StripeCheckoutFormProps) {
@@ -63,6 +67,49 @@ export default function StripeCheckoutForm({
       }
 
       if (paymentIntent && paymentIntent.status === "succeeded") {
+        // Simulate wallet flow: Add money to wallet, then deduct balance.
+        try {
+          const balanceKey = `ridenest_balance_${userId}`;
+          const extraTxKey = `ridenest_extra_tx_${userId}`;
+          const currentBalance = parseFloat(localStorage.getItem(balanceKey) || "1250");
+
+          // 1. Transaction to load money to wallet
+          const depositTx = {
+            id: `dep_${Math.random().toString(36).substring(4)}`,
+            type: "deposit",
+            amount: amount,
+            date: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            description: `Stripe Wallet Load (Card payment)`,
+            status: "completed",
+            method: "card",
+          };
+
+          // 2. Transaction to deduct money from wallet for ride
+          const paymentTx = {
+            id: rideId,
+            type: "payment",
+            amount: amount,
+            date: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            description: `Payment for Ride to ${destinationLocation.split(",")[0]}`,
+            status: "completed",
+            method: "card",
+          };
+
+          localStorage.setItem(balanceKey, currentBalance.toString()); // net balance is unchanged (added then deducted)
+          const extraTxs = JSON.parse(localStorage.getItem(extraTxKey) || "[]");
+          localStorage.setItem(extraTxKey, JSON.stringify([paymentTx, depositTx, ...extraTxs]));
+        } catch (e) {
+          console.error("Local storage wallet update failed", e);
+        }
+
         const confirmResult = await confirmPaymentApi({
           rideId,
           transactionId: paymentIntent.id,

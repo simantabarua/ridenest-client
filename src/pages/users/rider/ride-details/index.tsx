@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Phone, MessageCircle, User, Clock, Loader2, CreditCard } from "lucide-react";
+import { Star, Phone, MessageCircle, User, Clock, Loader2, CreditCard, Wallet } from "lucide-react";
 import { useParams } from "react-router";
 import { useGetRideByIdQuery } from "@/redux/features/ride/ride.api";
 import { formatDate, formatTime } from "@/utils/dateTimeFormater";
@@ -18,17 +18,61 @@ import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import StripeCheckoutForm from "@/components/payment/StripeCheckoutForm";
-import { useCreatePaymentIntentMutation } from "@/redux/features/payment/payment.api";
+import { useCreatePaymentIntentMutation, useConfirmPaymentMutation } from "@/redux/features/payment/payment.api";
 import { toast } from "sonner";
+import { useSocket } from "@/providers/SocketProvider";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
 export default function RideDetailsPage() {
   const { rideId } = useParams<{ rideId: string }>();
-  const { data: ride, isLoading: isRideLoading } = useGetRideByIdQuery(rideId);
+  const { data: ride, isLoading: isRideLoading, refetch } = useGetRideByIdQuery(rideId);
   const { data: userInfo, isLoading: isUserLoading } = useUserInfoQuery(undefined);
   const [createPaymentIntent, { isLoading: isInitializingPayment }] = useCreatePaymentIntentMutation();
+  const [confirmPaymentApi, { isLoading: isConfirmingWalletPayment }] = useConfirmPaymentMutation();
   const [clientSecret, setClientSecret] = useState<string>("");
+  const [walletBalance, setWalletBalance] = useState<number>(0);
+  const [showStripeForm, setShowStripeForm] = useState<boolean>(false);
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    const fareAmount = ride?.data?.totalFare || ride?.data?.fare || 0;
+    if (walletBalance < fareAmount) {
+      setShowStripeForm(true);
+    } else {
+      setShowStripeForm(false);
+    }
+  }, [walletBalance, ride]);
+
+  useEffect(() => {
+    if (userInfo?.data?._id) {
+      const balanceKey = `ridenest_balance_${userInfo.data._id}`;
+      const savedBalance = localStorage.getItem(balanceKey);
+      if (savedBalance !== null) {
+        setWalletBalance(parseFloat(savedBalance));
+      } else {
+        setWalletBalance(0); 
+      }
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (!socket || !rideId) return;
+
+    socket.emit("join_ride", rideId);
+
+    const handleStateChange = (updatedRide: any) => {
+      if (updatedRide?._id === rideId) {
+        refetch();
+      }
+    };
+
+    socket.on("ride:state_change", handleStateChange);
+
+    return () => {
+      socket.off("ride:state_change", handleStateChange);
+    };
+  }, [socket, rideId, refetch]);
   
   const rideDetails = ride?.data;
   const userRole = userInfo?.data?.role;
@@ -93,6 +137,58 @@ export default function RideDetailsPage() {
 
   const handlePaymentSuccess = () => {
     setClientSecret("");
+    refetch();
+  };
+
+  const handleWalletPayment = async () => {
+    if (!userInfo?.data?._id) return;
+    try {
+      const fareAmount = totalFare || fare;
+      if (walletBalance < fareAmount) {
+        toast.error("Insufficient wallet balance!");
+        return;
+      }
+      
+      const newBalance = walletBalance - fareAmount;
+      const balanceKey = `ridenest_balance_${userInfo.data._id}`;
+      const extraTxKey = `ridenest_extra_tx_${userInfo.data._id}`;
+      
+      localStorage.setItem(balanceKey, newBalance.toString());
+      setWalletBalance(newBalance);
+      
+      const paymentTx = {
+        id: _id,
+        type: "payment",
+        amount: fareAmount,
+        date: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        description: `Payment for Ride to ${destinationLocation.split(",")[0]}`,
+        status: "completed",
+        method: "card",
+      };
+      
+      const extraTxs = JSON.parse(localStorage.getItem(extraTxKey) || "[]");
+      localStorage.setItem(extraTxKey, JSON.stringify([paymentTx, ...extraTxs]));
+
+      const walletTransactionId = `wallet_${Math.random().toString(36).substring(4)}`;
+      const confirmResult = await confirmPaymentApi({
+        rideId: _id,
+        transactionId: walletTransactionId,
+      }).unwrap();
+
+      if (confirmResult.success) {
+        toast.success("Payment completed successfully from wallet balance!");
+        refetch();
+      } else {
+        toast.error("Failed to complete ride payment.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.data?.message || "Error processing wallet payment");
+    }
   };
 
   const isDriverOrAdmin = userRole === "DRIVER" || userRole === "ADMIN";
@@ -283,47 +379,142 @@ export default function RideDetailsPage() {
               </CardContent>
             </Card>
 
-            {/* Payment Section (Stripe Gateway) */}
+            {/* Payment Section (Stripe Gateway / Nest Wallet) */}
             {(payment?.paymentMethod || paymentMethod || "cash") === "card" && 
               payment?.paymentStatus !== "complete" && 
               status?.toLowerCase() === "completed" && 
               !isDriverOrAdmin && (
-              <Card className="border-primary/20 bg-card/40 backdrop-blur-md shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+              <Card className="border-primary/20 bg-gradient-to-br from-card/60 via-card/40 to-background/50 backdrop-blur-md shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
                 <CardHeader className="bg-muted/10 border-b border-border/50">
                   <CardTitle className="text-lg font-bold flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    Complete Payment
+                    <Wallet className="h-5 w-5 text-primary" />
+                    Complete Ride Payment
                   </CardTitle>
                   <CardDescription>
-                    This trip was requested with Card payment. Please complete your transaction securely below.
+                    Trip payment via Nest Wallet. Sufficient balance will be deducted from your account.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
-                  {!clientSecret ? (
-                    <Button
-                      onClick={handleInitializePayment}
-                      disabled={isInitializingPayment}
-                      className="w-full font-bold shadow-lg shadow-primary/20 transition-transform active:scale-[0.99] h-11"
-                    >
-                      {isInitializingPayment ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Initializing Stripe...
-                        </>
-                      ) : (
-                        "Pay Securely with Card"
-                      )}
-                    </Button>
+                <CardContent className="p-6 space-y-6">
+                  {/* Current Wallet Balance Card */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-primary/[0.03] border border-primary/10 shadow-inner">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
+                        <Wallet className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                          Nest Wallet Balance
+                        </div>
+                        <div className="text-2xl font-bold tracking-tight text-foreground">
+                          ৳{walletBalance.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Fare Amount
+                      </div>
+                      <div className="text-lg font-bold text-primary">
+                        ৳{(totalFare || fare || 0).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Wallet Check and Options */}
+                  {!showStripeForm ? (
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                        Sufficient wallet balance available for checkout.
+                      </div>
+                      <Button
+                        onClick={handleWalletPayment}
+                        disabled={isConfirmingWalletPayment}
+                        className="w-full font-bold shadow-lg shadow-primary/20 transition-transform active:scale-[0.99] h-11 flex items-center justify-center gap-2"
+                      >
+                        {isConfirmingWalletPayment ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Deducting & Confirming...
+                          </>
+                        ) : (
+                          <>
+                            <Wallet className="w-4 h-4" />
+                            Pay ৳{(totalFare || fare || 0).toFixed(2)} with Wallet Balance
+                          </>
+                        )}
+                      </Button>
+                      
+                      <div className="text-center">
+                        <button
+                          onClick={() => setShowStripeForm(true)}
+                          className="text-xs text-muted-foreground hover:text-primary underline transition-colors"
+                        >
+                          Or pay with credit/debit card instead
+                        </button>
+                      </div>
+                    </div>
                   ) : (
-                    <Elements stripe={stripePromise} options={{ clientSecret }}>
-                      <StripeCheckoutForm
-                        clientSecret={clientSecret}
-                        rideId={_id}
-                        amount={totalFare || fare}
-                        onSuccess={handlePaymentSuccess}
-                        onCancel={() => setClientSecret("")}
-                      />
-                    </Elements>
+                    <div className="space-y-4">
+                      {walletBalance < (totalFare || fare || 0) && (
+                        <div className="p-3.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-sm font-medium">
+                          <p className="font-semibold mb-0.5">Insufficient Wallet Balance</p>
+                          <p className="text-xs opacity-90">
+                            Please use your card below to load the required amount (৳{((totalFare || fare || 0) - walletBalance).toFixed(2)}) into your Nest Wallet and complete payment.
+                          </p>
+                        </div>
+                      )}
+
+                      {!clientSecret ? (
+                        <div className="space-y-3">
+                          <Button
+                            onClick={handleInitializePayment}
+                            disabled={isInitializingPayment}
+                            className="w-full font-bold shadow-lg shadow-primary/20 transition-transform active:scale-[0.99] h-11 flex items-center justify-center gap-2"
+                          >
+                            {isInitializingPayment ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Initializing Gateway...
+                              </>
+                            ) : (
+                              <>
+                                <CreditCard className="w-4 h-4" />
+                                Add Card & Pay ৳{(totalFare || fare || 0).toFixed(2)}
+                              </>
+                            )}
+                          </Button>
+                          
+                          {walletBalance >= (totalFare || fare || 0) && (
+                            <div className="text-center">
+                              <button
+                                onClick={() => setShowStripeForm(false)}
+                                className="text-xs text-muted-foreground hover:text-primary underline transition-colors"
+                              >
+                                Back to Pay with Wallet Balance
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-4 animate-in fade-in duration-300">
+                          <div className="text-sm font-semibold text-muted-foreground">
+                            Enter Card Details to Complete Transaction:
+                          </div>
+                          <Elements stripe={stripePromise} options={{ clientSecret }}>
+                            <StripeCheckoutForm
+                              clientSecret={clientSecret}
+                              rideId={_id}
+                              amount={totalFare || fare || 0}
+                              userId={userInfo?.data?._id || ""}
+                              destinationLocation={destinationLocation}
+                              onSuccess={handlePaymentSuccess}
+                              onCancel={() => setClientSecret("")}
+                            />
+                          </Elements>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </CardContent>
               </Card>

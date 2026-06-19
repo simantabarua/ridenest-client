@@ -275,18 +275,18 @@ export default function WalletPage() {
             <p className="text-[10px] opacity-80">Default payout gateway active.</p>
 
             <div className="flex items-center gap-2 mt-5">
-              <Button
-                onClick={() => setShowDepositModal(true)}
-                className="bg-white text-primary hover:bg-white/90 font-bold text-xs h-9 w-full shadow-md"
-              >
-                <PlusCircle className="w-3.5 h-3.5 mr-1.5" />
-                Add Money
-              </Button>
-
-              {isDriver && (
+              {!isDriver ? (
+                <Button
+                  onClick={() => setShowDepositModal(true)}
+                  className="bg-white text-primary hover:bg-white/90 font-bold text-xs h-9 w-full shadow-md"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 mr-1.5" />
+                  Add Money
+                </Button>
+              ) : (
                 <Button
                   onClick={() => setShowWithdrawModal(true)}
-                  className="bg-primary-foreground/10 hover:bg-primary-foreground/20 text-white border border-white/20 font-bold text-xs h-9 w-full"
+                  className="bg-white text-primary hover:bg-white/90 font-bold text-xs h-9 w-full shadow-md"
                 >
                   <ArrowUpRight className="w-3.5 h-3.5 mr-1.5" />
                   Cash Out
