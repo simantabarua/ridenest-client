@@ -10,6 +10,21 @@ import { router } from "./routes/routes.tsx";
 import { Toaster } from "sonner";
 import Loading from "./components/loading.tsx";
 
+const searchParams = new URLSearchParams(window.location.search);
+const queryAccessToken = searchParams.get("accessToken");
+const queryRefreshToken = searchParams.get("refreshToken");
+
+if (queryAccessToken && queryRefreshToken) {
+  localStorage.setItem("accessToken", queryAccessToken);
+  localStorage.setItem("refreshToken", queryRefreshToken);
+  
+  searchParams.delete("accessToken");
+  searchParams.delete("refreshToken");
+  const newSearch = searchParams.toString();
+  const newPath = window.location.pathname + (newSearch ? `?${newSearch}` : "") + window.location.hash;
+  window.history.replaceState({}, document.title, newPath);
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ReduxProvider store={store}>

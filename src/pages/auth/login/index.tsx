@@ -83,6 +83,12 @@ export default function Login() {
     try {
       const response = await login(userInfo).unwrap();
       if (response.success) {
+        if (response.data?.accessToken) {
+          localStorage.setItem("accessToken", response.data.accessToken);
+        }
+        if (response.data?.refreshToken) {
+          localStorage.setItem("refreshToken", response.data.refreshToken);
+        }
         const role = response.data?.user?.role || response.data?.role;
         if (role === "ADMIN" || role === "SUPER_ADMIN") {
           navigate("/admin/dashboard");

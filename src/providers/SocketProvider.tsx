@@ -28,7 +28,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         transports: ["websocket", "polling"],
         // Provide placeholder auth token; middleware extracts full decoded JWT from HttpOnly cookie
         auth: {
-          token: "cookie-auth",
+          token: localStorage.getItem("accessToken") || "cookie-auth",
         },
       });
 

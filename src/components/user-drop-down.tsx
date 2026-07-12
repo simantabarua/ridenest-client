@@ -46,9 +46,12 @@ export function UserDropdown() {
   const handleLogout = async (): Promise<void> => {
     try {
       await logout(undefined).unwrap();
-      dispatch(authApi.util.resetApiState());
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      dispatch(authApi.util.resetApiState());
     }
   };
 
