@@ -26,11 +26,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const socketUrl = config.baseUrl || "http://localhost:5000";
       const newSocket = io(socketUrl, {
         withCredentials: true,
-        transports: ["websocket", "polling"],
-        // Provide placeholder auth token; middleware extracts full decoded JWT from HttpOnly cookie
+        transports: ["polling", "websocket"],
         auth: {
           token: localStorage.getItem("accessToken") || "cookie-auth",
         },
+        reconnectionAttempts: 5,
+        reconnectionDelay: 2000,
       });
 
       newSocket.on("connect", () => {
