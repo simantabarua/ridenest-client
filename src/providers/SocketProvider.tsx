@@ -16,7 +16,8 @@ const SocketContext = createContext<SocketContextProps>({
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: userResponse } = useUserInfoQuery(undefined);
+  const hasToken = Boolean(localStorage.getItem("accessToken"));
+  const { data: userResponse } = useUserInfoQuery(undefined, { skip: !hasToken });
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 

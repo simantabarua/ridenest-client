@@ -44,7 +44,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { data: user, isLoading: isUserLoading } = useUserInfoQuery(undefined);
+  const hasToken = Boolean(localStorage.getItem("accessToken"));
+  const { data: user, isLoading: isUserLoading } = useUserInfoQuery(undefined, { skip: !hasToken });
 
 
 
